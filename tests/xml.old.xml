@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : xml.old.xml
+    Created on : January 13, 2011, 5:19 AM
+    Author     : bill
+    Description:
+        Purpose of the document follows.
+-->
+
+<root zomg="attr">
+    <subnode attr="test">
+        <child></child>
+    </subnode>
+</root>
