@@ -1,14 +1,14 @@
 <?php
 namespace Core\Loader;
 
-class Cache extends \Core\Cache
+abstract class Cache extends \Core\Cache
 {
     private $_loader;
 
-    function __construct( \Core\Loader $loader, $callback = null )
+    function __construct( \Core\Loader $loader )
     {
         $this->_loader = $loader;
-        parent::__construct( $callback );
+        parent::__construct();
     }
 
     function getLoader()

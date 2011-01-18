@@ -3,7 +3,7 @@ namespace Core;
 
 abstract class Filter extends Object
 {
-    private $_parameters;
+    protected $parameters;
 
     function __construct( array $params = null )
     {
@@ -16,21 +16,23 @@ abstract class Filter extends Object
     {
         parent::initialize();
         
-        $this->_parameters = new \Core\Collection();
-
-        if( !$this->Type->hasEvent( 'execute' ))
-             $this->Type->addEvent( new \Core\Event('execute') );
+        $this->parameters = new \Core\Collection();
     }
 
     function getParameters()
     {
-        return $this->_parameters;
+        return $this->parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->_parameters->merge( $params );
+        $this->parameters->merge( $params );
     }
 
-    abstract protected function execute( $input, $params = null );
+    function __invoke( array $params = null )
+    {
+        return $this->execute( $params );
+    }
+
+    abstract function execute( array $params = null );
 }

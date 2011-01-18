@@ -3,29 +3,26 @@ namespace DBAL\XML\Text;
 
 class Writer extends \IO\Text\Writer
 {
+
     private $_stack = array();
     private $_indent = 0;
 
-    function writeDocument( $node )
+    function writeDocument( \DBAL\XML\Document $document )
     {
-        if( $node instanceof \DBAL\XML\Document )
-            $node = $node->getRoot();
+        $node = $document->getRoot();
 
-        if( !($node instanceof \DBAL\Data\Tree\Node ))
-            throw new DBAL\Exception('XML\Text\Writer can only write a Data\Tree\Node, '.get_class( $node ).' provided');
-
-        $this->writeDocumentHeader();
+        $this->writeDocumentHeader( $document );
         $this->writeNode( $node );
     }
 
-    function writeDocumentHeader( $version = '1.0', $encoding = 'UTF-8')
+    function writeDocumentHeader(\DBAL\XML\Document $document)
     {
-        $this->writeLine( '<?xml version="'.$version.'" encoding="'.$encoding.'"?>' );
+        $this->writeLine( '<?xml version="'.$document->getVersion().'" encoding="'.$document->getEncoding().'"?>' );
     }
 
     function writeNode( \DBAL\Data\Tree\Node $node )
     {
-        $this->writeStartNode( $node->getName(), $node->Attributes->toArray() );
+        $this->writeStartNode( $node );
 
         if( $node->hasChildren() )
             $this->writeNodes( $node->Children->toArray() );
@@ -35,8 +32,10 @@ class Writer extends \IO\Text\Writer
         $this->writeEndNode();
     }
 
-    function writeNodes( array $nodes )
+    function writeNodes( $nodes )
     {
+        if( !is_array( $nodes ))
+            $nodes = array( $nodes );
         foreach( $nodes as $node )
         {
             if( $node instanceof \DBAL\Data\Tree\Node )
@@ -44,17 +43,21 @@ class Writer extends \IO\Text\Writer
         }
     }
 
-    function writeStartNode( $element, array $attributes = null )
+    function writeStartNode( \DBAL\Data\Tree\Node $node )
     {
+        $element = $node->getName();
+        
+
         array_push( $this->_stack, $element );
 
         $this->writeIndent();
         $this->write( '<'.$element );
 
-        if( is_array( $attributes ))
-            $this->writeAttributes( $attributes );
+        if( $node->hasAttributes() )
+            $this->writeAttributes( $node->Attributes );
 
-        $this->writeLine('>');
+        $this->write('>');
+        $this->writeLine();
 
         $this->_indent++;
     }
@@ -63,12 +66,13 @@ class Writer extends \IO\Text\Writer
     {
         $element = array_pop( $this->_stack );
 
+        $this->_indent--;
         $this->writeLine( '</'.$element.'>' );
 
-        $this->_index--;
+        
     }
 
-    function writeAttributes( array $attributes )
+    function writeAttributes( $attributes )
     {
         foreach( $attributes as $name => $value )
             $this->writeAttribute( $name, $value );
@@ -98,7 +102,7 @@ class Writer extends \IO\Text\Writer
         $this->writeEndComment();
     }
 
-    function writeLine( $data )
+    function writeLine( $data = null )
     {
         $this->writeIndent();
 

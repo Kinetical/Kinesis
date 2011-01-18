@@ -3,7 +3,7 @@ namespace IO\Stream;
 
 class Iterator extends \Core\Object implements \Iterator
 {
-    private $_wrapper;
+    private $_handler;
 
     private $_outputBuffer;
     private $_inputBuffer;
@@ -12,9 +12,9 @@ class Iterator extends \Core\Object implements \Iterator
 
     private $_callback;
 
-    function __construct( Wrapper $wrapper = null, $callBack = null )
+    function __construct( Handler $handler = null, $callBack = null )
     {
-        $this->_wrapper = $wrapper;
+        $this->_handler = $handler;
         $this->_callback = $callBack;
 
         parent::__construct();
@@ -24,29 +24,23 @@ class Iterator extends \Core\Object implements \Iterator
     {
         parent::initialize();
 
+        $this->_inputBuffer = new \Core\Collection();
+
         if( is_null( $this->_callback )
-            && !is_null( $this->_wrapper ))
-            $this->_callback = $this->_wrapper->getCallback();
-        elseif( !$this->_wrapper->Type->hasMethod( $this->_callback ))
-            throw new \IO\Exception('Wrapper('.get_class( $this->_wrapper ).') must implement callback method('.$this->_callback.')');
+            && !is_null( $this->_handler ))
+            $this->_callback = $this->_handler->getCallback();
+        elseif( !$this->_handler->Type->hasMethod( $this->_callback ))
+            throw new \IO\Exception('Handler ('.get_class( $this->_handler ).') must implement callback method('.$this->_callback.')');
     }
 
     function wrapped()
     {
-        return ( $this->_wrapper !== null ) 
-                ? true
-                : false;
+        return !is_null( $this->_handler ) ;
     }
 
     protected function getInputArguments()
     {
-        if( is_array( $this->_inputBuffer )
-            && array_key_exists( $this->_position, $this->_inputBuffer  ))
-            $args = $this->_inputBuffer[ $this->_position ];
-        else
-            $args = $this->_inputBuffer;
-
-        return $args;
+        return $this->_inputBuffer[ $this->_position ];
     }
 
     function next()
@@ -56,8 +50,7 @@ class Iterator extends \Core\Object implements \Iterator
 
     public function current()
     {
-        var_dump('current');
-        $buffer = $this->_wrapper->{$this->_callback}( $this->getInputArguments() );
+        $buffer = $this->_handler->{$this->_callback}( $this->getInputArguments() );
 
         $this->_outputBuffer = $buffer;
 
@@ -86,36 +79,37 @@ class Iterator extends \Core\Object implements \Iterator
 
     function valid()
     {
-        var_dump('test');
         $stream = $this->getStream();
 
         if( $stream->eof() )
             return false;
 
-        try
-        {
+        try {
             if( !$stream->isOpen() )
              $stream->open();
         } catch ( \Exception $e ){
+            return false; }
+
+        if( $stream->isWrite() // HAS INPUT
+             && $this->_position >= $this->_inputBuffer->count() ) // EXHAUSTED INPUT
             return false;
-        }
 
         return true;
     }
 
     function getStream()
     {
-        return $this->_wrapper->getStream();
+        return $this->_handler->getStream();
     }
 
-    function getWrapper()
+    function getHandler()
     {
-        return $this->_wrapper;
+        return $this->_handler;
     }
 
-    protected function setWrapper( \IO\Stream\Wrapper $wrapper )
+    protected function setHandler( \IO\Stream\Handler $handler )
     {
-        $this->_wrapper = $wrapper;
+        $this->_handler = $handler;
     }
 
     function getInputBuffer()
@@ -125,7 +119,10 @@ class Iterator extends \Core\Object implements \Iterator
 
     function setInputBuffer( $value )
     {
-        return $this->_inputBuffer = $value;
+        if( is_array( $value ))
+            $this->_inputBuffer->merge( $value );
+        else
+            $this->_inputBuffer->add( $value );
     }
 
     function getOutputBuffer()

@@ -1,32 +1,46 @@
 <?php
 
-class Object
-{
-    protected $property = array();
-
-    function __construct( array $property = null )
+    function __callStatic( $methodName, $arguments )
     {
-        if( is_array( $property ) )
-            $this->property = $property;
+        switch( count( $arguments ))
+        {
+            case 0:
+                return self::$methodName();
+            case 1:
+                return self::$methodName( $arguments[0] );
+            case 2:
+                return self::$methodName( $arguments[0],
+                                          $arguments[1] );
+            case 3:
+                return self::$methodName( $arguments[0],
+                                          $arguments[1],
+                                          $arguments[2] );
+            case 4:
+                return self::$methodName( $arguments[0],
+                                          $arguments[1],
+                                          $arguments[2],
+                                          $arguments[3] );
+            default:
+                return call_user_func_array( __CLASSNAME__'::'.$methodName , $arguments );
+            break;
+        }
     }
-
-    function __get( $name )
-    {
-        return $this->property[ $name ];
-    }
-
-    function __set( $name, $value )
-    {
-        $this->property[ $name ] = $value;
-    }
-
-    function __isset( $name )
-    {
-        return array_key_exists( $name, $this->property );
-    }
-
-    function  __unset( $name )
-    {
-        unset( $this->property[ $name ] );
-    }
+    if( empty( $arguments ) )
+        $this->$methodName();
+    elseif( count( $arguments ) == 1 )
+        return $this->$methodName( $arguments[0] );
+    elseif( count( $arguments ) == 2 )
+        return $this->$methodName( $arguments[0],
+                                   $arguments[1] );
+    elseif( count( $arguments ) == 3 )
+        return $this->$methodName( $arguments[0],
+                                   $arguments[1],
+                                   $arguments[2] );
+    elseif( count( $arguments ) == 4 )
+        return $this->$methodName( $arguments[0],
+                                   $arguments[1],
+                                   $arguments[2],
+                                   $arguments[3] );
+    else
+        return call_user_func_array( array( $this, $methodName ), $arguments );
 }

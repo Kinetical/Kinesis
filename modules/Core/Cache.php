@@ -4,11 +4,9 @@ namespace Core;
 abstract class Cache extends Collection
 {
     private $_enabled = true; //TODO: MOVE TO CONFIG FILE
-    protected $_callback;
 
-    function __construct( $callback = null )
+    function __construct()
     {
-        $this->_callback = $callback;
         parent::__construct();
     }
 
@@ -26,25 +24,40 @@ abstract class Cache extends Collection
     {
         return $this->_enabled;
     }
-    //BLOCK INTROSPECTION ON CACHE DATA IN OBJECT MODEL
 
-    function __set( $key, $value )
+    abstract protected function has( $id );
+    abstract protected function load( $id );
+    abstract protected function save( $id, $value );
+    abstract protected function delete( $id );
+    abstract protected function changed( $id );
+
+    function offsetExists( $offset )
     {
-        //MEMORY CACHE
-        $this->Data[$key] = $value;
+        if( parent::offsetExists( $offset ))
+            return true;
+        
+        return $this->has( $offset );
+    }
 
-        // FUNCTION FOR EXTERNAL CACHING, I.E. SERIALLOADER
-        if( !is_null( $this->_callback )
-            && $this->enabled() )
-        {
-            try
-            {
-                call_user_func_array( $this->_callback, array( $key, $value ));
-            }
-            catch( Exception $e )
-            {
-                throw new \Core\Exception('Caching failed for keypair ('.$key.','.$value.')');
-            }
-        }
+    function offsetSet( $offset, $value )
+    {
+        parent::offsetSet( $offset, $value );
+
+        $this->save( $id, $value );
+    }
+
+    function offsetGet( $offset )
+    {
+        if( array_key_exists( $offset, $this->Data ))
+            return $this->Data[$offset];
+
+        return $this->load( $offset );
+    }
+
+    function offsetUnset( $offset )
+    {
+        parent::offsetUnset( $offset );
+
+        $this->remove( $offset );
     }
 }

@@ -16,10 +16,7 @@ class Node extends \Core\Collection implements I\Attributable, I\Node, \Countabl
             $this->setName( $name );
         
         if( $parent instanceof Node )
-        {
-            $this->setParent( $parent );
             $parent->_children->add( $this );
-        }
 
         if( is_array( $attributes ) )
             $this->setAttributes( $attributes );
@@ -29,7 +26,7 @@ class Node extends \Core\Collection implements I\Attributable, I\Node, \Countabl
     {
         parent::initialize();
 
-        $this->_children = new \Core\Collection('DBAL\Data\Tree\Node');
+        $this->_children = new Node\Collection( $this );
         $this->_attributes = new \Core\Collection();
     }
 
@@ -51,6 +48,11 @@ class Node extends \Core\Collection implements I\Attributable, I\Node, \Countabl
     function setValue( $value )
     {
         $this->Data['Value'] = $value;
+    }
+
+    function __toString()
+    {
+        return $this->getValue();
     }
 
     public function getIterator()
@@ -163,7 +165,10 @@ class Node extends \Core\Collection implements I\Attributable, I\Node, \Countabl
 
     function previous()
     {
-        return $this->getSibling( -1 );
+        if( !$this->isRoot() )
+            return $this->getSibling( -1 );
+
+        return false;
     }
 
     function first()

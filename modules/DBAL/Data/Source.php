@@ -4,11 +4,11 @@ namespace DBAL\Data;
 class Source extends Item
 {
     private $_view;
+    private $_viewClass;
 
     function __construct( array $data = null )
     {
             parent::__construct( $data );
-            //parent::setDataType('DataItem');
     }
 
     function setDataType( $type )
@@ -23,39 +23,21 @@ class Source extends Item
         }
     }
 
-    function __set( $name, $value )
+    function execute( View $view )
     {
-            if( $this->exists( $name )
-                    && $name !== 'Data' )
-            {
-                $obj = $this[$name];
-                if( $obj instanceof \Core\Object)
-                    $obj->setData( $value );
-            }
-            /*else
-            {
-                    $dataType = $this->getDataType();
-                    $item = new $dataType();
-                    $item->setData( $value );
-                    parent::__set( $name, $item );
-            }*/
+        $results = $view->execute();
 
-            parent::__set( $name, $value );
+        $adapter = $view->getAdapter();
+
+        if( $adapter->isSelectCommand() )
+            $this->setData( $results );
+        
+        return $results;
     }
 
-    function Fill( View $view )
+    function __invoke( View $view )
     {
-            //if(!$view->Command->Query->Resource->Stream->isOpen() )
-                    //$view->Command->Query->Resource->Stream->open();
-                    //$hydrator = $view->Command->Resource->Hydrator;
-//            $resource = $view->getCommand()->getQuery()->getResource();
-//
-//            if( $resource->getStream()->getMode() == \IO\Stream::WRITE )
-//                    $resource->getLoader()->setSource( $this );
-
-            $this->setData( $view->execute() );
-
-                           // var_dump( $this->Data );
+        return $this->execute( $view );
     }
 
     function getView()
@@ -66,8 +48,19 @@ class Source extends Item
         return $this->_view;
     }
 
+    function getViewClass()
+    {
+        return $this->_viewClass;
+    }
+
+    function setViewClass( $className )
+    {
+        if( is_class( $className ))
+            $this->_viewClass = $className;
+    }
+
     protected function getDefaultView()
     {
-        return new View();
+        return new $this->_viewClass();
     }
 }

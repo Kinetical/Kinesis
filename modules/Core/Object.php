@@ -25,9 +25,9 @@ class Object extends Event\Listener implements I\Object
 
     private static function hasType( $typeName )
     {
-//        if( is_string( $typeName )
-//            && array_key_exists( $typeName, self::$types ) )
-//                return self::$types[$typeName];
+        if( is_string( $typeName )
+            && array_key_exists( $typeName, self::$types ) )
+                return self::$types[$typeName];
 
         return false;
     }

@@ -3,10 +3,12 @@ namespace DBAL\Data;
 
 class Adapter extends \Core\Object
 {
-    protected $_selectCommand;
-    protected $_insertCommand;
-    protected $_deleteCommand;
-    protected $_updateCommand;
+    const SELECT = 1;
+    const INSERT = 2;
+    const UPDATE = 3;
+    const DELETE = 4;
+    
+    protected $commands;
 
     private $_view;
 
@@ -32,196 +34,149 @@ class Adapter extends \Core\Object
             return $dataItem;
     }
 
-    private function setSource( $data )
+    function getView( Source $dataSource = null )
     {
-        $this->getLoader()->setSource( $data );
-    }
+        if( !$this->hasView() )
+            if( $dataSource instanceof Source )
+                $this->_view = $dataSource->getView();
+            else
+                $this->_view = new View( $this );
 
-    private function getLoader()
-    {
-        return $this->_command->getQuery()->getResource()->getLoader();
-    }
-
-    private function preMap( $dataSource = null )
-    {
-            //$this->setSource( $dataSource );
-
-            //return $this->getLoader()->flush( ClassMapper::Premapping );
-    }
-
-    function getView()
-    {
-            if( $this->_view == null )
-                    $this->setView( new View( $this ));
-            return $this->_view;
+        return $this->_view;
     }
 
     function setView( View $view )
     {
-            if( $view->getAdapter() !== $this )
-                    $view->setAdapter( $this );
+        if( $view->getAdapter() !== $this )
+            $view->setAdapter( $this );
 
-            return $this->_view = $view;
+        return $this->_view = $view;
     }
 
     function hasView()
     {
-            return ($this->_view !== null) ? true : false;
+        return !is_null($this->_view);
+    }
+
+    protected function execute( $type, Source $dataSource  )
+    {
+        $view = $this->getView( $dataSource );
+
+        if( !$view->hasCommand() )
+            $view->setCommand( $this->getCommand( $type ) );
+
+        if( !$view->prepared() )
+            $view->prepare( $dataSource );
+
+        $dataSource( $view );
     }
 
     function Fill( Source $dataSource )
     {
-            if( !$this->hasView() )
-                $view = $this->setView( $dataSource->getView() );
-            else
-                $view = $this->getView();
+        $this->execute( self::SELECT, $dataSource );
+    }
 
-            if( !$view->hasCommand() )
-                $view->setCommand( $this->getSelectCommand() );
-            //if( $this->isMapped() )
-                    //$this->Mapper->Resource = $view->Command->Query->Resource;
-            $dataSource->Fill( $view );
+    function Insert( Source $dataSource )
+    {
+        $this->execute( self::INSERT, $dataSource );
     }
 
     function Update( Source $dataSource )
     {
-            if( !$this->hasView() )
-                    $this->View = $dataSource->View;
-
-            $this->View->Command->Resource->addMapper( new SqlObjectMapper( $this->Resource ) );
-
-            foreach( $dataSource as $object )
-            {
-                    //$data = $this->Command->Resource->Hydrator->bindAll( ClassMapper::Premapping );
-                    if( $object instanceof Object )
-                    {
-                            if( $object->Type->isPersisted() )
-                            {
-                                    $this->Command = $this->UpdateCommand;
-
-                                    $this->preMap( $dataSource );
-                                    $this->View->Command->set( $object->Data );
-                                    $this->View->Command->where( $this->Resource->PrimaryKey->InnerName,
-                                                                 $object->{$this->Resource->PrimaryKey->OuterName} );
-                                    $dataSource->Fill( $this->View );
-                            }
-                            else
-                            {
-                                    if( $insertCommand == null )
-                                            $insertCommand = $this->InsertCommand;
-
-                                    $object = $this->preserveKey( $object );
-
-                                    $this->preMap( $dataSource );
-                                    $insertCommand->set( $object->Data );
-                            }
-                    }
-            }
-
-            if( $insertCommand !== null )
-            {
-                    $this->getView()->setCommand( $insertCommand );
-                    $dataSource->Fill( $this->View );
-            }
-
-
+       $this->execute( self::UPDATE, $dataSource );
     }
 
-    //protect
-
-//	function getStream()
-//	{
-//		return $this->_command->getQuery()->getResource()->getStream();
-//	}
-
-    /*function setMapping( array $mapping, $bindingProperty = null )
+    function Delete( Source $dataSource )
     {
-            $this->_classMapper = new ClassMapper(  $mapping, $bindingProperty );
-
+        $this->execute( self::DELETE, $dataSource );
     }
-
-    function getMapper()
-    {
-            return $this->_classMapper;
-    }
-
-    function setMapper( ClassMapper $mapper )
-    {
-            return $this->_classMapper = $mapper;
-    }
-
-    function isMapped()
-    {
-            return ($this->_classMapper !== null )? true : false;
-    }*/
 
     function getSelectCommand()
     {
-            return $this->_selectCommand;
+        return $this->getCommand( self::SELECT );
     }
     function getInsertCommand()
     {
-            return $this->_insertCommand;
+        return $this->getCommand( self::INSERT );
     }
     function getUpdateCommand()
     {
-            return $this->_updateCommand;
+        return $this->getCommand( self::UPDATE );
     }
     function getDeleteCommand()
     {
-            return $this->_deleteCommand;
+        return $this->getCommand( self::DELETE );
     }
 
     function setSelectCommand( $command )
     {
-            $this->_selectCommand = $command;
-            $this->setCommand( $command );
+        $this->setCommand( self::SELECT, $command );
     }
     function setInsertCommand( $command )
     {
-            $this->_insertCommand = $command;
-            $this->setCommand( $command );
+        $this->setCommand( self::INSERT, $command );
     }
     function setUpdateCommand( $command )
     {
-            $this->_updateCommand = $command;
-            $this->setCommand( $command );
+        $this->setCommand( self::UPDATE, $command );
     }
     function setDeleteCommand( $command )
     {
-            $this->_deleteCommand = $command;
-            $this->setCommand( $command );
+        $this->setCommand( self::DELETE, $command );
     }
 
     function isSelectCommand()
     {
-        return !is_null( $this->_selectCommand );
+        return $this->hasCommand( self::SELECT );
     }
     function isInsertCommand()
     {
-        return !is_null( $this->_insertCommand );
+        return $this->hasCommand( self::INSERT );
     }
     function isUpdateCommand()
     {
-        return !is_null( $this->_updateCommand );
+        return $this->hasCommand( self::UPDATE );
     }
     function isDeleteCommand()
     {
-        return !is_null( $this->_deleteCommand );
+        return $this->hasCommand( self::DELETE );
     }
-    protected function setCommand( $command )
+    
+    protected function hasCommand( $type )
     {
-        if( $this->hasView() )
+        return array_key_exists( $type, $this->commands );
+    }
+
+    protected function getCommand( $type )
+    {
+        if( !$this->hasCommand( $type )
+             && $this->hasView() )
         {
             $view = $this->getView();
-
-            if( !$view->isPrepared() )
+            switch( $type )
             {
-                $view->setCommand( $command );
-                $view->prepare();
+                case self::SELECT:
+                    $command = $view->getDefaultSelect();
+                break;
+                case self::INSERT:
+                    $command = $view->getDefaultInsert();
+                break;
+                case self::UPDATE:
+                    $command = $view->getDefaultUpdate();
+                break;
+                case self::DELETE:
+                    $command = $view->getDefaultDelete();
+                break;
             }
+
+            $this->setCommand( $type, $command );
         }
 
-        return $command;
+        return $this->commands[$type];
+    }
+
+    protected function setCommand( $type, $command )
+    {
+        $this->commands[$type] = $command;
     }
 }

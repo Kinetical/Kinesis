@@ -3,8 +3,9 @@ namespace DBAL\XML\Filter;
 
 class SimpleXML extends \DBAL\Query\Filter
 {
-    function execute( $input, $params = null )
+    function execute( array $params = null )
     {
+        $input = $params['input'];
         if( is_array( $params ))
             if( array_key_exists('ClassName', $params ))
                 $className = $params['ClassName'];

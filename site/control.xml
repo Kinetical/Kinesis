@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<core>
+<list name="TextArea_Wrap">
+	<Off>off</Off>
+	<Virtual>virtual</Virtual>
+	<Physical>physical</Physical>
+</list>
+
+<control name="Page" type="Page" dom="html" template="page.php">
+	<property name="Scripts" type="dictionary"></property>
+	<property name="Styles" type="dictionary"></property>
+	<property name="Path" type="string"></property>
+</control>
+
+<control name="Panel" type="Panel" dom="div" template="panel.php">
+<empty></empty>
+</control>
+
+<control name="TextBox" type="TextBox" dom="input" template="textbox.php">
+	<property name="MaxLength" type="integer"></property>
+	<property name="Size" type="integer"></property>
+	<property name="MultiLine" type="boolean" visible="false">false</property>
+	<property name="Mask" type="boolean"></property>
+	
+	<event name="TextChanged"></event>
+</control>
+
+<control name="TextArea" type="TextBox" dom="input" template="textarea.php">
+	<property name="MaxLength" type="integer"></property>
+	<property name="Size" type="integer"></property>
+	<property name="Rows" type="integer"></property>
+	<property name="Columns" type="integer"></property>
+	<property name="Wrap" type="TextArea_Wrap"></property>
+	<property name="MultiLine" type="boolean" visible="false">true</property>
+</control>
+
+<control name="Table" type="Table" dom="table" template="table.php">
+	<property name="Rows" type="Row[]"></property>
+</control>
+
+<control name="Row" type="Row" dom="tr" template="row.php">
+	<property name="Cells" type="Cell[]"></property>
+</control>
+
+<control name="Cell" type="Cell" dom="td" template="cell.php">
+	<empty></empty>
+</control>
+
+<control name="ImageControl" display="Image" type="ImageControl" dom="img" template="image.php">
+	<property name="Image" type="Image"></property>
+</control>
+
+<control name="ListView" type="ListView" dom="ul" template="listview.php">
+	<property name="Items" type="ListItem[]"></property>
+	
+</control>
+
+<control name="Label" type="Label" dom="span" template="label.php">
+	<empty></empty>
+</control>
+
+</core>
+
+

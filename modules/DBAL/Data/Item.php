@@ -52,13 +52,13 @@ class Item extends \Core\Collection
 	
 	protected function rollback()
 	{
-		if( array_walk( $this->_dirty, array( $this, 'add') ))
-		{
-			$this->clean();
-			return true;
-		}
-		
-		return false;
+            if( array_walk( $this->_dirty, array( $this, '__set') ))
+            {
+                    $this->clean();
+                    return true;
+            }
+
+            return false;
 	}
 	
 	public function __set( $name, $value )

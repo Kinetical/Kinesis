@@ -8,8 +8,8 @@ class Update extends \DBAL\Query\Node
         $params = array( 'StreamType'       => 'IO\File\Stream',
                          'StreamMode'       => \IO\Stream::WRITE,
                          'StreamResource'   => new \IO\File( $data ),
-                         'StreamWrapper'    => 'DBAL\XML\Text\Writer',
-                         'StreamCallback'   => 'writeDocument' );
+                         'StreamHandler'    => 'IO\File\Writer',
+                         'HandlerChain'     => 'DBAL\XML\Text\Writer' );
 
         $query = $this->getQuery();
         $query->setParameters( $params );

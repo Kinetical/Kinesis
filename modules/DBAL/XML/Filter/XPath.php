@@ -3,8 +3,9 @@ namespace DBAL\XML\Filter;
 
 class XPath extends \DBAL\Query\Filter
 {
-    function execute( $input, $params = null )
+    function execute( array $params = null )
     {
+        $input = $params['input'];
         $XPath = $this->Parameters['XPath'];
 
         if( method_exists( $input, 'xpath'))

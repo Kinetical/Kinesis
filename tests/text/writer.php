@@ -8,7 +8,8 @@ $file = new File('tests\test.ini');
 
 $stream = new File\Stream( $file, Stream::WRITE );
 
-$writer = new Text\Writer( $stream );
+$writer = new File\Writer( $stream );
+$text = new Text\Writer( $writer );
 
 $stream->open();
 
@@ -20,7 +21,7 @@ $contents = array(
 
 foreach( $contents as $line )
 {
-    $writer->writeLine( $line );
+    $text->writeLine( $line );
 }
 
 $stream->close();

@@ -1,19 +1,40 @@
 <?php
 namespace IO\File;
 
-class Loader extends \Core\Loader
-{
-    private $_extension;
+use Core\Interfaces as I;
 
+class Loader extends \Core\Loader implements I\Nameable
+{
     function getExtension()
     {
-        return $this->_extension;
+        return $this->parameters['extension'];
     }
 
     function setExtension( $ext )
     {
-        $this->_extension = $ext;
+        $this->parameters['extension'] = $ext;
     }
+
+    function setPath( $path )
+    {
+        $this->parameters['path'] = $path;
+    }
+
+    function getPath()
+    {
+        return $this->parameters['path'];
+    }
+
+    function getName()
+    {
+        return $this->getPath();
+    }
+
+    function setName( $idx )
+    {
+        $this->setPath( $idx );
+    }
+
     
     protected function match( $path )
     {
@@ -26,7 +47,7 @@ class Loader extends \Core\Loader
         return $this->getPath().DIRECTORY_SEPARATOR.$path.'.'.$this->_extension;
     }
 
-    protected function load( $path, $args = null )
+    protected function execute( $path, $args = null )
     {
         $cache = $this->getCache();
         //TODO: EXTRACT CONTEXT

@@ -4,15 +4,15 @@ namespace DBAL\XML\Filter;
 class Node extends \DBAL\Query\Filter
 {
 
-    function execute( $input, $params = null )
+    function execute( array $params = null )
     {
+        $input = $params['input'];
+
+        
         if( !( $input instanceof \SimpleXMLElement ) )
             throw new \DBAL\Exception('Node filter input must be a SimpleXMLElement, '.get_class( $input ).' provided.');
         
-        if( $params instanceof \DBAL\Data\Tree\Node )
-            $parent = $params;
-        else
-            $parent = null;
+        $parent = $params['parent'];
 
         $attributes = $this->getAttributes( $input );
         $node = new \DBAL\Data\Tree\Node( $input->getName(), $attributes, $parent );
@@ -20,7 +20,7 @@ class Node extends \DBAL\Query\Filter
 
         foreach( $input as $child )
             if( $child instanceof \SimpleXMLElement )
-                $this->execute( $child, $node );
+                $this->execute( array( 'input' => $child, 'parent' => $node ) );
 
         return $node;
     }

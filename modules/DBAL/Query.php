@@ -92,20 +92,25 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     {
         $stream = $this->getStream();
 
-        $streamWrapper = $this->_parameters['StreamWrapper'];
-        if( !is_string( $streamWrapper )
-            && !class_exists( $streamWrapper ))
-            return $this->_results->getIterator();
-
+        $streamHandler = $this->_parameters['StreamHandler'];
         $streamCallback = $this->_parameters['StreamCallback'];
         $streamInput = $this->_parameters['StreamInput'];
 
-        if( class_exists( $streamWrapper ))
-            $wrapper = new $streamWrapper( $stream );
+        if( class_exists( $streamHandler ))
+            $handler = new $streamHandler( $stream );
         else
-            throw new DBAL\Exception('StreamWrapper('.$streamWrapper.') not found');
+            throw new DBAL\Exception('StreamHandler('.$streamHandler.') not found');
+
+        $handlers = $this->_parameters['HandlerChain'];
+        if( !is_array( $handlers ))
+            $handlers = array( $handlers );
+
+        if( count( $handlers ) > 0 )
+            foreach( $handlers as $wrapClass )
+                if( class_exists( $wrapClass ))
+                    $handler = new $wrapClass( $handler );
         
-        $iterator = new \IO\Stream\Iterator( $wrapper, $streamCallback );
+        $iterator = new \IO\Stream\Iterator( $handler, $streamCallback );
         $iterator->setInputBuffer( $streamInput );
 
         return $iterator;
@@ -195,7 +200,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
         if(    $this->_iterator instanceof IO\Stream\Iterator
             && $this->_iterator->wrapped() )
-               $this->_iterator->getWrapper()->setStream( $stream );
+               $this->_iterator->getHandler()->setStream( $stream );
 
         return true;
     }
@@ -221,14 +226,27 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     {
         if( !$this->hasFilters() )
             return $input;
-        else
-            $output = $input;
+
+        if( is_null( $params ))
+            $params = array();
+
+        $params['input'] = $input;
 
         foreach( $this->_filters as $filter )
-            $output = $filter->execute( $output, $params );
+        {
+            if( !is_null( $output ))
+                $params['input'] = $output;
+            
+            $output = $filter( $params );
+        }
 
         return $output;
     }
 
     abstract function execute( $stream = null );
+
+    function __invoke( $stream = null )
+    {
+        return $this->execute( $stream );
+    }
 }

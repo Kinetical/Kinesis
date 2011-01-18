@@ -3,17 +3,11 @@ namespace IO\Serial;
 
 class Cache extends \Core\Loader\Cache
 {
-    function __construct( \Core\Loader $loader, $callback = null )
-    {
-        if( is_null( $callback ))
-            $callback = array( $this, 'cache');
-        
-        parent::__construct( $loader, $callback );
-    }
-    protected function isModified( $path )
+    protected function changed( $path )
     {
         if( is_file( $cachedPath = $this->getCachePath( $path ))
-            && filemtime( $cachedPath ) > filemtime($this->getLoader()->parse($path)) )
+            && is_file( $sourcePath = $this->getLoader()->parse($path))
+            && filemtime( $cachedPath ) > filemtime($sourcePath))
             return false;
 
         return true;
@@ -21,16 +15,12 @@ class Cache extends \Core\Loader\Cache
 
     function has( $path )
     {
-        if( parent::has( $path ))
-            return $path;
+        if( $this->changed( $path ))
+            return false;
+        
+        $path = $this->getCachePath( $path );
 
-        if( !$this->isModified( $path ) )
-        {
-            $this->add( $path, $this->get( $path ), false );
-            return $path;
-        }
-
-        return false;
+        return is_file( $path );
     }
 
     private function getCacheStream( $path, $mode = 'r' )
@@ -38,7 +28,7 @@ class Cache extends \Core\Loader\Cache
         return new \Core\Object\Stream( $this->getCachePath( $path ), $mode );
     }
 
-    function get( $path, $default = null )
+    function load( $path )
     {
         $stream = $this->getCacheStream( $path );
         $stream->open();
@@ -55,7 +45,7 @@ class Cache extends \Core\Loader\Cache
         return 'site'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.$path.'.dat';
     }
 
-    function cache( $path, $value )
+    function save( $path, $value )
     {
         if( $value == null )
             return;

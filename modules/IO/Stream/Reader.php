@@ -1,9 +1,15 @@
 <?php
 namespace IO\Stream;
 
-abstract class Reader extends Wrapper
+abstract class Reader extends Handler
 {
-    abstract function read();
+    function read()
+    {
+        if( $this->wrapped() )
+            return $this->handler->read();
+
+        return null;
+    }
     
     function getCallback()
     {

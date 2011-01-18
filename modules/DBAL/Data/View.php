@@ -3,33 +3,33 @@ namespace DBAL\Data;
 
 use \Core\Interfaces as I;
 
-class View extends \Core\Object implements I\Command
+abstract class View extends \Core\Object implements I\Command
 {
-	private $_command;
-	private $_dataAdapter;
+	protected $command;
+	protected $adapter;
         private $_prepared = false;
 	
-	function __construct( $adapter = null )
+	function __construct( Adapter $adapter = null )
 	{
 		if( $adapter instanceof Adapter )
-			$this->_dataAdapter = $adapter;
+                    $this->adapter = $adapter;
 
                 parent::__construct();
 	}
 	
 	function hasAdapter()
 	{
-		return ($this->_dataAdapter !== null) ? true : false; 
+		return ($this->adapter !== null) ? true : false;
 	}
 	
 	function getAdapter()
 	{
-		return $this->_dataAdapter;
+		return $this->adapter;
 	}
 	
 	function setAdapter( Adapter $adapter )
 	{
-		$this->_dataAdapter = $adapter;
+		$this->adapter = $adapter;
 		
 	}
 
@@ -37,34 +37,37 @@ class View extends \Core\Object implements I\Command
         {
             return $this->_prepared;
         }
-	function prepare()
+	function prepare( Source $dataSource = null )
 	{
-		//$this->Command->Query->Resource->View = $this;
-                
-		$this->_prepared = true;
+            $this->_prepared = true;
 	}
 	
 	function execute()
 	{
-		if( !$this->prepared() )
-                    $this->prepare();
-		
-		return $this->_command->execute();
+            if( !$this->prepared() )
+                $this->prepare();
+
+            return $this->command->execute();
 	}
 	
 	public function setCommand( $command )
 	{
-		return $this->_command = $command;
-		
+            $this->command = $command;
 	}
 	
 	public function getCommand()
 	{
-		return $this->_command;
+            return $this->command;
 	}
 	
 	function hasCommand()
 	{
-		return ($this->_command !== null) ? true : false;
+            return !is_null($this->command);
 	}
+
+        abstract function getDefaultQuery();
+        abstract function getDefaultSelect();
+        abstract function getDefaultInsert();
+        abstract function getDefaultUpdate();
+        abstract function getDefaultDelete();
 }

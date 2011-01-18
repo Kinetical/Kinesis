@@ -12,9 +12,7 @@ class Collection extends Object implements I\Collection, \Countable
     {
         parent::__construct();
 
-        $args = \func_get_args();
-
-        if( is_array( $args ))
+        if( is_array( $args = func_get_args() ))
             foreach( $args as $value )
                 if( is_string( $value ))
                     $this->setDataType( $value );
@@ -22,14 +20,16 @@ class Collection extends Object implements I\Collection, \Countable
                     $this->Data = $value;
     }
 
-    function add( $key, $value = null )
+    function add( $value, $key = null )
     {
-        if( is_null( $value ))
-        {
-            $value = $key;
-            unset( $key );
-        }
+        if( is_null( $key ))
+            $key = $this->count();
 
+        $this->insert( $key, $value );
+    }
+
+    function insert( $key, $value )
+    {
         if( $key == null
             && $value instanceof I\Nameable )
             $key = $value->getName();
@@ -135,7 +135,9 @@ class Collection extends Object implements I\Collection, \Countable
 
     function isStronglyTyped()
     {
-        return $this->_type !== null ? true : false;
+        return $this->_type !== null 
+                ? true
+                : false;
     }
 
     function isWeaklyTyped()

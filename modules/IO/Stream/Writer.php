@@ -1,9 +1,13 @@
 <?php
 namespace IO\Stream;
 
-abstract class Writer extends Wrapper
+abstract class Writer extends Handler
 {
-    abstract function write( $data );
+    function write( $data )
+    {
+        if( $this->wrapped() )
+            $this->handler->write( $data );
+    }
     
     function flush()
     {

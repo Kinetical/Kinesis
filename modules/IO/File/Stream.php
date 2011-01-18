@@ -1,7 +1,7 @@
 <?php
 namespace IO\File;
 
-class Stream extends \IO\Stream
+class Stream extends \IO\Resource\Stream
 {
     function __construct( $file = null, $mode = \IO\Stream::READ )
     {

@@ -9,7 +9,6 @@ $query = new XML\Query();
 $query->build()
       ->from('tests\test.xml');
 
-new XML\Filter\SimpleXML( $query );
 new XML\Filter\Node( $query );
 
 $results = $query->execute();
@@ -19,5 +18,5 @@ $rit = new Tree\Node\IteratorIterator( $it );
 
 foreach ( $rit as $node )
 {
-    var_dump( $node->Name );
+    var_dump( $node );
 }

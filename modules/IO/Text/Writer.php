@@ -1,7 +1,7 @@
 <?php
 namespace IO\Text;
 
-class Writer extends \IO\File\Writer
+class Writer extends \IO\Stream\Writer
 {
     private $_lineDelimiter = "\r\n";
 
@@ -15,7 +15,7 @@ class Writer extends \IO\File\Writer
         $this->_lineDelimiter = $delimiter;
     }
 
-    function writeLine( $data )
+    function writeLine( $data = null )
     {
         $this->write( (string)$data . $this->_lineDelimiter );
     }

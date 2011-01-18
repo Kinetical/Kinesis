@@ -1,96 +1,93 @@
 <?php
 namespace Core;
 
-use Core\Interfaces as I;
-
-abstract class Loader extends Filter implements I\Nameable
+abstract class Loader extends Object
 {
-    private $_path;
-    private $_manager;
-    private $_cache;
+    protected $parameters;
+    protected $manager;
+    protected $cache;
 
-    function __construct( $path, Manager $manager = null )
+    function __construct( array $params = null, Manager $manager = null )
     {
-        $this->_path = $path;
-        $this->_manager = $manager;
+        $this->manager = $manager;
 
         parent::__construct();
+
+        if( is_array( $params ))
+            $this->setParameters( $params );
+
     }
 
     function initialize()
     {
         parent::initialize();
 
+        $this->parameters = new \Core\Collection();
+
         if( !$this->caching() )
             if( $this->managed() )
-                $this->setCache( $this->_manager->getCache() );
+                $this->setCache( $this->manager->getCache() );
             else
-                $this->setCache( new \Core\Loader\Cache( $this ) );
+                $this->setCache( $this->getDefaultCache() );
+    }
 
-        if( !$this->Type->hasEvents( array('parse', 'match')))
-        {
-            $this->Type->addEvent( new \Core\Event('parse') );
-            $this->Type->addEvent( new \Core\Event('match') );
-        }
+    protected function getDefaultCache()
+    {
+        $cacheClass = $this->parameters['CacheClass'];
+
+        if( class_exists( $cacheClass ))
+            return new $cacheClass( $this );
+        
+        return new \Core\Loader\Cache( $this );
+    }
+
+    function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    function setParameters( array $params )
+    {
+        $this->parameters->merge( $params );
     }
 
     protected function caching()
     {
-        return ( !is_null( $this->_cache )
-                 && $this->_cache->enabled() );
+        return ( $this->cache instanceof Cache
+                 && $this->cache->enabled() );
     }
 
     function getCache()
     { 
-        return $this->_cache;
+        return $this->cache;
     }
 
     function setCache( Cache $cache )
     {
-        $this->_cache = $cache;
+        $this->cache = $cache;
     }
 
     function managed()
     {
-        return ($this->_manager instanceof Manager ) 
-               ? true
-               : false;
+        return ($this->manager instanceof Manager);
     }
 
     function getManager()
     {
-        return $this->_manager;
+        return $this->manager;
     }
 
     function setManager( Manager $manager )
     {
-        $this->_manager = $manager;
+        $this->manager = $manager;
     }
 
-    function setPath( $path )
-    {
-        $this->_path = $path;
-    }
+    abstract function parse( $path );
+    abstract function match( $path );
+    abstract function execute( array $params = null );
 
-    function getPath()
+    function __invoke( array $params = null )
     {
-        return $this->_path;
+        return $this->execute( $params );
     }
-
-    function getName()
-    {
-        return $this->getPath();
-    }
-    
-    function setName( $idx )
-    {
-        $this->setPath( $idx );
-    }
-
-    protected function parse( $path )
-    {
-        return true;
-    }
-    abstract protected function match( $path );
-    abstract protected function execute( $path, $args = null );
 }

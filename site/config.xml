@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<core>
+    <database name="netolith" host="localhost">
+        <user name="root"></user>
+    </database>
+</core>

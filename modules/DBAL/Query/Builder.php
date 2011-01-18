@@ -68,20 +68,19 @@ class Builder extends \Core\Object
 
 	function __toString()
 	{
-            return $this->build();
-	}
-
-	private function build()
-	{
             foreach( $this->_nodes as $node )
                     $query .= $node->build();
             return $query;
 	}
 
+	function build()
+	{
+            return $this;
+	}
+
 	function execute( $connection = null )
 	{
-            if( is_string( $text = $this->build() ))
-		$this->_query->setText( $text );
+            $this->_query->setText( (string)$this );
 
             return $this->_query->execute( $connection );
 	}
@@ -100,27 +99,7 @@ class Builder extends \Core\Object
 	{
             return $this->_query->getDataType();
 	}
-
-	function isUpdateCommand()
-	{
-            return $this->hasNode('update');
-	}
-
-	function isSelectCommand()
-	{
-            return $this->hasNode('select');
-	}
-
-	function isDeleteCommand()
-	{
-            return $this->hasNode('delete');
-	}
-
-	function isInsertCommand()
-	{
-            return $this->hasNode('insert');
-	}
-
+        
 	function __call( $name, array $arguments )
 	{
             $node = Node::factory( $name, $this );
