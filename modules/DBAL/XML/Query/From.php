@@ -6,7 +6,7 @@ class From extends \DBAL\Query\Node
     function create($data)
     {
         $params = array( 'StreamType'       => 'IO\File\Stream',
-                         'StreamMode'       => \IO\Stream::READ,
+                         'StreamMode'       => \IO\Stream\Mode::Read,
                          'StreamResource'   => new \IO\File( $data ),
                          'StreamHandler'    => 'IO\File\Reader',
                          'StreamCallback'   => 'readToEOF');
@@ -14,6 +14,7 @@ class From extends \DBAL\Query\Node
         $query = $this->getQuery();
 
         new \DBAL\XML\Filter\SimpleXML( $query );
+
 
         $query->setParameters( $params );
         return parent::create();

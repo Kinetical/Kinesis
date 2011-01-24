@@ -3,7 +3,7 @@ namespace DBAL\XML\Filter;
 
 class SimpleXML extends \DBAL\Query\Filter
 {
-    function execute( array $params = null )
+    protected function execute( array $params = null )
     {
         $input = $params['input'];
         if( is_array( $params ))

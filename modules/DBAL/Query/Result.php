@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Query;
 
-class Result extends \Core\Collection
+class Result extends \Util\Collection\Dictionary
 {
     private $_query;
     
@@ -9,7 +9,7 @@ class Result extends \Core\Collection
     {
         $this->setQuery( $query );
 
-        parent::__construct( $query->getDataType() );
+        parent::__construct( array(), $query->getDataType() );
     }
 
     function getQuery()

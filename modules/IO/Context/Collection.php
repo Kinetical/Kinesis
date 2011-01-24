@@ -1,7 +1,7 @@
 <?php
 namespace IO\Context\Option;
 
-class Collection extends \Core\Collection
+class Collection extends \Util\Collection
 {
     private $_context;
 

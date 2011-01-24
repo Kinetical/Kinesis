@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Entity;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 abstract class Relationship extends \Core\Object implements I\Nameable
 {

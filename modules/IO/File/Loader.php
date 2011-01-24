@@ -1,10 +1,28 @@
 <?php
 namespace IO\File;
 
-use Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 class Loader extends \Core\Loader implements I\Nameable
 {
+    function __construct(array $params = array(), Manager $manager = null)
+    {
+        if( !array_key_exists('CacheClass', $params ))
+            $params['CacheClass'] = 'IO\File\Cache';
+        
+        parent::__construct( $params, $manager );
+    }
+
+    function getDefaultCache()
+    {
+        $params = array( 'DelegateTarget' => $this,
+                         'DelegateMethod' => 'getPath' );
+
+        $this->parameters['CacheParameters'] += $params;
+
+        return parent::getDefaultCache();
+    }
+
     function getExtension()
     {
         return $this->parameters['extension'];
@@ -15,50 +33,53 @@ class Loader extends \Core\Loader implements I\Nameable
         $this->parameters['extension'] = $ext;
     }
 
-    function setPath( $path )
+    function setRoot( $path )
     {
-        $this->parameters['path'] = $path;
+        $this->parameters['root'] = $path;
     }
 
-    function getPath()
+    function getRoot()
     {
-        return $this->parameters['path'];
+        return $this->parameters['root'];
     }
 
     function getName()
     {
-        return $this->getPath();
+        return $this->getRoot();
     }
 
-    function setName( $idx )
+    function setName( $name )
     {
-        $this->setPath( $idx );
+        $this->setRoot( $name );
     }
 
+    function getPath( $name )
+    {
+        return $this->getRoot().
+                DIRECTORY_SEPARATOR.
+                $name.
+                '.'.$this->getExtension();
+    }
     
-    protected function match( $path )
+    protected function parse( array $params = null )
     {
-        $cache = $this->getCache();
-        return ($cache[ $path ] = $this->parse($path));
+        $params['path'] = $this->getPath( $params['name'] );
+
+        return $params;
     }
 
-    protected function parse( $path )
+    protected function execute( array $params = null )
     {
-        return $this->getPath().DIRECTORY_SEPARATOR.$path.'.'.$this->_extension;
-    }
-
-    protected function execute( $path, $args = null )
-    {
-        $cache = $this->getCache();
+        $path = $params['path'];
         //TODO: EXTRACT CONTEXT
-        if( array_key_exists( $path, $cache ))
-            require( $cache[ $path ] );
+        if( $this->cache->exists($path) )
+            return false;
 
         //IF LOADED WITHOUT MANAGER CACHING
-            try{ require( $this->parse($path) );
-                 return true;
-            } catch( \Exception $e ) {
-                throw $e;
-            }
+        try{ require( $path );
+             return true;
+        } catch( \Exception $e ) {
+            throw $e;
+        }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 abstract class Model extends \Core\Object implements I\Nameable, I\Attributable, I\Indexable
 {

@@ -1,10 +1,11 @@
 <?php
 namespace DBAL\XML\Filter;
 
+use DBAL\XML\Data\Tree;
+
 class Node extends \DBAL\Query\Filter
 {
-
-    function execute( array $params = null )
+    protected function execute( array $params = null )
     {
         $input = $params['input'];
 
@@ -15,8 +16,8 @@ class Node extends \DBAL\Query\Filter
         $parent = $params['parent'];
 
         $attributes = $this->getAttributes( $input );
-        $node = new \DBAL\Data\Tree\Node( $input->getName(), $attributes, $parent );
-        $node->setValue( (string)$input );
+        $node = new Tree\Node( $input->getName(), $attributes, $parent );
+        $node->setValue( trim((string)$input) );
 
         foreach( $input as $child )
             if( $child instanceof \SimpleXMLElement )

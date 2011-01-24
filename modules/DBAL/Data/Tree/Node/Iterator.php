@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Tree\Node;
 
-class Iterator extends \Core\Iterator implements \RecursiveIterator
+class Iterator extends \Util\Collection\Iterator implements \RecursiveIterator
 {
     public function __construct( $node )
     {

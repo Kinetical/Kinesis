@@ -3,14 +3,10 @@ namespace IO\File;
 
 class Stream extends \IO\Resource\Stream
 {
-    function __construct( $file = null, $mode = \IO\Stream::READ )
+    function __construct( $file = null, $mode = \IO\Stream\Mode::READ )
     {
         if( is_string( $file ) )
             $file = new \IO\File( $file );
-
-        if( $file instanceof \IO\File
-            && !$file->exists() )
-            throw new \IO\Exception('File not found: '.$file->getPath() );
 
         parent::__construct( $file, $mode );
     }
@@ -20,73 +16,50 @@ class Stream extends \IO\Resource\Stream
         return parent::getResource();
     }
 
-    function setFile( $file )
+    function setFile( \IO\File $file )
     {
         parent::setResource( $file );
     }
 
-    function getDefaultTimeout()
-    {
-        return 30;
-    }
-
-    function getDefaultEncoding()
-    {
-        return 'UTF-8';
-    }
-
     function open()
     {
-        $file = $this->getFile();
-
-        $pointer = fopen( $file->getPath(), $this->getMode() );
+        $this->pointer = fopen( $this->resource->getPath(), (string)$this->mode );
         
-        $this->setPointer( $pointer );
-        if( !is_null( $timeout = $this->getTimeout() ) )
-            stream_set_timeout( $pointer,$timeout );
-
-//        if( !is_null( $encoding = $this->getEncoding() ) )
-//            stream_encoding( $resource, $encoding );
-
-        return $pointer;
+        return $this->pointer;
     }
 
     function close()
     {
-        if( !$this->isOpen() )
-            return true;
-
-        fclose( $this->getPointer() );
-
-        return true;
+        return fclose( $this->pointer );
     }
 
     function eof()
     {
-        if( !$this->isOpen() )
-            return true;
-
-        return feof( $this->getPointer() );
+        return feof( $this->pointer );
     }
 
-    function seek( $offset = 0 )
+    function seek( $offset = 0, $whence = SEEK_SET )
     {
-        fseek( $this->getPointer(), $offset );
+        return fseek( $this->pointer, $offset, $whence );
     }
 
     function rewind()
     {
-        return rewind( $this->getPointer() );
+        return rewind( $this->pointer );
     }
-
 
     function lock( $operation = LOCK_EX, &$wouldblock = null )
     {
-        return flock( $this->getPointer(), $operation, $wouldblock );
+        return flock( $this->pointer, $operation, $wouldblock );
     }
 
     function unlock()
     {
-        $this->lock( LOCK_UN );
+        return $this->lock( LOCK_UN );
+    }
+
+    function position()
+    {
+        return ftell( $this->pointer );
     }
 }

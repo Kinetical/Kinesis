@@ -3,7 +3,7 @@ namespace DBAL\Data\Filter;
 
 class Scalar extends \DBAL\Query\Filter
 {
-    function execute( array $params = null )
+    protected function execute( array $params = null )
     {
         $input = $params['input'];
 

@@ -1,76 +1,74 @@
 <?php
 namespace IO\Resource;
 
-abstract class Stream extends \IO\Stream
-{
-    private $_pointer;
-    private $_resource;
-    private $_bufferSize = 1024;
-    private $_timeout;
+use IO\Stream\Mode;
 
-    function __construct( $resource = null, $mode = \IO\Stream::READ )
+abstract class Stream extends \IO\Buffer\Stream
+{
+    protected $pointer;
+    protected $resource;
+    protected $mode;
+
+    function __construct( $resource = null, $mode = Mode::Read )
     {
         if( !is_null( $resource ))
             $this->setResource( $resource );
 
-        parent::__construct( $mode );
+        $this->setMode( $mode );
+
+        parent::__construct();
     }
 
     protected function getResource()
     {
-        return $this->_resource;
+        return $this->resource;
     }
 
     protected function setResource( $resource )
     {
-        $this->_resource = $resource;
+        $this->resource = $resource;
     }
 
     function getPointer()
     {
-        return $this->_pointer;
+        return $this->pointer;
     }
 
     function setPointer( $pointer )
     {
         if( is_resource( $pointer ))
-            $this->_pointer = $pointer;
+            $this->pointer = $pointer;
     }
 
-    function getBufferSize()
+    function getMode()
     {
-        return $this->_bufferSize;
+        return $this->mode;
     }
 
-    function setBufferSize( $bufferSize )
+    function setMode( $mode )
     {
-        $this->_bufferSize = $bufferSize;
+        if( is_string( $mode ))
+            $mode = new Mode( $mode );
+
+        $this->mode = $mode;
     }
-    
-    function getTimeout()
+
+    function isRead()
     {
-        if( is_null( $this->_timeout ))
-            $this->_timeout = $this->getDefaultTimeout();
-        
-        return $this->_timeout;
+        return $this->mode->is( Mode::Read );
     }
 
-    abstract function getDefaultTimeout();
-    
-
-    protected function setTimeout( $timeout )
+    function isWrite()
     {
-        $this->_timeout = $timeout;
+        return $this->mode->is( Mode::Write );
     }
-
-    
 
     abstract function open();
     abstract function close();
 
     function isOpen()
     {
-        return is_resource( $this->_pointer );
+        return is_resource( $this->pointer );
     }
 
     function __destruct()

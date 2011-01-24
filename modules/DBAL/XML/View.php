@@ -1,19 +1,10 @@
 <?php
 namespace DBAL\XML;
 
+use DBAL\Data;
+
 class View extends \DBAL\Data\View
 {
-    private $_filePath;
-    private $_xpath;
-
-    function __construct( $filePath, $xpath = null, \DBAL\Data\Adapter $adapter = null )
-    {
-        $this->_filePath = $filePath;
-        $this->_xpath = $xpath;
-
-        parent::__construct( $adapter );
-    }
-
     function getDefaultQuery()
     {
         return new \DBAL\XML\Query();
@@ -24,9 +15,7 @@ class View extends \DBAL\Data\View
         $command = $this->getDefaultQuery();
         
         $command->build()
-                ->from( $this->_filePath );
-
-        new Filter\Node( $command );
+                ->from( $this->parameters['path'] );
 
         return $command;
     }
@@ -40,7 +29,7 @@ class View extends \DBAL\Data\View
     {
         $command = $this->getDefaultQuery();
         return $command->build()
-                       ->update( $this->_filePath );
+                       ->update( $this->parameters['path'] );
     }
 
     function getDefaultDelete()
@@ -50,15 +39,15 @@ class View extends \DBAL\Data\View
 
     function prepare( \DBAL\Data\Source $dataSource = null )
     {
-        if( $this->adapter->isSelectCommand()
-            && is_string( $this->_xpath ))
+        if( $this->adapter->isRead() )
         {
-            $this->command->build()
-                          ->where( $this->_xpath );
+            if( $this->parameters->exists('xpath'))
+                $this->command->build()
+                              ->where( $this->parameters['xpath'] );
+
+            new Filter\Node( $this->command );
         }
-        elseif( $this->adapter->isUpdateCommand()
-             || $this->adapter->isDeleteCommand()
-             || $this->adapter->isInsertCommand() )
+        elseif( $this->adapter->isWrite() )
         {
             if( $dataSource instanceof \DBAL\XML\Document )
                 $root = $dataSource->getRoot();
@@ -69,5 +58,7 @@ class View extends \DBAL\Data\View
                 $this->command->build()
                               ->set( $root );
         }
+
+        return parent::prepare();
     }
 }

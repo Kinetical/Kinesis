@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Query;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 abstract class Parameter extends \Core\Object implements I\Nameable
 {

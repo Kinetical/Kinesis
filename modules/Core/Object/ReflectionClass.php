@@ -6,6 +6,16 @@ class ReflectionClass extends \ReflectionClass
 	private $_persistenceObject;
 	private $_persistenceType;
 	private $_events = array();
+
+        function getName( $qualified = true )
+        {
+            if( $qualified )
+                return $this->name;
+
+            $class = explode('\\', $this->name );
+            return $class[count($class) - 1];
+        }
+
 		
 	function setPersistenceObject( \Core\Object $object )
 	{
@@ -84,7 +94,6 @@ class ReflectionClass extends \ReflectionClass
         {
             $methodName = $prefix.ucfirst($propertyName);
 
-            
             if( method_exists( $obj, $methodName))
                  return $methodName;
 

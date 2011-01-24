@@ -33,7 +33,7 @@ class Node extends \DBAL\Data\Tree\Node
         return $filter( (string)$stream );
     }
 
-    function __invoke( $xpath )
+    function xpath( $xpath )
     {
         $element = $this->getElement();
         $nodes = $element->xpath( $xpath );
@@ -54,5 +54,10 @@ class Node extends \DBAL\Data\Tree\Node
         }
 
         return false;
+    }
+
+    function __invoke( $xpath )
+    {
+        return $this->xpath( $xpath );
     }
 }

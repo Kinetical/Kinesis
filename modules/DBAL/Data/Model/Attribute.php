@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Model;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 abstract class Attribute extends \Core\Object implements I\Nameable
 {

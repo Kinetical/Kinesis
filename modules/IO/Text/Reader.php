@@ -5,7 +5,7 @@ class Reader extends \IO\Stream\Reader
 {
     function readLine()
     {
-        $this->buffer = fgets( $this->stream->getPointer(), $this->stream->getBufferSize() );
+        $this->buffer = fgets( $this->stream->getPointer(), $this->stream->getLength() );
 
         return $this->buffer;
     }

@@ -5,32 +5,30 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 {
     const SQL = 'SQL';
     const XML = 'XML';
-    const FILE = 'file';
-    const DIR = 'directory';
     const INI = 'ini';
     const CSV = 'csv';
 
-    private $_parameters;
-    private $_results;
+    protected $parameters;
+    protected $results;
+    
     private $_builder;
     private $_stream;
     private $_iterator;
     private $_filters;
 
-    function __construct( array $params = null )
+    function __construct( array $params = array() )
     {
         parent::__construct();
 
-        if( !is_null( $params ) )
-            $this->setParameters( $params );
+        $this->setParameters( $params );
     }
 
     function initialize()
     {
-        if( $this->_results == null )
-            $this->_results = new Query\Result( $this );
+        if( $this->results == null )
+            $this->results = new Query\Result( $this );
 
-        $this->_parameters = new \Core\Collection();
+        $this->parameters = new \Util\Collection();
         $this->_filters = new \Core\Filter\Chain();
 
         parent::initialize();
@@ -52,32 +50,32 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function getParameters()
     {
-        return $this->_parameters;
+        return $this->parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->_parameters->merge( $params );
+        $this->parameters->merge( $params );
     }
 
     function getDataType()
     {
-        return $this->_parameters['DataType'];
+        return $this->parameters['DataType'];
     }
 
     function setDataType( $type )
     {
-        $this->_parameters['DataType'] = $type;
+        $this->parameters['DataType'] = $type;
     }
 
     function getFormat()
     {
-        return $this->_parameters['Format'];
+        return $this->parameters['Format'];
     }
 
     function setFormat( $type )
     {
-        $this->_parameters['Format'] = $type;
+        $this->parameters['Format'] = $type;
     }
 
     function getIterator()
@@ -92,16 +90,16 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     {
         $stream = $this->getStream();
 
-        $streamHandler = $this->_parameters['StreamHandler'];
-        $streamCallback = $this->_parameters['StreamCallback'];
-        $streamInput = $this->_parameters['StreamInput'];
+        $streamHandler = $this->parameters['StreamHandler'];
+        $streamCallback = $this->parameters['StreamCallback'];
+        $streamInput = $this->parameters['StreamInput'];
 
         if( class_exists( $streamHandler ))
             $handler = new $streamHandler( $stream );
         else
             throw new DBAL\Exception('StreamHandler('.$streamHandler.') not found');
 
-        $handlers = $this->_parameters['HandlerChain'];
+        $handlers = $this->parameters['HandlerChain'];
         if( !is_array( $handlers ))
             $handlers = array( $handlers );
 
@@ -109,8 +107,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
             foreach( $handlers as $wrapClass )
                 if( class_exists( $wrapClass ))
                     $handler = new $wrapClass( $handler );
+
+        $delegate = new \Core\Delegate( $handler, $streamCallback );
         
-        $iterator = new \IO\Stream\Iterator( $handler, $streamCallback );
+        $iterator = new \IO\Stream\Iterator( $delegate );
         $iterator->setInputBuffer( $streamInput );
 
         return $iterator;
@@ -124,17 +124,17 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     
     function setResults( $data )
     {
-        return $this->_results = $data;
+        return $this->results = $data;
     }
 
     function hasResult()
     {
-        return isset( $this->_results );
+        return isset( $this->results );
     }
 
     function getResults()
     {
-        return $this->_results;
+        return $this->results;
     }
 
     function build()
@@ -169,9 +169,9 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function getDefaultStream()
     {
-        $streamClass = $this->_parameters['StreamType'];
-        $streamMode = $this->_parameters['StreamMode'];
-        $streamResource = $this->_parameters['StreamResource'];
+        $streamClass = $this->parameters['StreamType'];
+        $streamMode = $this->parameters['StreamMode'];
+        $streamResource = $this->parameters['StreamResource'];
 
         //$test = new \IO\File\Stream();
         if( class_exists( $streamClass ))
@@ -236,17 +236,30 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
         {
             if( !is_null( $output ))
                 $params['input'] = $output;
-            
-            $output = $filter( $params );
+
+            if( is_array( $output ))
+                foreach( $output as $key => $value )
+                    $output[$key] = $filter( array('input' => $value ) );
+            else
+                $output = $filter( $params );
         }
 
         return $output;
     }
 
-    abstract function execute( $stream = null );
+    abstract protected function execute( $stream = null );
 
     function __invoke( $stream = null )
     {
+        if( ($builder = $this->_builder) instanceof Query\Builder )
+        {
+            $this->_builder = null;
+            $results = $builder( $stream );
+            $this->_builder = $builder;
+
+            return $results;
+        }
+
         return $this->execute( $stream );
     }
 }

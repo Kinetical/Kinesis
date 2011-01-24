@@ -1,7 +1,8 @@
 <?php
 namespace DBAL\Data;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
+
 class Table extends \Core\Object implements I\Nameable
 {
     private $_model;
@@ -18,8 +19,8 @@ class Table extends \Core\Object implements I\Nameable
     {
         parent::initialize();
 
-        $this->_columns = new \Core\Collection('\DBAL\Data\Table\Column');
-        $this->_rows = new \Core\Collection('\DBAL\Data\Table\Row');
+        $this->_columns = new \Util\Collection\Dictionary(array(),'\DBAL\Data\Table\Column');
+        $this->_rows = new \Util\Collection\Dictionary(array(),'\DBAL\Data\Table\Row');
     }
     function getName()
     {

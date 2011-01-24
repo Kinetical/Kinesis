@@ -1,27 +1,29 @@
 <?php
 namespace DBAL\Query;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
-class Builder extends \Core\Object
+final class Builder extends \Core\Object
 {
 	private $_nodes;
 	private $_parameters;
 	private $_query;
 
-        function __construct( \DBAL\Query $query )
+        function __construct( \DBAL\Query $query, array $params = array() )
 	{
             $this->_nodes = array();
             $this->_query = $query;
 
             parent::__construct();
+
+            $this->setParameters( $params );
 	}
 
         function  initialize()
         {
             parent::initialize();
 
-            $this->_parameters = new \Core\Collection();
+            $this->_parameters = new \Util\Collection();
         }
 
 	public function getNodes()
@@ -39,24 +41,6 @@ class Builder extends \Core\Object
             $this->_nodes = $nodes;
 	}
 
-	public function addParameter( $param )
-	{
-            $type = get_class( $param );
-
-            if( $param instanceof I\Nameable )
-                $name = $param->getName();
-
-            if( $name == null )
-                    $this->_parameters[$type][] = $param;
-            else
-                    $this->_parameters[$type][$name][] = $param;
-	}
-
-	public function hasParameter( $type )
-	{
-            return array_key_exists( $type, $this->_parameters );
-	}
-
 	public function getParameters()
 	{
             return $this->_parameters;
@@ -70,6 +54,7 @@ class Builder extends \Core\Object
 	{
             foreach( $this->_nodes as $node )
                     $query .= $node->build();
+
             return $query;
 	}
 
@@ -78,12 +63,22 @@ class Builder extends \Core\Object
             return $this;
 	}
 
-	function execute( $connection = null )
+	protected function execute( $stream = null )
 	{
-            $this->_query->setText( (string)$this );
+            $query = $this->_query;
 
-            return $this->_query->execute( $connection );
+            $text = (string)$this;
+
+            if( method_exists( $query, 'setText'))
+                $query->setText( $text );
+
+            return $query( $stream );
 	}
+
+        function __invoke( $stream = null )
+        {
+            return $this->execute( $stream );
+        }
 
 	function getQuery()
 	{

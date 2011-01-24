@@ -1,7 +1,9 @@
 <?php
 namespace Core;
 
-abstract class Component extends Object implements Interfaces\Nameable
+use \Util\Interfaces as I;
+
+abstract class Component extends Object implements I\Nameable
 {
     private $_name;
 

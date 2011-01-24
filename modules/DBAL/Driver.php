@@ -1,56 +1,56 @@
 <?php
 namespace DBAL;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 abstract class Driver extends \Core\Object implements I\Nameable
 {
-    private $_name;
-    private $_parameters;
+    protected $parameters;
 
-    private $_platform;
+    protected $platform;
 
     function __construct( array $params = array() )
     {
-        $this->_parameters = $params;
         parent::__construct();
+
+        $this->setParameters( $params );
     }
 
     function initialize()
     {
         parent::initialize();
 
-        $this->_parameters = new \Core\Collection( $this->_parameters );
+        $this->parameters = new \Util\Collection();
     }
 
     function getName()
     {
-        return $this->_name;
+        return $this->parameters['name'];
     }
 
     function setName( $name )
     {
-        $this->_name = $name;
+        $this->parameters['name'] = $name;
     }
 
     function getParameters()
     {
-        return $this->_parameters;
+        return $this->parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->_parameters->merge( $params );
+        $this->parameters->merge( $params );
     }
 
     function getPlatform()
     {
-        return $this->_platform;
+        return $this->platform;
     }
 
     function setPlatform( Platform $platform )
     {
-        $this->_platform = $platform;
+        $this->platform = $platform;
     }
 
     abstract function connect( \DBAL\Database $dataBase );

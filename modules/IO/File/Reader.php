@@ -5,8 +5,13 @@ class Reader extends \IO\Stream\Reader
 {
     function read()
     {
+        if( $this->stream instanceof \IO\Buffer\Stream )
+            $length = $this->stream->getLength();
+        else
+            $length = $this->stream->getFile()->getSize();
+
         $this->buffer = fread( $this->stream->getPointer(),
-                               $this->stream->getBufferSize() );
+                               $length );
 
         return $this->buffer;
     }
@@ -14,7 +19,7 @@ class Reader extends \IO\Stream\Reader
     function readBlock( $blockSize = null )
     {
         if( !is_int( $blockSize ))
-            $blockSize = $this->stream->getBufferSize();
+            $blockSize = $this->stream->getLength();
 
         $this->buffer = fread( $this->stream->getPointer(),
                                $blockSize );

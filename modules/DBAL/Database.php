@@ -1,9 +1,9 @@
-<?
+<?php
 namespace DBAL;
 
-use Core\Interfaces as Interfaces;
+use \Util\Interfaces as I;
 
-class Database extends \Core\Object implements Interfaces\Nameable
+class Database extends \Core\Object implements I\Nameable
 {
     private $_context;
     private $_connection;

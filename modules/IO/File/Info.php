@@ -1,7 +1,7 @@
 <?php
 namespace IO\File;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 abstract class Info extends \Core\Object implements I\Node, I\Nameable
 {
@@ -22,7 +22,7 @@ abstract class Info extends \Core\Object implements I\Node, I\Nameable
     {
         parent::initialize();
 
-        $this->_children = new \Core\Collection('\IO\File\Info');
+        $this->_children = new \Util\Collection\Dictionary(array(),'\IO\File\Info');
     }
 
     function getPath()

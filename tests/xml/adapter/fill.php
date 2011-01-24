@@ -6,8 +6,10 @@ $dataSource = new Data\Source();
 
 $dataAdapter = new Data\Adapter();
 
-$dataAdapter->View = new XML\View( 'tests\test.xml' );
+$params = array( 'path' => 'tests\test.xml' );
 
-$dataAdapter->Fill( $dataSource );
+$dataAdapter->View = new XML\View( $params );
 
-var_dump( $dataSource->Data[0] );
+//$dataAdapter->Fill( $dataSource );
+
+//var_dump( $dataSource->Data[0] );

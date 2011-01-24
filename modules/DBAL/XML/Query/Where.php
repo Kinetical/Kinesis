@@ -12,8 +12,11 @@ class Where extends \DBAL\Query\Node
             $this['xpath'] .= ']';
         }
 
-        $params = array( 'XPath' => $this['xpath']);
-        $xpath = new \DBAL\XML\Filter\Xpath( $this->getQuery(), $params );
+        $params = array( 'xpath' => $this['xpath']);
+
+        $xpath = $this->getQuery()->Filters['XPath'];
+
+        $xpath->setParameters( $params );
     }
 
     function create($data)
@@ -25,6 +28,7 @@ class Where extends \DBAL\Query\Node
         else
         {
             $this['xpath'] = $data;
+            new \DBAL\XML\Filter\Xpath( $this->getQuery() );
             return parent::create();
         }
 

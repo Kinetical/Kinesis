@@ -1,7 +1,7 @@
 <?php 
 namespace Core;
 
-use Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 class Object extends Event\Listener implements I\Object
 {
@@ -147,7 +147,7 @@ class Object extends Event\Listener implements I\Object
             return true;
         if( $this->Type->hasPropertyData( $this, $name ))
             return true;   
-        if( $this->Type->hasProperty( $name ) )
+        if( $this->Type->hasProperty( $this, $name ) )
             return true;
 
         return false;

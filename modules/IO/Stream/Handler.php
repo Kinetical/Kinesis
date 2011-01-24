@@ -92,5 +92,14 @@ abstract class Handler extends \Core\Object
         $this->stream->setEncoding( $encoding );
     }
 
+    function __call( $method, $arguments )
+    {
+        if( $this->wrapped()
+            && method_exists( $this->handler, $method ))
+            return call_user_func_array( array( $this->handler, $method ), $arguments );
+
+        throw new \IO\Exception('Method '.$method.' not found in '.get_class( $this ));
+    }
+
     abstract function getCallback();
 }

@@ -1,7 +1,9 @@
 <?php
 namespace Core;
 
-class Event extends Object implements Interfaces\Nameable
+use \Util\Interfaces as I;
+
+class Event extends Object implements I\Nameable
 {
 	private $_listeners = array();
 	private $_name;

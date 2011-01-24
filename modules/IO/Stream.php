@@ -3,55 +3,77 @@ namespace IO;
 
 abstract class Stream extends \Core\Object
 {
-    const WRITE = 'w';
-    const READ = 'r';
-
-    private $_mode;
+    private $_timeout;
     private $_encoding;
+    protected $parameters;
 
-    function __construct( $mode = Stream::READ )
+    function __construct( array $params = array() )
     {
-        $this->_mode = $mode;
-
         parent::__construct();
+
+        $this->setParameters( $params );
     }
 
-    function getMode()
+    function initialize()
     {
-        return $this->_mode;
+        parent::initialize();
+
+        $this->parameters = new \Util\Collection();
     }
 
-    function setMode( $mode )
+    function getParameters()
     {
-        $this->_mode = $mode;
+        return $this->parameters;
     }
 
-    function isRead()
+    function setParameters( array $params )
     {
-        return (strpos($this->_mode,self::READ) !== false )
-                ? true
-                : false;
+        $this->parameters->merge( $params );
     }
 
-    function isWrite()
+    function getDefaultEncoding()
     {
-        return (strpos($this->_mode,self::WRITE) !== false )
-                ? true
-                : false;
-    }
+        if( $this->parameters->exists('encoding'))
+            $encoding = $this->parameters['encoding'];
+        else
+            $encoding = Stream\Encoding::UTF_8;
 
-    abstract function getDefaultEncoding();
+        return new Stream\Encoding( $encoding );
+    }
+    function getDefaultTimeout()
+    {
+        if( $this->parameters->exists('timeout'))
+            return $this->parameters['timeout'];
+
+        return -1;
+    }
 
     function getEncoding()
     {
         if( is_null( $this->_encoding ))
-            $this->_encoding = $this->getDefaultEncoding ();
+            $this->_encoding = $this->getDefaultEncoding();
 
         return $this->_encoding;
     }
 
-    protected function setEncoding( $charSet )
+    protected function setEncoding( $encoding )
     {
-        $this->_encoding = $charSet;
+        if( is_string( $encoding ))
+            $encoding = new \IO\Stream\Encoding( $encoding );
+
+        $this->_encoding = $encoding;
+    }
+
+    function getTimeout()
+    {
+        if( is_null( $this->_timeout ))
+            $this->_timeout = $this->getDefaultTimeout();
+
+        return $this->_timeout;
+    }
+
+    protected function setTimeout( $timeout )
+    {
+        $this->_timeout = $timeout;
     }
 }

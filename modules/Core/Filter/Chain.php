@@ -1,22 +1,27 @@
 <?php
 namespace Core\Filter;
 
-class Chain extends \Core\Iterator
+class Chain extends \Util\Collection\Iterator
 {
     function register( \Core\Filter $filter )
     {
-        $this->keys[] = $filter->Type->name;
+        $this->Keys[] = $filter->Type->getName( false );
         $this->Data[] = $filter;
     }
 
-    function execute( $input = null, array $params = null )
+    protected function execute( array $params = array() )
     {
-        return $this->current()->execute( $input, $params );
+        return $this->current()->execute( $params );
+    }
+
+    function __invoke( array $params = array() )
+    {
+        return $this->execute( $params );
     }
 
     function hasFilter( $class )
     {
-        return in_array( $class, $this->keys );
+        return $this->offsetExists( $class );
     }
 
     protected function getFilters()

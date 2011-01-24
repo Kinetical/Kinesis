@@ -1,12 +1,12 @@
 <?php
 namespace DBAL\Data;
 
-class Item extends \Core\Collection
+class Item extends \Util\Collection
 {
 
 	private $_dirty;
 	
-	function __construct( array $data = null )
+	function __construct( array $data = array() )
 	{
 		parent::__construct( $data );
 		$this->clean();

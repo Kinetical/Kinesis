@@ -11,7 +11,9 @@ $subnode = new Tree\Node( 'subnode', array('test' => 'someValue',
                                            'attr' => 2 ), $node );
 $dataSource->add( $node );
 
-$dataAdapter->View = new XML\View( 'tests\test.xml' );
+$params = array( 'path' => 'tests\test.xml' );
+
+$dataAdapter->View = new XML\View( $params );
 
 $dataAdapter->Update( $dataSource );
 

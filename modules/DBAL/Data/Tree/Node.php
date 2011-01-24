@@ -1,9 +1,9 @@
 <?php 
 namespace DBAL\Data\Tree;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
-class Node extends \Core\Collection implements I\Attributable, I\Node, \Countable
+class Node extends \Util\Collection implements I\Attributable, I\Node
 {
     private $_parent;
     private $_children;
@@ -27,7 +27,7 @@ class Node extends \Core\Collection implements I\Attributable, I\Node, \Countabl
         parent::initialize();
 
         $this->_children = new Node\Collection( $this );
-        $this->_attributes = new \Core\Collection();
+        $this->_attributes = new \Util\Collection();
     }
 
     function getName()

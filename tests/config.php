@@ -1,7 +1,7 @@
 <?php
 
-$config = new \Core\Configuration();
+$config = new \DBAL\Configuration();
 
+$user = $config->getUser();
 
-
-var_dump( $config['database\user'] );
+var_dump( $user['name'] );

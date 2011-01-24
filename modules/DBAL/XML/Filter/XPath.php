@@ -3,14 +3,21 @@ namespace DBAL\XML\Filter;
 
 class XPath extends \DBAL\Query\Filter
 {
-    function execute( array $params = null )
+    protected function execute( array $params = null )
     {
         $input = $params['input'];
-        $XPath = $this->Parameters['XPath'];
+
+        $xpath = $this->parameters['xpath'];
 
         if( method_exists( $input, 'xpath'))
-            return $input->xpath( $XPath );
+        {
+            $result = $input->xpath( $xpath );
+            if( empty( $result ))
+                return $input;
+            else
+                return $result;
+        }
         else
-            throw new \DBAL\Exception('XPath input is not a valid SimpleXMLElement');
+            throw new \DBAL\Exception('XPath filter input must implement xpath() method,'.get_class( $input ).' does not');
     }
 }

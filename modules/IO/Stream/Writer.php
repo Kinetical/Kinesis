@@ -12,9 +12,14 @@ abstract class Writer extends Handler
     function flush()
     {
         if( $this->buffered() )
+        {
             $this->write( $this->buffer );
+            $this->clear();
+            
+            return true;
+        }
 
-        $this->clear();
+        return false;
     }
 
     function getCallback()

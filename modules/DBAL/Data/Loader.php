@@ -4,6 +4,20 @@ namespace DBAL\Data;
 class Loader extends \Core\Loader
 {
     protected $adapter;
+    protected $view;
+
+    function getView()
+    {
+        if( is_null( $this->view ))
+            $this->view = $this->getDefaultView();
+        
+        return $this->view;
+    }
+
+    function setView( \DBAL\Data\View $view )
+    {
+        $this->view = $view;
+    }
 
     function getAdapter()
     {
@@ -22,16 +36,16 @@ class Loader extends \Core\Loader
         if( $this->parameters->exists('AdapterClass'))
             $adapterClass = $this->parameters['AdapterClass'];
         else
-            $adapterClass = 'Adapter';
+            $adapterClass = 'DBAL\Data\Adapter';
 
         return new $adapterClass();
     }
 
     protected function getDefaultView()
     {
-        if( $this->parameters->exists('AdapterView'))
+        if( $this->parameters->exists('ViewClass'))
         {
-            $viewClass = $this->parameters['AdapterView'];
+            $viewClass = $this->parameters['ViewClass'];
             $viewArgs = $this->parameters['ViewArguments'];
 
             $reflection = new \ReflectionClass( $viewClass );
@@ -41,25 +55,27 @@ class Loader extends \Core\Loader
         throw new \DBAL\Exception('Unable to load view for ('.get_class( $this ).')');
     }
 
-    protected function parseArguments( $args )
+    protected function parse( array $params = null )
     {
-        if( $args instanceof \DBAL\Data\View )
-            $view = $args;
-        elseif( is_array( $args )
-                && array_key_exists('view', $args ))
-            $view = $args['view'];
+        if( !array_key_exists('view', $params ))
+            $params['view'] = $this->getView();
         else
-            $view = $this->getDefaultView();
+            $this->view = $params['view'];
 
-        return $view;
+        if( !array_key_exists('name', $params ))
+            $params['name'] = $this->view->getName();
+
+        return $params;
     }
 
-    protected function execute( $path, $args = null )
+    protected function execute( array $params = null )
     {
-        if( array_key_exists( $path, $this->cache ))
-            return $this->cache[ $path ];
+        $view = $params['view'];
+        $name = $params['name'];
 
-        $view = $this->parseArguments( $args );
+        if( $this->caching()
+            && $this->cache->exists( $viewName ))
+             return $this->cache[ $viewName ];
 
         $dataSource  = new \DBAL\Data\Source();
         $dataAdapter = $this->getAdapter();
@@ -68,8 +84,12 @@ class Loader extends \Core\Loader
         $dataAdapter->Fill( $dataSource );
 
         if( !empty( $dataSource ) )
-            return $this->cache[$path] = $dataSource[0];
+            if( is_string( $name )
+                && $this->caching() )
+                return $this->cache[$name] = $dataSource[0];
+            else
+                return $dataSource[0];
 
-        throw new \Core\Exception('Unable to execute path('.$path.')');
+        throw new \Core\Exception('Unable to execute path('.$path.') in '.get_class( $this ));
     }
 }

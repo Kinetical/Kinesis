@@ -141,6 +141,21 @@ class Adapter extends \Core\Object
     {
         return $this->hasCommand( self::DELETE );
     }
+
+    function isWrite()
+    {
+        if( $this->isUpdateCommand()
+            || $this->isInsertCommand()
+            || $this->isDeleteCommand() )
+            return true;
+
+        return false;
+    }
+
+    function isRead()
+    {
+        return $this->isSelectCommand();
+    }
     
     protected function hasCommand( $type )
     {

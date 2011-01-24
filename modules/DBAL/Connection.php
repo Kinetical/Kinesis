@@ -4,13 +4,11 @@ namespace DBAL;
 abstract class Connection extends Stream
 {
     private $_driver;
-    private $_parameters;
     private $_configuration;
     
     
-    function __construct( Driver $driver, Configuration $config = null )
+    function __construct( Driver $driver, Configuration $config = null, array $params = array() )
     {
-        $this->_parameters = $params;
         $this->_driver = $driver;
 
         if( !is_null( $config ))
@@ -18,15 +16,7 @@ abstract class Connection extends Stream
         else
             $this->_configuration = new Configuration();
 
-        parent::__construct();
-    }
-
-    function initialize()
-    {
-        parent::initialize();
-
-
-        $this->_parameters = new \Core\Collection( $this->_parameters );
+        parent::__construct( $params );
     }
 
     function getLink()

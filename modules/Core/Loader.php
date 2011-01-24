@@ -7,38 +7,37 @@ abstract class Loader extends Object
     protected $manager;
     protected $cache;
 
-    function __construct( array $params = null, Manager $manager = null )
+    function __construct( array $params = array(), Manager $manager = null )
     {
         $this->manager = $manager;
 
         parent::__construct();
 
-        if( is_array( $params ))
-            $this->setParameters( $params );
-
+        $this->setParameters( $params );
+        if( !is_null($cache = $this->getDefaultCache()))
+        $this->setCache( $cache );
     }
 
     function initialize()
     {
         parent::initialize();
 
-        $this->parameters = new \Core\Collection();
-
-        if( !$this->caching() )
-            if( $this->managed() )
-                $this->setCache( $this->manager->getCache() );
-            else
-                $this->setCache( $this->getDefaultCache() );
+        $this->parameters = new \Util\Collection();
     }
 
     protected function getDefaultCache()
     {
         $cacheClass = $this->parameters['CacheClass'];
+        $cacheParams = $this->parameters['CacheParameters'];
 
-        if( class_exists( $cacheClass ))
-            return new $cacheClass( $this );
+        if( !is_array( $cacheParams ))
+            $cacheParams = array();
+
+        if( is_string( $cacheClass )
+            && class_exists( $cacheClass ))
+            return new $cacheClass( $cacheParams );
         
-        return new \Core\Loader\Cache( $this );
+        return null;
     }
 
     function getParameters()
@@ -58,7 +57,8 @@ abstract class Loader extends Object
     }
 
     function getCache()
-    { 
+    {
+
         return $this->cache;
     }
 
@@ -82,12 +82,15 @@ abstract class Loader extends Object
         $this->manager = $manager;
     }
 
-    abstract function parse( $path );
-    abstract function match( $path );
-    abstract function execute( array $params = null );
+    abstract protected function parse( array $params = null );
+    abstract protected function execute( array $params = null );
 
-    function __invoke( array $params = null )
+    function __invoke( $params = null )
     {
-        return $this->execute( $params );
+        if( !is_null( $params )
+            && !is_array( $params ))
+            $params = func_get_args();
+        
+        return $this->execute( $this->parse( $params ) );
     }
 }

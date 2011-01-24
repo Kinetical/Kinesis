@@ -6,30 +6,25 @@ class Source extends Item
     private $_view;
     private $_viewClass;
 
-    function __construct( array $data = null )
-    {
-            parent::__construct( $data );
-    }
-
     function setDataType( $type )
     {
         if( class_exists( $type ))
         {
             $class = new \ReflectionClass( $type );
             if( $class->isSubclassOf('\Core\Object'))
-                    parent::setDataType( $type );
+                parent::setDataType( $type );
             else
-                    throw new \Core\Exception('Invalid data type');
+                throw new \Core\Exception('Invalid data type');
         }
     }
 
-    function execute( View $view )
+    protected function execute( View $view )
     {
-        $results = $view->execute();
+        $results = $view();
 
         $adapter = $view->getAdapter();
 
-        if( $adapter->isSelectCommand() )
+        if( $adapter->isRead() )
             $this->setData( $results );
         
         return $results;

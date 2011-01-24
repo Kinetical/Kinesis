@@ -8,7 +8,7 @@ class Columns extends \DBAL\Query\Node
 		if( $data instanceof SQLDatabase )
 			$this['database'] = $data;
 
-		$this->Resource->Stream = new SQLStream( Stream::READ );
+		$this->Resource->Stream = new SQLStream( \IO\Stream\Mode::READ );
 
 		return parent::create();
 	}

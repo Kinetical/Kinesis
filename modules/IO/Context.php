@@ -1,27 +1,31 @@
 <?php
 namespace IO;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 class Context extends \Core\Object implements I\Parameterized
 {
-    private $_parameters;
-    private $_options;
+    protected $parameters;
+    protected $options;
     private $_resource;
     
     function __construct( array $options = array(), array $params = array() )
     {
-        $this->_options    = new Context\Options\Collection( $options );
-        $this->_parameters = new Context\Parameter\Collection( $params );
-        
         parent::__construct();
+
+        $this->setOptions( $options );
+        $this->setParameters( $params );
     }
 
     function initialize()
     {
         parent::initialize();
+
+        $this->options    = new Context\Options\Collection();
+        $this->parameters = new Context\Parameter\Collection();
         
-        $this->setResource( stream_context_create( $this->getOptions(), $this->getParameters() ) );
+        $this->setResource( stream_context_create( $this->options->toArray(),
+                                                   $this->parameters->toArray() ) );
     }
 
     function getResource()

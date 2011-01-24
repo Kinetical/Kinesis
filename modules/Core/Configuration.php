@@ -1,46 +1,48 @@
 <?php
 namespace Core;
 
-class Configuration extends Collection
+abstract class Configuration extends \Util\Collection
 {
-    private $_loader;
+    protected $loader;
 
-    function initialize()
+    function __construct( \Core\Loader $loader = null )
     {
-        parent::initialize();
-
-        $this->setLoader(new Configuration\Loader());
+        if( !is_null( $loader ))
+            $this->setLoader( $loader );
+        
+        parent::__construct();
     }
-
     function getLoader()
     {
-        return $this->_loader;
+        return $this->loader;
     }
 
     function setLoader( \Core\Loader $loader )
     {
-        $this->_loader = $loader;
+        $this->loader = $loader;
     }
 
-    public function offsetExists($offset) {
-        if( ( $bool = parent::offsetExists( $offset )) == false )
-            return $this->_loader->match( $offset );
-
-        return $bool;
+    protected function loader( $offset )
+    {
+        $loader = $this->loader;
+        return $loader( array('name' => $offset ) );
     }
 
-    public function offsetGet($offset) {
-        if( ( $value = parent::offsetGet( $offset )) == null )
-            return $this->_loader->load( $offset );
+    public function offsetGet($offset)
+    {
+        if( is_null( $value = parent::offsetGet( $offset )) )
+            return $this->loader( $offset );
 
         return $value;
     }
 
-    public function offsetSet($offset, $value) {
-            return $this->__set( $offset, $value );
+    public function offsetSet($offset, $value)
+    {
+        throw new \Core\Exception('Configuration may only be read');
     }
 
-    public function offsetUnset($offset) {
-            return $this->__unset( $offset );
+    public function offsetUnset($offset)
+    {
+        throw new \Core\Exception('Configuration may only be read');
     }
 }

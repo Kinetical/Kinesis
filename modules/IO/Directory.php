@@ -1,7 +1,7 @@
 <?php 
 namespace IO;
 
-use \Core\Interfaces as I;
+use \Util\Interfaces as I;
 
 class Directory extends File\Info
 {

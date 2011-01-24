@@ -19,10 +19,10 @@ class Where extends \DBAL\Query\Node
         $clause = new \DBAL\Query\Clause( $name, $params[1], $params[2], $params[3]);
 
         if( !isset( $parameters->where ))
-            $parameters->where = new \Core\Collection();
+            $parameters->where = new \Util\Collection();
 
         if( !isset($parameters->where->$name))
-             $parameters->where->$name = new \Core\Collection();
+             $parameters->where->$name = new \Util\Collection();
 
         $parameters->where[ $name ][] = $clause;
 

@@ -18,7 +18,13 @@ class Query extends \DBAL\Query
         $results->clear();
 
         foreach( $this as $result )
-            $results->add( $this->filter( $result ) );
+        {
+            $result = $this->filter( $result );
+            if( is_array( $result ))
+                $results->merge( $result );
+            else
+                $results->add( $result );
+        }
 
         $this->setResults( $results );
         

@@ -5,11 +5,11 @@ class Stream extends \IO\Stream
 {
     private $_output;
 
-    function __construct( $output = '', $mode = \IO\Stream::READ )
+    function __construct( $output = '' )
     {
         $this->setOutput( $output );
 
-        parent::__construct( $mode );
+        parent::__construct();
     }
 
     function getOutput()
@@ -25,6 +25,11 @@ class Stream extends \IO\Stream
     function getDefaultEncoding()
     {
         return 'UTF-8';
+    }
+
+    function getDefaultTimeout()
+    {
+        return -1;
     }
 
     function __toString()
