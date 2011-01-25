@@ -3,49 +3,78 @@ namespace Core;
 
 use \Util\Interfaces as I;
 
-class Event extends Object implements I\Nameable
+final class Event extends Delegate implements I\Nameable
 {
-	private $_listeners = array();
-	private $_name;
+    private $_name;
+    private $_value;
+    private $_processed = false;
+    private $_parameters;
 
+    public function __construct( $name = null, $params = array() )
+    {
+        $this->_name = $name;
 
+        parent::__construct();
 
-	public function __construct( $name = null )
-	{
-            $this->_name = $name;
+        $this->setParameters( $params );
+    }
 
-            parent::__construct();
-	}
+    function initialize()
+    {
+        parent::initialize();
 
-	function getName()
-	{
-            return $this->_name;
-	}
+        $this->_parameters = new \Util\Collection();
+    }
 
-	function setName( $name )
-	{
-            $this->_name = $name;
-	}
+    function setHandler( Event\Handler $handler )
+    {
+        $this->setCallback( $handler->getListener(), $handler->getName() );
+    }
 
-	function attach( \Core\Event\Listener $obj, $methodName = null)
-	{
-            if( $methodName == null )
-                $methodName = count( $this->_listeners );
+    function getName()
+    {
+        return $this->_name;
+    }
 
-            $this->_listeners[$methodName] = $obj;
-	}
+    function setName( $name )
+    {
+        $this->_name = $name;
+    }
 
-	function notify( $params )
-	{
-            foreach( $this->_listeners as $method => $observer )
-            {
-                if( !is_string( $method ))
-                    $method = $this->getName();
+    function getValue()
+    {
+        return $this->_value;
+    }
 
-                if( $observer->Type->hasEvent( $method ))
-                         $observer->triggered( $method, $params );
-            }
+    function setValue( $value )
+    {
+        $this->_value = $value;
+    }
 
-            return $this;
-	}
+    function getParameters()
+    {
+        return $this->_parameters;
+    }
+
+    function setParameters( array $params )
+    {
+        $this->_parameters->merge( $params );
+    }
+
+    function processed()
+    {
+        return $this->_processed;
+    }
+
+    function process()
+    {
+        $this->_processed = true;
+    }
+
+    function __invoke()
+    {
+        $this->_value = parent::__invoke();
+
+        return $this->_value;
+    }
 }

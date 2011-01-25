@@ -3,7 +3,7 @@ namespace Core;
 
 use \Util\Interfaces as I;
 
-class Object extends Event\Listener implements I\Object
+class Object implements I\Object
 {
     private $_initialized = false;
 

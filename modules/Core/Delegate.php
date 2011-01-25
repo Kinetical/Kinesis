@@ -6,10 +6,9 @@ final class Delegate extends Object
     private $method;
     private $target;
 
-    function __construct( $target, $method = null )
+    function __construct( $target = null, $method = null )
     {
-        $this->setTarget( $target );
-        $this->setMethod( $method );
+        $this->setCallback( $target, $method );
         parent::__construct();
     }
 
@@ -44,7 +43,18 @@ final class Delegate extends Object
         return is_callable( $this->toCallback() );
     }
 
-    function toCallback()
+    function getCallback()
+    {
+        return $this->toCallback();
+    }
+
+    function setCallback( $target, $method = null )
+    {
+        $this->setTarget( $target );
+        $this->setMethod( $method );
+    }
+
+    protected function toCallback()
     {
         if( is_string( $this->method ))
             if( $this->isStatic() )
@@ -55,17 +65,17 @@ final class Delegate extends Object
         return $this->target;
     }
 
-    function isStatic()
+    protected function isStatic()
     {
         return is_string( $this->target );
     }
 
-    function isObject()
+    protected function isObject()
     {
         return is_object( $this->target );
     }
 
-    function getOperator()
+    protected function getOperator()
     {
         if( $this->isStatic() )
             return '::';
@@ -76,7 +86,7 @@ final class Delegate extends Object
         return '';
     }
 
-    function isType( $typeName )
+    protected function isType( $typeName )
     {
         $typeName = strtolower( $typeName );
 
@@ -88,7 +98,7 @@ final class Delegate extends Object
                   : false;
     }
 
-    function getTargetType()
+    protected function getTargetType()
     {
         if( $this->isStatic() )
             return $this->target;
@@ -191,16 +201,8 @@ final class Delegate extends Object
         return $this->invokeCallback( $arguments );
     }
 
-    function invokeCallback( array $arguments )
+    protected function invokeCallback( array $arguments )
     {
         return call_user_func_array( $this->toCallback(), $arguments );
-    }
-
-    function __call( $method, $arguments )
-    {
-        if( !is_array( $arguments ))
-            $arguments = array();
-
-        return $this->invoke( $method, $arguments );
     }
 }

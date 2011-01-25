@@ -44,21 +44,26 @@ class Filter extends \DBAL\Data\Mapping\Filter
 
     function match( $subject )
     {
-        if( array_key_exists( $subject, $this->mapping->Data ))
-            return $subject;
+        if( $this->bindings->exist( $subject ))
+            return $this->bindings[ $subject ];
+        
+        $bind = parent::match( $subject );
+        
 
-        if( is_string( $subject ))
-            return $subject;
-
-
-        if( $this->parameters->exists('BindingProperty') )
+        if( $bind == false )
         {
-            $bound = $subject->{$this->getBindingProperty()};
-            $this->bindings[ $subject ] = $bound;
-            return $bound;
-        }
+            if( $this->parameters->exists('BindingProperty') )
+                $bind = $subject->{$this->getBindingProperty()};
+            else
+                $bind = get_class( $subject );
 
-        return strtolower(get_class($subject));
+            return $this->bindings[ $subject ] = $bind;
+        }
+        elseif( is_string( $subject ) && 
+                array_key_exists( $subject, $this->matches ))
+                return $this->matches[ $subject ];
+
+        return false;
     }
     
     protected function getBindingClass( $subject )
@@ -70,8 +75,8 @@ class Filter extends \DBAL\Data\Mapping\Filter
     {
         $subject = $params['input'];
 
-        if( $this->bindings->exists( $subject->Oid ))
-            return $this->bindings[ $subject->Oid ];
+        if( $this->bindings->exists( $subject ))
+            return $this->bindings[ $subject ];
 
         $bindingClass = $this->getBindingClass( $subject );
 
@@ -105,7 +110,7 @@ class Filter extends \DBAL\Data\Mapping\Filter
                 if( $this->mapping->exists( $bindingField ))
                 {
                     if( ($match = $this->match( $bindingField )) !== false )
-                        $boundField = $this->mapping[ $match ];
+                        $boundField = $match;
                     else
                         $boundField = $this->mapping[ $bindingField ];
 
@@ -113,8 +118,6 @@ class Filter extends \DBAL\Data\Mapping\Filter
                         property_exists( get_class( $mappedObject ), $boundField ) )
                         $mappedObject->$boundField = $value;
                 }
-                else
-                    $mappedObject->Data[$key] = $value;
             }
     }
 }

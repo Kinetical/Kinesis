@@ -1,15 +1,12 @@
 <?php
 namespace DBAL\Data;
 
-class Binding extends \Util\Collection
+class Binding extends Mapping
 {
-    protected $filter;
 
     function __construct( array $array = array(), \DBAL\Data\Mapping\Filter $filter )
     {
-        $this->filter = $filter;
-
-        parent::__construct( $array );
+        parent::__construct( $array, $filter );
     }
 
     protected function parseOffset( $offset )

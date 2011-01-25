@@ -5,7 +5,7 @@ class Filter extends \DBAL\Query\Filter
 {
     protected $mapping;
 
-    private $_matches = array();
+    protected $matches = array();
 
     function __construct( $query, array $params = array(), array $mapping = array() )
     {
@@ -33,8 +33,8 @@ class Filter extends \DBAL\Query\Filter
 
     function match( $subject )
     {
-        if( array_key_exists( $subject, $this->_matches ))
-            return $this->_matches[$subject];
+        if( array_key_exists( $subject, $this->matches ))
+            return $this->matches[$subject];
 
         if( array_key_exists( $subject, $this->mapping->Data ))
             return $this->mapping[$subject];
@@ -58,7 +58,7 @@ class Filter extends \DBAL\Query\Filter
         foreach( $keys as $regex => $mapping )
             if( strpos($regex, '*') &&
                 preg_match('/^'.$regex.'$/', $subject ) > 0 )
-                return $this->_matches[$subject] = $mapping;
+                return $this->matches[$subject] = $mapping;
 
         return false;
     }
