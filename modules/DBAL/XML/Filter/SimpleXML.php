@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\XML\Filter;
 
-class SimpleXML extends \DBAL\Query\Filter
+class SimpleXML extends \Core\Filter
 {
     protected function execute( array $params = null )
     {

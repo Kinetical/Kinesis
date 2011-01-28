@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Mapping;
 
-class Filter extends \DBAL\Query\Filter
+class Filter extends \Core\Filter
 {
     protected $mapping;
 

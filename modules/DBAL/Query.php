@@ -15,6 +15,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     private $_stream;
     private $_iterator;
     private $_filters;
+    private $_filter;
 
     function __construct( array $params = array() )
     {
@@ -29,7 +30,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
             $this->results = new Query\Result( $this );
 
         $this->parameters = new \Util\Collection();
-        $this->_filters = new \Core\Filter\Chain();
+        $this->_filter = new \DBAL\Data\Filter\Handler();
 
         parent::initialize();
     }
@@ -207,44 +208,29 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function getFilters()
     {
-        return $this->_filters;
+        return $this->_filter->getFilters();
     }
 
     function setFilters( \Core\Filter\Chain $filters )
     {
-        $this->_filters = $filters;
+        $this->_filter->setFilters( $filters );
     }
 
     function hasFilters()
     {
-        return ($this->_filters->count() > 0 )
-                ? true
-                : false;
+        return $this->_filter->hasFilters();
     }
 
     protected function filter( $input, array $params = null )
     {
-        if( !$this->hasFilters() )
-            return $input;
-
         if( is_null( $params ))
             $params = array();
 
         $params['input'] = $input;
 
-        foreach( $this->_filters as $filter )
-        {
-            if( !is_null( $output ))
-                $params['input'] = $output;
+        $filter = $this->_filter;
 
-            if( is_array( $output ))
-                foreach( $output as $key => $value )
-                    $output[$key] = $filter( array('input' => $value ) );
-            else
-                $output = $filter( $params );
-        }
-
-        return $output;
+        return $filter( $params );
     }
 
     abstract protected function execute( $stream = null );

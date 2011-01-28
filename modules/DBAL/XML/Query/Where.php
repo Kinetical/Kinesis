@@ -28,7 +28,7 @@ class Where extends \DBAL\Query\Node
         else
         {
             $this['xpath'] = $data;
-            new \DBAL\XML\Filter\Xpath( $this->getQuery() );
+            $queryBuilder->Filters->register( new \DBAL\XML\Filter\Xpath() );
             return parent::create();
         }
 

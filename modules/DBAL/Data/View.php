@@ -63,6 +63,16 @@ abstract class View extends \Core\Object implements I\Nameable
         $this->adapter = $adapter;
     }
 
+    function getFilters()
+    {
+        return $this->command->getFilters();
+    }
+
+    function setFilters( \Core\Filter\Chain $filters )
+    {
+        $this->command->setFilters( $filters );
+    }
+
     function prepared()
     {
         return $this->_prepared;

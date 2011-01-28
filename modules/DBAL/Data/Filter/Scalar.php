@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Filter;
 
-class Scalar extends \DBAL\Query\Filter
+class Scalar extends \Core\Filter
 {
     protected function execute( array $params = null )
     {

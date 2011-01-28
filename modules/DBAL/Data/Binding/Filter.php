@@ -71,7 +71,6 @@ class Filter extends \DBAL\Data\Mapping\Filter
         
         $bind = parent::match( $subject );
         
-
         if( $bind == false )
         {
             if( $this->parameters->exists('BindingProperty') )
@@ -99,6 +98,7 @@ class Filter extends \DBAL\Data\Mapping\Filter
 
     protected function execute( array $params = null )
     {
+        
         $subject = $params['input'];
 
         if( $this->bindings->exists( $subject ))
@@ -111,6 +111,8 @@ class Filter extends \DBAL\Data\Mapping\Filter
         
         if( get_class( $subject ) == $bindingClass )
             return $subject;
+
+
 
         $mappedObject = new $bindingClass;
         //$mappedObject->Type->setPersistenceObject( $subject );
