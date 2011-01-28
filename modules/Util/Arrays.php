@@ -12,3 +12,8 @@ function Convert( $mixed )
     
     return $array;
 }
+
+function is_array(&$array)
+{
+    return (bool)($array instanceof ArrayAccess || \is_array($array));
+}

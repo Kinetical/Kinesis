@@ -22,7 +22,7 @@ class Iterator extends \Util\Iterator
         $this->_inputBuffer = new \Util\Collection();
 
         if( !$this->delegate->isType('IO\Stream\Handler' ))
-            throw new \IO\Exception('Iterator delegate must be instance of IO\Stream\Handler');
+            throw new \IO\Exception('Iterator delegate must be instance of IO\Stream\Handler, '.$delegate->getTargetType().' provided');
     }
 
     function hasDelegate()

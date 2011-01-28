@@ -1,175 +1,110 @@
 <?php
 namespace DBAL\Data;
 
-abstract class Entity extends Model
+class Entity extends Model
 {
-	const TimeStamp = 1;
-	const NestedSet = 2;
+    protected $relations;
+    protected $behaviors = array();
+    protected $alias;
 
-	private $_alias;
-	
-	private $_relationships;
-	private $_behaviors;
+    private $_key;
 
+    function __construct( $innerName = null, $alias = null, array $attributes = array() )
+    {
+        $this->setAlias( $alias );
+        parent::__construct( $innerName, $attributes );
+    }
 
-	private $_primaryKey;
+    function initialize()
+    {
+        $this->relations = new Entity\Relationship\Collection( $this );
+        $this->attributes = new Entity\Attribute\Collection( $this );
+        parent::initialize();
+    }
 
-	function __construct( $innerName = null, $alias = null )
-	{
-		$this->setAlias( $alias );
-		parent::__construct( $innerName );
-	}
+    function hasBehavior( $behavior )
+    {
+        return array_key_exists( $behavior, $this->behaviors );
+    }
 
-	function addAttribute( $attribute )
-	{
-		$attribute->setEntity( $this );
-		if( $attribute->HasFlag( EntityAttribute::PrimaryKey ))
-			$this->_primaryKey = $attribute->getInnerName();
-                parent::addAttribute( $attribute );
-	}
+    function getKey()
+    {
+        if( $this->_key instanceof Entity\Attribute )
+            return $this->_key;
 
+        foreach( $this->attributes as $attr )
+            if( $attr->HasFlag( Entity\Attribute::PrimaryKey ) )
+                return $attr;
 
+        return null;
+    }
 
-	function hasAttribute( $name )
-	{
-		return parent::hasAttribute( $name );
-	}
+    function setKey( Entity\Attribute $attr )
+    {
+        $this->_key = $attr;
+    }
 
-	function addRelation( EntityRelationship $relationship  )
-	{
-		$this->_relationships[ $relationship->getName() ] = $relationship;
-	}
+    public function getAlias()
+    {
+        if( is_null( $this->alias ) )
+            return str_replace(array('a','e','i','o','u'), '', $this->getName()).'_';
 
-	function hasRelation( $name )
-	{
-		$exists = (array_key_exists( $name, $this->_relationships )) ? true : false;
-		if( ! $exists
-			&& is_array( $this->_attributes ))
-			foreach( $this->_attributes as $attr )
-				if( $attr->hasRelation()
-					&& $attr->getRelation()->getName() == $name )
-					return true;
+        return $this->alias;
+    }
 
-		return $exists;
-	}
+    function getRelations()
+    {
+        return $this->relations;
+    }
 
-	function addBehavior( $behavior )
-	{
-		$this->_behaviors[ $behavior ] = $behavior;
-	}
+    function getBehaviors()
+    {
+        return $this->behaviors;
+    }
 
-	function hasBehavior( $behavior )
-	{
-		return array_key_exists( $behavior, $this->_behaviors );
-	}
+    function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
 
-	function getPrimaryKey()
-        {
-		if( is_string( $this->_primaryKey )
-			&& $this->hasAttribute( $this->_primaryKey ) )
-			return $this->getAttribute( $this->_primaryKey );
+    function setRelations( array $relations )
+    {
+        $this->relations->merge( $relations );
+    }
 
-                $attributes = $this->getAttributes();
+    function setBehaviors( $behaviors )
+    {
+        if( is_string( $behaviors ))
+            $behaviors = explode(' ', str_replace(',',' ',$behaviors) );
+        if( is_array( $behaviors ))
+            foreach( $behaviors as $behavior )
+                $this->behaviors[ $behavior ] = $behavior;
+        else
+            $this->behaviors = $behaviors;
+    }
 
-		if( is_array( $attributes ))
-			foreach( $attributes as $attr )
-				if( $attr->HasFlag( EntityAttribute::PrimaryKey ) )
-					return $attr;
+    function relatedTo( $entity )
+    {
+        $relations = $this->getRelationsTo( $entity );
+        if( count( $relations ) > 0 )
+            return true;
 
-		// NO PRIMARY KEY;
-                return null;
-	}
+        return false;
+    }
 
-	function setPrimaryKey( $attr )
-	{
-		if( is_string( $attr )
-			&& array_key_exists( $attr, $this->_attributes ))
-			$this->_primaryKey = $attr;
+    function getRelationsTo( $entity )
+    {
+        $relations = array();
+        foreach( $this->relations as $relation )
+            if( $relation->getEntity()->getName()  == $entity->getName() )
+                $relations[ $relation->getName() ] = $relation;
 
-		if( $attr instanceof EntityAttribute  )
-			$this->_primaryKey = $attr->getInnerName();
-	}
+        /*
+         * foreach entity->relations
+         * if this->hasAttribute( relation->MappedBy )
+         * 	$relations[] = relation;
+         */
 
-	function getIndex()
-	{
-		if( !$this->hasIndex() )
-		{
-			$query = \ORM\Query::build( \ORM\Query::HYDRATE_SCALAR )
-                                      ->select('MAX('.$this->getPrimaryKey()->getInnerName().')')
-                                      ->from( $this );
-
-			parent::setIndex( $query->execute() );
-		}
-
-		return parent::getIndex();
-	}
-
-	function setIndex( $idx )
-	{
-		if( !$this->hasIndex() )
-			$this->getIndex();
-
-		parent::setIndex( $idx );
-	}
-
-	public function getAlias() {
-		if( $this->_alias == null )
-			return str_replace(array('a','e','i','o','u'), '', $this->getInnerName()).'_';
-		return $this->_alias;
-	}
-
-	public function getAttributes() {
-		return parent::getAttributes();
-	}
-
-	function getRelations()
-	{
-		return $this->_relationships;
-	}
-
-
-	function getBehaviors()
-	{
-		return $this->_behaviors;
-	}
-	
-
-	function setAlias($alias) {
-		$this->_alias = $alias;
-	}
-
-	function setAttributes( array $attributes, $append = false ) {
-		if( !$append )
-			parent::clearAttributes();
-
-		parent::setAttributes( $attributes );
-	}
-
-	function setRelations( $relations, $append = false )
-	{
-		if( !$append )
-			$this->_relationships = array();
-
-		foreach( $relations as $relation )
-			$this->_relationships[ $relation->getName() ] = $relation;
-	}
-
-	function setBehaviors( $behaviors, $append = false )
-	{
-		if( !$append )
-			$this->_behaviors = array();
-
-		if( is_array( $behaviors ))
-			foreach( $behaviors as $behavior )
-				$this->addBehavior( $behavior );
-		else
-			$this->_behaviors = $behaviors;
-	}
-
-        function serialize()
-        {
-            $this->Data['behaviors'] = $this->getBehaviors();
-            $this->Data['relations'] = $this->getRelations();
-            return parent::serialize();
-        }
+        return $relations;
+    }
 }

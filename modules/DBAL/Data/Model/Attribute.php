@@ -42,21 +42,21 @@ abstract class Attribute extends \Core\Object implements I\Nameable
         return $this->_model;
     }
 
-    function setModel( \Core\Model $model )
+    function setModel( \DBAL\Data\Model $model )
     {
         $this->_model = $model;
     }
 
     function addFlag( $flag )
     {
-        if( $flag !== null )
+        if( !is_null($flag ) )
             $this->_flags[ $flag ] = $flag;
     }
 
     function hasFlag( $flagName )
     {
         if( !is_array( $this->_flags ))
-                return false;
+            return false;
         if( is_array( $flagName ))
             return $this->hasFlags( $flagName );
 
@@ -71,7 +71,6 @@ abstract class Attribute extends \Core\Object implements I\Nameable
 
         return true;
     }
-
 
     public function getDefault()
     {
@@ -88,11 +87,6 @@ abstract class Attribute extends \Core\Object implements I\Nameable
     function getName()
     {
         return $this->_name;
-    }
-
-    public function getInnerName()
-    {
-        return $this->getName();
     }
 
     public function getDataType()

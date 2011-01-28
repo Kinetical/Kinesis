@@ -86,7 +86,7 @@ final class Delegate extends Object
         return '';
     }
 
-    protected function isType( $typeName )
+    function isType( $typeName )
     {
         $typeName = strtolower( $typeName );
 
@@ -98,7 +98,7 @@ final class Delegate extends Object
                   : false;
     }
 
-    protected function getTargetType()
+    function getTargetType()
     {
         if( $this->isStatic() )
             return $this->target;

@@ -1,6 +1,8 @@
 <?php
 namespace DBAL\Data\Binding;
 
+use \Util\Interfaces as I;
+
 class Filter extends \DBAL\Data\Mapping\Filter
 {
     protected $bindings;
@@ -32,6 +34,16 @@ class Filter extends \DBAL\Data\Mapping\Filter
         $this->parameters['BindingProperty'] = $property;
     }
 
+    function getBindingKey()
+    {
+        return $this->parameters['BindingKey'];
+    }
+
+    function setBindingKey( $key )
+    {
+        $this->parameters['BindingKey'] = $key;
+    }
+
     function getMappingProperty()
     {
         return $this->parameters['MappingProperty'];
@@ -40,6 +52,16 @@ class Filter extends \DBAL\Data\Mapping\Filter
     function setMappingProperty( $property )
     {
         $this->parameters['MappingProperty'] = $property;
+    }
+
+    function getMappingKey()
+    {
+        return $this->parameters['MappingKey'];
+    }
+
+    function setMappingKey( $key )
+    {
+        $this->parameters['MappingKey'] = $key;
     }
 
     function match( $subject )
@@ -54,6 +76,10 @@ class Filter extends \DBAL\Data\Mapping\Filter
         {
             if( $this->parameters->exists('BindingProperty') )
                 $bind = $subject->{$this->getBindingProperty()};
+            elseif( $this->parameters->exists('BindingKey') &&
+                    ( is_array( $subject ) ||
+                      $subject instanceof ArrayAccess ))
+                $bind = $subject[ $this->getBindingKey() ];
             else
                 $bind = get_class( $subject );
 
@@ -80,6 +106,9 @@ class Filter extends \DBAL\Data\Mapping\Filter
 
         $bindingClass = $this->getBindingClass( $subject );
 
+        if( is_null( $bindingClass ) )
+            return null;
+        
         if( get_class( $subject ) == $bindingClass )
             return $subject;
 
@@ -96,28 +125,30 @@ class Filter extends \DBAL\Data\Mapping\Filter
     {
         $bindingClass = $this->match( $subject );
 
-        $mappingProperty = $this->getMappingProperty();
-        if( !is_null( $mappingProperty ))
-            $mapping = $subject->{$mappingProperty};
+        if( $this->parameters->exists('MappingProperty'))
+            $mapping = $subject->{$this->getMappingProperty()};
+        elseif( $this->parameters->exists('MappingKey') &&
+                ( is_array( $subject ) ||
+                  $subject instanceof ArrayAccess ))
+            $mapping = $subject[$this->getMappingKey()];
         else
             $mapping = $subject;
 
         foreach( $mapping as $key => $value )
-            if( is_string( $key ) )
-            {
-                $bindingField = $bindingClass.'.'.$key;
-                
-                if( $this->mapping->exists( $bindingField ))
-                {
-                    if( ($match = $this->match( $bindingField )) !== false )
-                        $boundField = $match;
-                    else
-                        $boundField = $this->mapping[ $bindingField ];
+        {
+            $bindingField = $bindingClass.'.'.$key;
 
-                    if( !is_null( $boundField ) &&
-                        property_exists( get_class( $mappedObject ), $boundField ) )
+            if( $this->mapping->exists( $bindingField ))
+            {
+                if( ($boundField = $this->match( $bindingField )) == false )
+                    $boundField = $this->mapping[ $bindingField ];
+
+                if( !is_null( $boundField ) )
+                    if( method_exists( $mappedObject, $boundField ))
+                        $mappedObject->$boundField( $value );
+                    else
                         $mappedObject->$boundField = $value;
-                }
             }
+        }
     }
 }

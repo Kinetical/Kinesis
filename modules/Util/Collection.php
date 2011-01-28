@@ -13,12 +13,12 @@ class Collection extends ArrayList
         $this->insert( $key, $value );
     }
 
-    function insert( $key, $value )
+    function insert( $key = null, $value )
     {
-        if( $key == null
+        if( is_null( $key )
             && $value instanceof I\Nameable )
             $key = $value->getName();
-        elseif( $key == null )
+        elseif( is_null( $key ) )
             $key = $this->count();
 
         $this->offsetSet( $key, $value );

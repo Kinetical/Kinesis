@@ -19,7 +19,7 @@ if( $results instanceof Tree\Node )
     $results = new Tree\Node\IteratorIterator( $it );
 }
 
-foreach( $results as $node )
-{
-    var_dump( $node->Name );
-}
+//foreach( $results as $node )
+//{
+//    var_dump( $node->Name );
+//}

@@ -3,79 +3,50 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-abstract class Model extends \Core\Object implements I\Nameable, I\Attributable, I\Indexable
+abstract class Model extends \Core\Object implements I\Nameable, I\Attributable
 {
-    private $_name;
-    private $_index;
+    protected $attributes;
+    protected $name;
+
     private $_base;
-    private $_attributes;
 
     private $_loaderName;
     private $_loaderAttribute;
 
-    function __construct( $name = null )
+    function __construct( $name = null, array $attributes = array() )
     {
-            $this->setName( $innerName );
-            parent::__construct();
+        $this->setName( $name );
+
+        parent::__construct();
+
+        $this->setAttributes( $attributes );
+    }
+
+    function initialize()
+    {
+        parent::initialize();
+        if( is_null( $this->attributes ))
+            $this->attributes = new Model\Attribute\Collection( $this );
     }
 
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     public function setName( $name )
     {
-        $this->_name = $name;
+        $this->name = $name;
     }
 
     function getAttributes()
     {
-        return $this->_attributes;
+        return $this->attributes;
     }
 
-    function getAttribute( $name )
+    function setAttributes( array $attributes )
     {
-        if( $this->hasAttribute( $name ))
-                return $this->_attributes[$name];
-
-        return null;
-    }
-
-    function setAttribute( $name, $attr )
-    {
-        $this->_attributes[ $name ] = $attr;
-    }
-
-    function setAttributes( array $attribs )
-    {
-        foreach( $attribs as $attrib )
-            $this->addAttribute( $attrib );
-    }
-
-    function addAttribute( $attr )
-    {
-        $innerName = $attr->getInnerName();
-
-        if( !is_null($attr->getLoadName()) )
-            $this->_loaderAttribute = $innerName;
-
-        $this->setAttribute( $innerName, $attr );
-    }
-
-    function removeAttribute( $attrName )
-    {
-        unset( $this->_attributes[ $attrName ]);
-    }
-
-    function hasAttribute( $attrName )
-    {
-        return array_key_exists( $attrName, $this->_attributes );
-    }
-
-    function clearAttributes()
-    {
-        $this->_attributes = array();
+        $this->attributes->merge( $attributes );
     }
 
     function hasLoader()
@@ -94,8 +65,14 @@ abstract class Model extends \Core\Object implements I\Nameable, I\Attributable,
     }
     function getLoaderAttribute()
     {
-        return $this->_attributes[ $this->_loaderAttribute ];
+        return $this->_loaderAttribute;
     }
+
+    function setLoaderAttribute( Model\Attribute $attr )
+    {
+        $this->_loaderAttribute = $attr;
+    }
+
     protected function getLoader()
     {
         $loaders = \Core::getInstance()->getDatabase()->getLoaders();
@@ -135,20 +112,5 @@ abstract class Model extends \Core\Object implements I\Nameable, I\Attributable,
     function hasBaseModel()
     {
         return ( !is_null($this->_model) ) ? true : false;
-    }
-
-    function getIndex()
-    {
-        return $this->_index;
-    }
-
-    function setIndex( $idx )
-    {
-        $this->_index = $idx;
-    }
-
-    function hasIndex()
-    {
-        return ( $this->_index !== null ) ? true : false;
     }
 }

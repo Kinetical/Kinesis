@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Entity;
 
-abstract class Attribute extends \DBAL\Data\Model\Attribute
+class Attribute extends \DBAL\Data\Model\Attribute
 {
     const PrimaryKey = 1;
     const AutoIncrement = 2;
@@ -10,8 +10,8 @@ abstract class Attribute extends \DBAL\Data\Model\Attribute
     private $_outerName;
     private $_value;
     private $_relationship;
-    private $_entity;
     private $_load;
+    private $_length;
 
     function getLoadName()
     {
@@ -25,84 +25,108 @@ abstract class Attribute extends \DBAL\Data\Model\Attribute
 
     function IsPrimaryKey()
     {
-            return $this->HasFlag( self::PrimaryKey );
+        return $this->HasFlag( self::PrimaryKey );
     }
 
     function IsAutoIncrement()
     {
-            return $this->HasFlag( self::AutoIncrement );
+        return $this->HasFlag( self::AutoIncrement );
     }
 
     function IsNotNull()
     {
-            return $this->HasFlag( self::NotNull );
+        return $this->HasFlag( self::NotNull );
     }
 
     function getEntity()
     {
-        $dataSet = \Core::getInstance()->getDatabase()->getDataSet();
-            if( is_string( $this->_entity )
-                  && $dataSet->hasSchematic( $this->_entity ))
-                    $entity = $dataSet->Schematics[$this->_entity];
-            if( $entity !== null )
-                    $this->_entity = $entity;
-
-            return $this->_entity;
+        return $this->getModel();
     }
 
     function setEntity( $entity )
     {
-            $this->_entity = $entity;
+        $this->setModel( $entity );
+    }
+
+    function getName()
+    {
+        return $this->getOuterName();
+    }
+
+    function setName( $name )
+    {
+        $this->setOuterName( $name );
     }
 
     public function getOuterName()
     {
-            if( is_null($this->_outerName) )
-                    return $this->getInnerName();
+        if( is_null($this->_outerName) )
+                return $this->getInnerName();
 
-            return $this->_outerName;
-    }
-
-    public function getValue() {
-            return $this->_value;
+        return $this->_outerName;
     }
 
     public function setOuterName( $outerName )
     {
-            $this->_outerName = $outerName;
+        $this->_outerName = $outerName;
     }
 
-    public function setValue($value) {
-            $this->_value = $value;
+    function getInnerName()
+    {
+        return parent::getName();
+    }
+
+    function setInnerName( $name )
+    {
+        parent::setName( $name );
+    }
+
+    public function getValue()
+    {
+        return $this->_value;
+    }
+
+    public function setValue($value)
+    {
+        $this->_value = $value;
     }
 
     function getRelation()
     {
-            return $this->_relationship;
+        return $this->_relationship;
     }
 
     function hasRelation()
     {
-            return ($this->_relationship !== null) ? true : false;
+        return !is_null($this->_relationship);
     }
 
-    function setRelation( EntityRelationship $relationship )
+    function setRelation( Relationship $relationship )
     {
-            $this->_relationship = $relationship;
+        $this->_relationship = $relationship;
     }
 
     function isReference()
     {
-            return ($this->_relationship !== null) ? true : false;
+        return !is_null($this->_relationship);
     }
 
-    function serialize()
+    public function getLength()
     {
-        $this->Data['load'] = $this->getLoadName();
-        $this->Data['outerName'] = $this->getOuterName();
-        $this->Data['relation'] = $this->getRelation();
-        $this->Data['value'] = $this->getDefault();
-        
-        return parent::serialize();
+        //TODO: GET DEFAULT LENGTH
+        return $this->_length;
+    }
+
+    public function setLength($length)
+    {
+        $this->_length = $length;
+    }
+
+    function equals( Attribute $attr )
+    {
+        if( (int)$this->Length !== (int)$attr->Length )
+                return false;
+
+        return parent::equals( $attr );
     }
 }

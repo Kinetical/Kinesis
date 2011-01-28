@@ -1,7 +1,7 @@
 <?php
-namespace DBAL\SQL\Data\Entity\Relationship;
+namespace DBAL\Data\Entity\Relationship;
 
-class OneToMany extends \DBAL\SQL\Data\Entity\Relationship
+class OneToMany extends \DBAL\Data\Entity\Relationship
 {
 	function getQuery( Loader\RelationshipLoader $loader )
 	{

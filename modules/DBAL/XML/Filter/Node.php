@@ -8,7 +8,6 @@ class Node extends \DBAL\Query\Filter
     protected function execute( array $params = null )
     {
         $input = $params['input'];
-
         
         if( !( $input instanceof \SimpleXMLElement ) )
             throw new \DBAL\Exception('Node filter input must be a SimpleXMLElement, '.get_class( $input ).' provided.');
