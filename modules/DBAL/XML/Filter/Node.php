@@ -8,6 +8,9 @@ class Node extends \Core\Filter
     protected function execute( array $params = null )
     {
         $input = $params['input'];
+
+        if( $input instanceof \DBAL\Data\Tree\Node )
+            return $input;
         
         if( !( $input instanceof \SimpleXMLElement ) )
             throw new \DBAL\Exception('Node filter input must be a SimpleXMLElement, '.get_class( $input ).' provided.');
@@ -17,10 +20,6 @@ class Node extends \Core\Filter
         $attributes = $this->getAttributes( $input );
         $node = new Tree\Node( $input->getName(), $attributes, $parent );
         $node->setValue( trim((string)$input) );
-
-        foreach( $input as $child )
-            if( $child instanceof \SimpleXMLElement )
-                $this->execute( array( 'input' => $child, 'parent' => $node ) );
 
         return $node;
     }

@@ -3,10 +3,10 @@ namespace DBAL\Data\Filter;
 
 class Entity extends Model
 {
-    function __construct( $query = null )
+    function __construct()
     {
         $params = array( 'BindingProperty' => 'Name',
-                 'MappingProperty' => 'Attributes');
+                         'MappingProperty' => 'Attributes');
 
         $mapping = array( 'entity' => 'DBAL\Data\Entity',
                           'entity.name' => 'Name',
@@ -24,7 +24,7 @@ class Entity extends Model
                           '*-*.mappedBy' => 'MappedBy',
                           '*-*.inversedBy' => 'InversedBy');
 
-        parent::__construct( $query, $params, $mapping );
+        parent::__construct( $params, $mapping );
     }
 
     protected function map( $mappedObject, $subject )

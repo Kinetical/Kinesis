@@ -14,20 +14,18 @@ class Query extends \DBAL\Query
         if( ($this->resolve( $stream )) == false )
             return null;
 
-        $results = $this->getResults();
-        $results->clear();
+        $this->results->clear();
 
         foreach( $this as $result )
         {
             $result = $this->filter( $result );
+            
             if( is_array( $result ))
-                $results->merge( $result );
+                $this->results->merge( $result );
             else
-                $results->add( $result );
+                $this->results->add( $result );
         }
 
-        $this->setResults( $results );
-        
-        return $results->toArray();
+        return $this->results->toArray();
     }
 }

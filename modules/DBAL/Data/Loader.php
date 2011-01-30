@@ -84,11 +84,18 @@ class Loader extends \Core\Loader
         $dataAdapter->Fill( $dataSource );
 
         if( !empty( $dataSource ) )
+        {
+            if( count( $dataSource ) == 1 )
+                $result = $dataSource[0];
+            else
+                $result = $dataSource->toArray();
+
             if( is_string( $name )
                 && $this->caching() )
-                return $this->cache[$name] = $dataSource[0];
+                return $this->cache[$name] = $result;
             else
-                return $dataSource[0];
+                return $result;
+        }
 
         throw new \Core\Exception('Unable to execute path('.$path.') in '.get_class( $this ));
     }

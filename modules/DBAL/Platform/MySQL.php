@@ -3,16 +3,15 @@ namespace DBAL\Platform;
 
 class MySQL extends \DBAL\Platform
 {
-    function select( \DBAL\Connection $connection  )
+    function select( \DBAL\Connection $conn  )
     {
-        $config = $connection->getConfiguration();
-        $name = $config['database/name'];
+        $name = $connection->Configuration->Database['name'];
 
-        mysql_select_db( $name, $connection->getLink() ) ;
+        return mysql_select_db( $name, $conn->getLink() ) ;
     }
 
     function query( $sql, \DBAL\Connection $conn )
     {
-        return mysql_query( $sql, $conn->getStream()->getResource() );
+        return mysql_query( $sql, $conn->getLink() );
     }
 }

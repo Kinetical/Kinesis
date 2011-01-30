@@ -11,9 +11,9 @@ class Database extends \Core\Object implements I\Nameable
 
     private $_user;
 
-    function __construct( $innerName, Connection $connection )
+    function __construct( Connection $connection )
     {
-        $this->_innerName = $innerName;
+        $this->_innerName = $connection->Configuration->Database['name'];
         $this->_connection = $connection;
 
         parent::__construct();

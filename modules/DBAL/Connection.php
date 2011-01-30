@@ -1,32 +1,31 @@
 <?php
 namespace DBAL;
 
-abstract class Connection extends Stream
+class Connection extends \IO\Resource\Stream
 {
     private $_driver;
     private $_configuration;
-    
     
     function __construct( Driver $driver, Configuration $config = null, array $params = array() )
     {
         $this->_driver = $driver;
 
-        if( !is_null( $config ))
-            $this->_configuration = $config;
-        else
-            $this->_configuration = new Configuration();
+        if( is_null( $config ))
+            $config  = new Configuration();
+
+        $this->_configuration = $config;
 
         parent::__construct( $params );
     }
 
     function getLink()
     {
-        return $this->_stream->getResource();
+        return $this->getPointer();
     }
 
     function setLink( $link )
     {
-        $this->_stream->setResource( $link );
+        $this->setPointer( $link );
     }
 
     public function getDatabase()
@@ -63,6 +62,8 @@ abstract class Connection extends Stream
     {
         $link = $this->_driver->connect( $this );
 
+        var_dump( $link );
+
         $this->setLink( $link );
 
         return $link;
@@ -75,6 +76,6 @@ abstract class Connection extends Stream
 
     function isConnected()
     {
-        return isset( $this->isOpen() );
+        return $this->isOpen();
     }
 }

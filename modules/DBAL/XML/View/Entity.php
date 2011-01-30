@@ -9,7 +9,7 @@ class Entity extends \DBAL\XML\View
 
         if( $this->adapter->isRead() )
         {
-            new \DBAL\Data\Filter\Entity( $this->command );
+            $this->Filters->register( new \DBAL\Data\Filter\Recursive( new \DBAL\Data\Filter\Entity() ) );
         }
 
         return $this->command;

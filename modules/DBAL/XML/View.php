@@ -45,7 +45,7 @@ class View extends \DBAL\Data\View
                 $this->command->build()
                               ->where( $this->parameters['xpath'] );
 
-            $this->Filters->register( new Filter\Node() );
+            $this->Filters->register( new \DBAL\Data\Filter\Recursive( new Filter\Node() ) );
         }
         elseif( $this->adapter->isWrite() )
         {

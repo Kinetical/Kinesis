@@ -10,11 +10,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     protected $parameters;
     protected $results;
+    protected $builder;
     
-    private $_builder;
     private $_stream;
     private $_iterator;
-    private $_filters;
     private $_filter;
 
     function __construct( array $params = array() )
@@ -140,19 +139,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function build()
     {
-        if( $this->_builder == null )
-            $this->_builder =  new Query\Builder( $this );
+        if( $this->builder == null )
+            $this->builder =  new Query\Builder( $this );
 
-        return $this->_builder;
-    }
-
-    function __toString()
-    {
-        if( $this->_text == null
-            && $this->_builder instanceof DBAL\Query\Builder )
-            $this->_text = $this->_builder->build();
-
-        return $this->_text;
+        return $this->builder;
     }
 
     function setStream( \IO\Stream $stream )
@@ -183,25 +173,28 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     protected function resolve( \IO\Stream $stream = null )
     {
-        if( $stream == null )
+        if( is_null( $stream ) )
             $stream = $this->getStream();
 
-        if( $stream !== null
-            && !$stream->isOpen() )
+        if( !is_null( $stream ) )
         {
-            try
-                { $stream->open(); }
-            catch( \Exception $e )
-                { return false; }
+            if( !$stream->isOpen() )
+            {
+                try
+                    { $stream->open(); }
+                catch( \Exception $e )
+                    { return false; }
+            }
         }
         else
             return false;
+            
 
         $this->setStream( $stream );
 
-        if(    $this->_iterator instanceof IO\Stream\Iterator
-            && $this->_iterator->wrapped() )
-               $this->_iterator->getHandler()->setStream( $stream );
+        if( $this->_iterator instanceof IO\Stream\Iterator &&
+            $this->_iterator->wrapped() )
+            $this->_iterator->getHandler()->setStream( $stream );
 
         return true;
     }
@@ -237,11 +230,11 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function __invoke( $stream = null )
     {
-        if( ($builder = $this->_builder) instanceof Query\Builder )
+        if( ($builder = $this->builder) instanceof Query\Builder )
         {
-            $this->_builder = null;
+            $this->builder = null;
             $results = $builder( $stream );
-            $this->_builder = $builder;
+            $this->builder = $builder;
 
             return $results;
         }

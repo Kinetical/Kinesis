@@ -26,22 +26,12 @@ class Core
     function initialize()
     {
         $this->_configuration = new Core\Configuration();
-        $this->_context = new MVC\Context();
         $this->_loader = new \Core\Loader\ObjectLoader('site\cache');
 
         $this->loadModule( 'Core' );
 
-        $this->loadDirectories();
-
         $this->setInitialized( true );
         
-    }
-
-    private function loadDirectories()
-    {
-        $it = $this->getDirectoryIterator();
-        foreach( $it as $name => $dir )
-            $this->addDirectory ( $dir );
     }
 
     private function setInitialized( $init )
@@ -73,63 +63,6 @@ class Core
     function getLoader()
     {
         return $this->_loader;
-    }
-
-    function addDirectory( $dir )
-    {
-        if( is_string( $dir ))
-        {
-            $path = $dir;
-            $baseName = basename( $path );
-        }
-        elseif( $dir instanceof \SplFileInfo )
-        {
-            $path = $dir->getPath();
-            $baseName = $dir->getBasename();           
-        }
-
-        if( substr( $path, 0, 2) == ".\\")
-                $path = substr( $path, 2 );
-
-
-        if( $baseName == '.svn'
-            || $baseName == 'tmp'
-            || $baseName == 'text-base'
-            || $baseName == 'prop-base'
-            || $baseName == 'props'
-            || $baseName == 'entries'
-            || $baseName == 'all-wcprops')
-            return;
-
-        if( $path == 'modules' )
-            $this->loadModule ( $baseName );
-
-        $fullPath = $path . DIRECTORY_SEPARATOR. $baseName;
-
-        return $this->_directories[$fullPath]=$fullPath;
-    }
-    function removeDirectory( $path )
-    {
-        unset( $this->_directories[$path] );
-    }
-    function getDirectories()
-    {
-        return $this->_directories;
-    }
-
-    function setDirectories( $directories )
-    {
-        $this->_directories = $directories;
-    }
-
-    protected function getDirectoryIterator( $recursive = true )
-    {
-        if( $recursive == true )
-            return new RecursiveIteratorIterator(
-                new ParentIterator(new RecursiveDirectoryIterator('.')),
-                        RecursiveIteratorIterator::SELF_FIRST);
-            else
-                return new \RecursiveDirectoryIterator('.');
     }
 
     private function connect()

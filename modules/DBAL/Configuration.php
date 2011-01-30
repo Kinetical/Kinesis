@@ -16,7 +16,7 @@ class Configuration extends \Core\Configuration
     protected function loader( $offset )
     {
         $view = $this->loader->getView();
-        $view->setParameters( array('xpath' => $offset ));
+        $view->Parameters['xpath'] = $offset;
 
         return parent::loader( $offset );
     }

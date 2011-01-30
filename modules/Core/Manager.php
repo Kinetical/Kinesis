@@ -17,9 +17,8 @@ abstract class Manager extends Object
     {
         parent::initialize();
 
-        $this->parameters = new Util\Collection();
-        $this->loaders = new Util\Collection\Dictionary( array(), 'Core\Loader' );
-
+        $this->parameters = new \Util\Collection();
+        $this->loaders = new \Util\Collection\Dictionary( array(), 'Core\Loader' );
     }
 
     function getParameters()

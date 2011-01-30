@@ -12,11 +12,12 @@ class MySQL extends \DBAL\Driver
 
     function connect( \DBAL\Connection $conn )
     {
-        $config = $conn->getConfiguratio();
+        $host = $conn->Configuration->Database['host'];
+        $user = $conn->Configuration->getUser();
+
+        //var_dump( $user );
         
-        $user = $config->getUser();
-        
-        return mysql_connect( $config['host'],
+        return mysql_connect( $host,
                               $user['name'],
                               $user['password'] );
         //TODO: INFORM USER OBJECT TO ERASE PASSWORD FROM MEMORY

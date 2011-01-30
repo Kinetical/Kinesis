@@ -11,12 +11,9 @@ class Where extends \DBAL\Query\Node
             $this->openChildren();
             $this['xpath'] .= ']';
         }
-
-        $params = array( 'xpath' => $this['xpath']);
-
         $xpath = $this->getQuery()->Filters['XPath'];
 
-        $xpath->setParameters( $params );
+        $xpath->Parameters['xpath'] = $this['xpath'];
     }
 
     function create($data)
@@ -24,7 +21,7 @@ class Where extends \DBAL\Query\Node
         $queryBuilder = $this->getQueryBuilder();
 
         if( $queryBuilder->hasNode('where'))
-            $queryBuilder->Nodes['where']['xpath'] = '/'.$data;
+            $queryBuilder->Nodes['where']['xpath'] = $data;
         else
         {
             $this['xpath'] = $data;

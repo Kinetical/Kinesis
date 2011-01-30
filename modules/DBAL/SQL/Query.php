@@ -5,7 +5,7 @@ class Query extends \DBAL\Query
 {
     private $_text;
 
-    function __construct( $text = null, $params = null )
+    function __construct( $text = null, $params = array() )
     {
         
 
@@ -57,5 +57,15 @@ class Query extends \DBAL\Query
                 throw new \InvalidArgumentException('Query text must be string, '.get_class( $text ).' provided.');
 
         $this->_text = $text;
+    }
+
+
+    function __toString()
+    {
+        if( $this->_text == null
+            && $this->builder instanceof \DBAL\Query\Builder )
+            $this->_text = (string)$this->builder;
+
+        return $this->_text;
     }
 }

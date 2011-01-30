@@ -53,5 +53,5 @@ abstract class Driver extends \Core\Object implements I\Nameable
         $this->platform = $platform;
     }
 
-    abstract function connect( \DBAL\Database $dataBase );
+    abstract function connect( \DBAL\Connection $dataBase );
 }

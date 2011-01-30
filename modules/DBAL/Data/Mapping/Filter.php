@@ -7,9 +7,9 @@ class Filter extends \Core\Filter
 
     protected $matches = array();
 
-    function __construct( $query, array $params = array(), array $mapping = array() )
+    function __construct( array $params = array(), array $mapping = array() )
     {
-        parent::__construct( $query, $params );
+        parent::__construct( $params );
 
         $this->setMapping( $mapping );
     }

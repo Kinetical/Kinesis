@@ -91,7 +91,11 @@ abstract class View extends \Core\Object implements I\Nameable
         else
             $command = $this->command;
 
-        return $command();
+        $result = $command();
+
+        $this->_prepared = false;
+
+        return $result;
     }
 
     function __invoke()
