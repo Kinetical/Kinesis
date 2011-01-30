@@ -1,5 +1,5 @@
 <?php
-namespace DBAL\Data\Filter;
+namespace Core\Filter;
 
 class Recursive extends Handler
 {
@@ -15,10 +15,7 @@ class Recursive extends Handler
 
         if( is_null( $output ) &&
             count( $children ) > 0 )
-        {
-            //var_dump( $children );
             return $children;
-        }
 
         return $output;
     }

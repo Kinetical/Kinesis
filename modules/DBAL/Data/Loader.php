@@ -47,9 +47,8 @@ class Loader extends \Core\Loader
         {
             $viewClass = $this->parameters['ViewClass'];
             $viewArgs = $this->parameters['ViewArguments'];
-
-            $reflection = new \ReflectionClass( $viewClass );
-            return $reflection->newInstanceArgs( $viewArgs );
+           
+            return new $viewClass( $viewArgs );
         }
 
         throw new \DBAL\Exception('Unable to load view for ('.get_class( $this ).')');
@@ -82,6 +81,8 @@ class Loader extends \Core\Loader
         $dataAdapter->setView( $view );
 
         $dataAdapter->Fill( $dataSource );
+
+        unset( $this->view );
 
         if( !empty( $dataSource ) )
         {

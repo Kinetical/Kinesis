@@ -5,16 +5,24 @@ use \Util\Interfaces as I;
 
 class Database extends \Core\Object implements I\Nameable
 {
-    private $_context;
+    private $_driver;
+    private $_configuration;
     private $_connection;
+    
+    private $_context;
     private $_innerName;
 
     private $_user;
 
-    function __construct( Connection $connection )
+    function __construct( Driver $driver, Configuration $config = null )
     {
-        $this->_innerName = $connection->Configuration->Database['name'];
-        $this->_connection = $connection;
+        $this->_driver = $driver;
+
+        if( is_null( $config ))
+            $config  = new Configuration();
+
+        $this->_configuration = $config;
+        $this->_innerName = $config->Database['name'];
 
         parent::__construct();
     }
@@ -26,6 +34,7 @@ class Database extends \Core\Object implements I\Nameable
         $user = $this->getConfiguration()->getUser();
         $this->setUser( new \DBAL\Data\User( $user['name'], $user['password'] ) );
         $this->setContext( new \DBAL\Data\Context() );
+        $this->setConnection( new \DBAL\Connection( $this ));
     }
 
     function getName()
@@ -58,6 +67,16 @@ class Database extends \Core\Object implements I\Nameable
         $this->_context = $context;
     }
 
+    function getDriver()
+    {
+        return $this->_driver;
+    }
+
+    function getConfiguration()
+    {
+        return $this->_configuration;
+    }
+
     public function getConnection()
     {
         return $this->_connection;
@@ -68,14 +87,34 @@ class Database extends \Core\Object implements I\Nameable
         $this->_connection = $connection;
     }
 
-    function getConfiguration()
+    function connect()
     {
-        return $this->_connection->getConfiguration();
+        return $this->_connection->open();
     }
 
-    function getDriver()
+    function disconnect()
     {
-        $this->_connection->getDriver();
+        return $this->_connection->close();
+    }
+
+    function select()
+    {
+        return $this->getPlatform()->select( $this->_connection );
+    }
+
+    function query( $sql )
+    {
+        return $this->getPlatform()->query( $sql, $this->_connection );
+    }
+
+    function getLink()
+    {
+        return $this->_connection->getLink();
+    }
+
+    function getPlatform()
+    {
+        return $this->_driver->getPlatform();
     }
 
     /*function getLoader()

@@ -3,7 +3,7 @@ namespace Util\Collection;
 
 class Iterator extends \Util\Iterator implements \ArrayAccess, \Countable
 {
-    protected $Keys;
+    public $Keys;
 
     function __construct( $array = null )
     {

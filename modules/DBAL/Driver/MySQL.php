@@ -15,15 +15,12 @@ class MySQL extends \DBAL\Driver
         $host = $conn->Configuration->Database['host'];
         $user = $conn->Configuration->getUser();
 
-        //var_dump( $user );
-        
         return mysql_connect( $host,
                               $user['name'],
                               $user['password'] );
-        //TODO: INFORM USER OBJECT TO ERASE PASSWORD FROM MEMORY
     }
 
-    function close( \DBAL\Connection $conn )
+    function disconnect( \DBAL\Connection $conn )
     {
         return mysql_close( $conn->getLink() );
     }

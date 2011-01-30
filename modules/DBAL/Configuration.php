@@ -7,9 +7,11 @@ class Configuration extends \Core\Configuration
     {
         parent::initialize();
 
-        $loader = new Data\Loader( array('CacheClass' => 'IO\Object\Cache' ));
-        $loader->setView( new XML\View( array( 'path' => 'site\database.xml' ) ) );
+        $params = array('CacheClass' => 'IO\Object\Cache',
+                        'ViewClass' => 'DBAL\XML\View',
+                        'ViewArguments' => array( 'path' => 'site\database.xml' ) );
 
+        $loader = new Data\Loader( $params );
         $this->setLoader( $loader );
     }
 

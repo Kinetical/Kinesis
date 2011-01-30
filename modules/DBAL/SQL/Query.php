@@ -27,11 +27,12 @@ class Query extends \DBAL\Query
         if( ($connection = $this->resolve( $connection ) ) == false )
              return null;
 
-        $results = $this->getResults();
+        $this->results->clear();
 
-        $results->Data = $connection->getPlatform()->query( $this->getText() );
+        $result = $connection->getDatabase()->query( $this->getText() );
 
-        return $results;
+
+        return $this->results->toArray();
 //            $results = $query->setResults( $stream->getMode()->execute( (string)$query  ) );
 //
 //

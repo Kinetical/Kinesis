@@ -29,7 +29,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
             $this->results = new Query\Result( $this );
 
         $this->parameters = new \Util\Collection();
-        $this->_filter = new \DBAL\Data\Filter\Handler();
+        $this->_filter = new \Core\Filter\Handler();
 
         parent::initialize();
     }
@@ -80,7 +80,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function getIterator()
     {
-        if( $this->_iterator == null )
+        if( is_null( $this->_iterator ) )
             $this->_iterator = $this->getDefaultIterator();
         
         return $this->_iterator;
@@ -111,7 +111,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
         $delegate = new \Core\Delegate( $handler, $streamCallback );
         
         $iterator = new \IO\Stream\Iterator( $delegate );
-        $iterator->setInputBuffer( $streamInput );
+        $iterator->setInput( $streamInput );
 
         return $iterator;
     }

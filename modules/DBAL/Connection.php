@@ -3,17 +3,11 @@ namespace DBAL;
 
 class Connection extends \IO\Resource\Stream
 {
-    private $_driver;
-    private $_configuration;
+    private $_database;
     
-    function __construct( Driver $driver, Configuration $config = null, array $params = array() )
+    function __construct( Database $database, array $params = array() )
     {
-        $this->_driver = $driver;
-
-        if( is_null( $config ))
-            $config  = new Configuration();
-
-        $this->_configuration = $config;
+        $this->_database = $database;
 
         parent::__construct( $params );
     }
@@ -30,22 +24,22 @@ class Connection extends \IO\Resource\Stream
 
     public function getDatabase()
     {
-        return $this->_driver->getDatabase($this);
+        return $this->_database;
     }
 
-    function getPlatform()
+    function setDatabase( Database $database )
     {
-        return $this->_driver->getPlatform();
+        $this->_database = $database;
     }
 
     function getDriver()
     {
-        return $this->_driver;
+        return $this->_database->getDriver();
     }
 
     function getConfiguration()
     {
-        return $this->_configuration;
+        return $this->_database->getConfiguration();
     }
 
     public function getDefaultTimeout()
@@ -60,9 +54,7 @@ class Connection extends \IO\Resource\Stream
 
     function open()
     {
-        $link = $this->_driver->connect( $this );
-
-        var_dump( $link );
+        $link = $this->getDriver()->connect( $this );
 
         $this->setLink( $link );
 
@@ -71,7 +63,7 @@ class Connection extends \IO\Resource\Stream
 
     function close()
     {
-        return $this->_driver->close( $this );
+        return $this->getDriver()->disconnect( $this );
     }
 
     function isConnected()

@@ -5,12 +5,15 @@ class Iterator extends \Util\Iterator
 {
     private $_outputBuffer;
     private $_inputBuffer;
+    private $_stream;
+    private $_shared = false;
 
     protected $delegate;
 
-    function __construct( \Core\Delegate $delegate )
+    function __construct( \Core\Delegate $delegate = null, \IO\Stream $stream = null )
     {
         $this->delegate = $delegate;
+        $this->_stream = $stream;
 
         parent::__construct();
     }
@@ -20,9 +23,6 @@ class Iterator extends \Util\Iterator
         parent::initialize();
 
         $this->_inputBuffer = new \Util\Collection();
-
-        if( !$this->delegate->isType('IO\Stream\Handler' ))
-            throw new \IO\Exception('Iterator delegate must be instance of IO\Stream\Handler, '.$delegate->getTargetType().' provided');
     }
 
     function hasDelegate()
@@ -32,7 +32,12 @@ class Iterator extends \Util\Iterator
 
     protected function getInputArguments()
     {
-        return $this->_inputBuffer[ $this->position ];
+        if( $this->_shared !== false )
+            $position = 0;
+        else
+            $position = $this->position;
+
+        return $this->_inputBuffer[ $position ];
     }
 
     public function current()
@@ -60,6 +65,10 @@ class Iterator extends \Util\Iterator
     {
         $stream = $this->getStream();
 
+        if( is_int( $this->_shared ) &&
+            $this->position >= $this->_shared )
+            return false;
+
         if( $stream->eof() )
             return false;
 
@@ -79,7 +88,10 @@ class Iterator extends \Util\Iterator
 
     function getStream()
     {
-        return $this->getHandler()->getStream();
+        if( is_null( $this->_stream ))
+            $this->_stream = $this->getHandler()->getStream();
+
+        return $this->_stream;
     }
 
     function getHandler()
@@ -97,12 +109,25 @@ class Iterator extends \Util\Iterator
         $this->delegate = $delegate;
     }
 
-    function getInputBuffer()
+    function isShared()
+    {
+        if( $this->_shared !== false )
+            return true;
+
+        return false;
+    }
+
+    function setShared( $bool )
+    {
+        $this->_shared = $bool;
+    }
+
+    function getInput()
     {
         return $this->_inputBuffer;
     }
 
-    function setInputBuffer( $value )
+    function setInput( $value )
     {
         if( is_array( $value ))
             $this->_inputBuffer->merge( $value );

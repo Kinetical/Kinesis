@@ -10,7 +10,7 @@ class Node extends \Core\Filter
         $input = $params['input'];
 
         if( $input instanceof \DBAL\Data\Tree\Node )
-            return $input;
+            var_dump( $input );
         
         if( !( $input instanceof \SimpleXMLElement ) )
             throw new \DBAL\Exception('Node filter input must be a SimpleXMLElement, '.get_class( $input ).' provided.');

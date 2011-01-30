@@ -1,5 +1,5 @@
 <?php
-namespace DBAL\Data\Filter;
+namespace Core\Filter;
 
 class Handler extends \Core\Filter
 {

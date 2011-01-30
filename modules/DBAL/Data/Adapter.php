@@ -69,6 +69,8 @@ class Adapter extends \Core\Object
             $view->prepare( $dataSource );
 
         $dataSource( $view );
+
+        $this->commands = array();
     }
 
     function Fill( Source $dataSource )
