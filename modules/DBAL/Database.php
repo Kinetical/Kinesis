@@ -5,13 +5,13 @@ use \Util\Interfaces as I;
 
 class Database extends \Core\Object implements I\Nameable
 {
-    private $_driver;
     private $_configuration;
     private $_connection;
-    
+    private $_selected = false;
     private $_context;
-    private $_innerName;
-
+    private $_models;
+    private $_driver;
+    private $_name;
     private $_user;
 
     function __construct( Driver $driver, Configuration $config = null )
@@ -22,7 +22,7 @@ class Database extends \Core\Object implements I\Nameable
             $config  = new Configuration();
 
         $this->_configuration = $config;
-        $this->_innerName = $config->Database['name'];
+        $this->_name = $config->Database['name'];
 
         parent::__construct();
     }
@@ -35,16 +35,17 @@ class Database extends \Core\Object implements I\Nameable
         $this->setUser( new \DBAL\Data\User( $user['name'], $user['password'] ) );
         $this->setContext( new \DBAL\Data\Context() );
         $this->setConnection( new \DBAL\Connection( $this ));
+        $this->_models = new \Core\Configuration( new \DBAL\Data\Entity\Loader() );
     }
 
     function getName()
     {
-        return $this->_innerName;
+        return $this->_name;
     }
 
     function setName( $name )
     {
-        return $this->_innerName = $name;
+        return $this->_name = $name;
     }
 
     function getUser()
@@ -99,7 +100,13 @@ class Database extends \Core\Object implements I\Nameable
 
     function select()
     {
-        return $this->getPlatform()->select( $this->_connection );
+        $this->_selected = $this->getPlatform()->select( $this->_connection );
+        return $this->_selected;
+    }
+
+    function selected()
+    {
+        return $this->_selected;
     }
 
     function query( $sql )
@@ -117,40 +124,13 @@ class Database extends \Core\Object implements I\Nameable
         return $this->_driver->getPlatform();
     }
 
-    /*function getLoader()
+    function getModels()
     {
-        return $this->_loaders['entity'];
+        return $this->_models;
     }
 
-    function setLoader( \ORM\Entity\EntityLoader $loader )
+    function setModels( array $models )
     {
-        $this->_loaders['entity'] = $loader;
+        $this->_models->merge( $models );
     }
-
-    function hasEntity( $entityName, $autoload = true )
-    {
-        if( $autoload &&
-           ($exists = array_key_exists( $entityName, $this->_entities )) == false )
-                return $this->addEntity( $this->Loader->loadPath( $entityName ) );
-        return $exists;
-    }
-    function addEntity( \ORM\Entity\SQLEntity $entity )
-    {
-        return $this->_entities[ $entity->OuterName ] = $entity;
-    }
-    function removeEntity( $name )
-    {
-        unset( $this->_entities[ $name ] );
-    }
-
-    function setEntities( array $entities )
-    {
-        foreach( $entities as $entity )
-                $this->addEntity( $entity );
-    }
-    function getEntities()
-    {
-        return $this->_entities;
-    }
-   */
 }

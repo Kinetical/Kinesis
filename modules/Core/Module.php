@@ -25,7 +25,7 @@ class Module extends Object
         
         $this->_components = array();
         $this->setPath( 'modules'.DIRECTORY_SEPARATOR.$this->getName());
-        $this->setLoader( new \Core\Loader\ClassLoader( $this->getPath() ) );
+        //$this->setLoader( new \Core\Loader\ClassLoader( $this->getPath() ) );
     }
 
     function getLoader()

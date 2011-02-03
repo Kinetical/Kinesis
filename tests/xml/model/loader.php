@@ -4,7 +4,8 @@ use DBAL\XML;
 
 $loader = new Data\Loader();
 
-$params = array( 'path' => 'site\entity.xml');
+$params = array( 'path' => 'site\entity.xml',
+                 'xpath' => 'entity[@name="Control"]');
 
 $loader->View = new XML\View\Entity( $params );
 

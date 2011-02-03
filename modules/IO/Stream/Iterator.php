@@ -32,7 +32,7 @@ class Iterator extends \Util\Iterator
 
     protected function getInputArguments()
     {
-        if( $this->_shared !== false )
+        if( $this->isShared() )
             $position = 0;
         else
             $position = $this->position;
@@ -64,10 +64,6 @@ class Iterator extends \Util\Iterator
     function valid()
     {
         $stream = $this->getStream();
-
-        if( is_int( $this->_shared ) &&
-            $this->position >= $this->_shared )
-            return false;
 
         if( $stream->eof() )
             return false;
@@ -111,10 +107,12 @@ class Iterator extends \Util\Iterator
 
     function isShared()
     {
-        if( $this->_shared !== false )
-            return true;
+        return $this->_shared;
+    }
 
-        return false;
+    function share()
+    {
+        $this->setShared( true );
     }
 
     function setShared( $bool )

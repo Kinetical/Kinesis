@@ -62,7 +62,7 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
 
     public function offsetExists($offset)
     {
-        return $this->_attribute->offsetExists( $offset );
+        return $this->_attributes->offsetExists( $offset );
     }
 
     public function offsetGet($offset)

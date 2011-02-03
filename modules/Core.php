@@ -15,7 +15,6 @@ class Core
     private $_dataBase;
     
     private $_configuration;
-    private $_directories = array();
     private $_loader;
 
     function __construct()
@@ -26,7 +25,7 @@ class Core
     function initialize()
     {
         $this->_configuration = new Core\Configuration();
-        $this->_loader = new \Core\Loader\ObjectLoader('site\cache');
+        //$this->_loader = new \Core\Loader\ObjectLoader('site\cache');
 
         $this->loadModule( 'Core' );
 

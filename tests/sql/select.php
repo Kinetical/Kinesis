@@ -1,10 +1,15 @@
 <?php
 
-$query = new \DBAL\SQL\Query();
-$builder = $query->build()
-                 ->select('*')
-                 ->from('table')
-                 ->where('field','value')
-                 ->where('field2',2);
+include('database.php');
 
-echo (string)$query;
+$query = new \DBAL\SQL\Query();
+$query->build()
+      ->select('*')
+      ->from($database->Models['Control']);
+
+$results = $query( $database );
+
+foreach( $results as $item )
+{
+    var_dump( $item );
+}

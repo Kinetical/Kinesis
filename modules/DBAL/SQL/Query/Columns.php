@@ -3,22 +3,20 @@ namespace DBAL\SQL\Query;
 
 class Columns extends \DBAL\Query\Node
 {
-	function create( $data )
-	{
-		if( $data instanceof SQLDatabase )
-			$this['database'] = $data;
+    function create( $data )
+    {
+        if( $data instanceof \DBAL\Database )
+            $this['database'] = $data;
 
-		$this->Resource->Stream = new SQLStream( \IO\Stream\Mode::READ );
+        return parent::create();
+    }
 
-		return parent::create();
-	}
+    function open()
+    {
+        $sql = 'SHOW COLUMNS ';
+        if( isset( $this['database']) )
+            $sql .= ' IN '.$this['database']->InnerName.' ';
 
-	function open()
-	{
-		$sql = 'SHOW COLUMNS ';
-		if( isset( $this['database']) )
-			$sql .= ' IN '.$this['database']->InnerName.' ';
-
-		return $sql;
-	}
+        return $sql;
+    }
 }

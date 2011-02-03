@@ -9,11 +9,8 @@ class Query extends \DBAL\Query
         $this->setFormat( self::XML );
     }
 
-    function execute( $stream = null )
+    protected function execute( $stream )
     {
-        if( ($this->resolve( $stream )) == false )
-            return null;
-
         $this->results->clear();
 
         foreach( $this as $result )

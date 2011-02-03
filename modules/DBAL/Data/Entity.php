@@ -9,12 +9,6 @@ class Entity extends Model
 
     private $_key;
 
-    function __construct( $innerName = null, $alias = null, array $attributes = array() )
-    {
-        $this->setAlias( $alias );
-        parent::__construct( $innerName, $attributes );
-    }
-
     function initialize()
     {
         $this->relations = new Entity\Relationship\Collection( $this );

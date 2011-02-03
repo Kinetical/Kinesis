@@ -1,25 +1,16 @@
 <?php
 
-class Test implements ArrayAccess
+$c = 0;
+for( $i = 0; $i < 100000; $i++ )
 {
-    function offsetSet( $offset, $value )
+    $d = rand( 1, 6 );
+    $c = rand( 1, 2 );
+
+    if( $d == 1 &&
+        $c == 2 )
     {
-
-    }
-
-    function offsetGet( $offset )
-    {
-
-    }
-
-    function  offsetUnset($offset) {
-
-    }
-
-    function  offsetExists($offset) {
-
+        $c++;
     }
 }
 
-$test = new Test();
-var_dump( $test instanceof Traversable );
+echo $c.'/'.$i;

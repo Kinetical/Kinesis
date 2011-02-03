@@ -3,22 +3,26 @@ namespace DBAL\SQL\Query;
 
 class Tables extends \DBAL\Query\Node
 {
-	function create( $data )
-	{
-		if( $data instanceof SQLDatabase )
-			$this['database'] = $data;
+    function create( $data )
+    {
+        if( $data instanceof \DBAL\Database )
+            $this['database'] = $data;
 
-		$this->Resource->Stream = new SQLStream( Stream::READ );
+        $query = $this->getQuery();
 
-		return parent::create();
-	}
+        $query->Parameters['StreamCallback'] = 'fetchRow';
 
-	function open()
-	{
-		$sql = 'SHOW TABLES';
-		if( isset( $this['database']) )
-			$sql .= ' IN '.$this['database']->InnerName;
+        $query->Filters->register( new \DBAL\Data\Filter\Scalar() );
 
-		return $sql;
-	}
+        return parent::create();
+    }
+
+    function open()
+    {
+        $sql = 'SHOW TABLES';
+        if( isset( $this['database']) )
+            $sql .= ' IN '.$this['database']->Name;
+
+        return $sql;
+    }
 }

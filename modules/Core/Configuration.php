@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-abstract class Configuration extends \Util\Collection
+class Configuration extends \Util\Collection
 {
     protected $loader;
 

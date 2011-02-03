@@ -12,9 +12,7 @@ class Select extends \DBAL\Query\Node
 		if( count( $variables ) == 0 )
 			$variables[] = '*';
 		$this['variables'] = $variables;
-                $this->Query->Wrapper = new \DBAL\SQL\Reader( );
 
-		//$this->Resource->Stream = new \ORM\SQLStream( \IO\Stream::READ );
 		return parent::create();
 	}
 

@@ -1,20 +1,22 @@
 <?php
 namespace DBAL\Data\Entity;
 
-final class Loader extends \DBAL\Data\Model\Loader
+final class Loader extends \DBAL\Data\Loader
 {
     function initialize()
     {
         parent::initialize();
-        $this->setFileName('entity');
+
+        $this->view = new \DBAL\XML\View\Entity( array( 'path' => 'site\entity.xml') );
     }
     
-    function load( $path, $args = null )
+    function __invoke( $params = null )
     {
-        list($entityName,) = $this->getInfo( $path ) ;
+        if( is_array( $params ))
+            $this->view->Parameters['xpath'] = 'entity[@name="'.$params['name'].'"]';
+        else
+            unset( $this->view->Parameters['xpath'] );
 
-        $view = new \DBAL\View\XMLEntityView($entityName);
-
-        return  parent::load( $path, $view );
+        return parent::__invoke();
     }
 }

@@ -11,8 +11,8 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     protected $parameters;
     protected $results;
     protected $builder;
+    protected $stream;
     
-    private $_stream;
     private $_iterator;
     private $_filter;
 
@@ -111,14 +111,18 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
         $delegate = new \Core\Delegate( $handler, $streamCallback );
         
         $iterator = new \IO\Stream\Iterator( $delegate );
-        $iterator->setInput( $streamInput );
+
+        if( !is_null( $streamInput ))
+            $iterator->setInput( $streamInput );
 
         return $iterator;
     }
     
     function setIterator( \IO\Stream\Iterator $iterator )
     {
-        $this->setStream( $iterator->getStream() );
+        if( is_null( $this->stream ))
+            $this->setStream( $iterator->getStream() );
+        
         $this->_iterator = $iterator;
     }
     
@@ -139,7 +143,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function build()
     {
-        if( $this->builder == null )
+        if( is_null( $this->builder ) )
             $this->builder =  new Query\Builder( $this );
 
         return $this->builder;
@@ -147,15 +151,15 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function setStream( \IO\Stream $stream )
     {
-        $this->_stream = $stream;
+        $this->stream = $stream;
     }
 
     function getStream()
     {
-        if( $this->_stream == null )
-            $this->_stream = $this->getDefaultStream();
+        if( is_null( $this->stream ) )
+            $this->stream = $this->getDefaultStream();
 
-        return $this->_stream;
+        return $this->stream;
     }
 
     function getDefaultStream()
@@ -171,7 +175,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
             throw new DBAL\Exception ('StreamType('.$streamClass.') not found');
     }
 
-    protected function resolve( \IO\Stream $stream = null )
+    protected function resolve( $stream = null )
     {
         if( is_null( $stream ) )
             $stream = $this->getStream();
@@ -226,18 +230,24 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
         return $filter( $params );
     }
 
-    abstract protected function execute( $stream = null );
+    abstract protected function execute( $stream );
 
     function __invoke( $stream = null )
     {
         if( ($builder = $this->builder) instanceof Query\Builder )
         {
-            $this->builder = null;
+            unset( $this->builder );
             $results = $builder( $stream );
             $this->builder = $builder;
 
             return $results;
         }
+
+        if( ($this->resolve( $stream )) == false )
+            return null;
+
+        if( is_null( $stream ))
+            $stream = $this->getStream();
 
         return $this->execute( $stream );
     }

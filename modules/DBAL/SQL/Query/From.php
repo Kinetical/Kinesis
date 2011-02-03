@@ -42,7 +42,7 @@ class From extends \DBAL\Query\Model\Node
 
                 if( $model instanceof \DBAL\Data\Model )
                 {
-                    $sql .= $model->InnerName;
+                    $sql .= $model->Name;
                     if( $this->hasAlias() )
                              $sql .= ' AS ' . $this->Alias;
                 }
