@@ -1,16 +1,9 @@
 <?php
+$driver = new \DBAL\Driver\MySQL();
+$database = new \DBAL\Database( $driver );
 
-$c = 0;
-for( $i = 0; $i < 100000; $i++ )
-{
-    $d = rand( 1, 6 );
-    $c = rand( 1, 2 );
+$core->setDatabase( $database );
 
-    if( $d == 1 &&
-        $c == 2 )
-    {
-        $c++;
-    }
-}
+var_dump( $database->Models['Clothing']);
 
-echo $c.'/'.$i;
+var_dump( $database->Models['Address']);

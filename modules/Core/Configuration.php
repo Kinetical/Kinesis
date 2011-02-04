@@ -25,6 +25,9 @@ class Configuration extends \Util\Collection
     protected function loader( $offset )
     {
         $loader = $this->loader;
+        if( is_null( $loader ))
+            return null;
+        
         return $loader( array('name' => $offset ) );
     }
 

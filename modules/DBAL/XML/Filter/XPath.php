@@ -13,7 +13,7 @@ class XPath extends \Core\Filter
         {
             $result = $input->xpath( $xpath );
             if( empty( $result ))
-                return $input;
+                return null;
             else
                 return $result;
         }

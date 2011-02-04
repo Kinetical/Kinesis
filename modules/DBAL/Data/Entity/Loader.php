@@ -7,16 +7,25 @@ final class Loader extends \DBAL\Data\Loader
     {
         parent::initialize();
 
-        $this->view = new \DBAL\XML\View\Entity( array( 'path' => 'site\entity.xml') );
+        $params = array('ViewClass' => 'DBAL\XML\View\Entity',
+                        'ViewArguments' => array( 'path' => 'site\entity.xml') );
+
+        $this->setParameters($params);
     }
     
-    function __invoke( $params = null )
+    function parse( array $params = null )
     {
-        if( is_array( $params ))
-            $this->view->Parameters['xpath'] = 'entity[@name="'.$params['name'].'"]';
-        else
-            unset( $this->view->Parameters['xpath'] );
+        if( is_array( $params ) &&
+            array_key_exists('name', $params ))
+        {
+            if( !$this->parameters->exists('ViewArguments') )
+                 $this->parameters['ViewArguments'] = array();
 
-        return parent::__invoke();
+            $viewArgs = $this->parameters['ViewArguments'];
+            $viewArgs['xpath'] = 'entity[@name="'.$params['name'].'"]';
+            $this->parameters['ViewArguments'] = $viewArgs;
+        }
+
+        return parent::parse( $params );
     }
 }

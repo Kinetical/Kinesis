@@ -64,36 +64,8 @@ class Core
         return $this->_loader;
     }
 
-    private function connect()
-    {
-         $databaseConfig = $this->_configuration['database'];
-         $userConfig = $this->_configuration['database/user'];
-
-         try
-         {
-             $dataBase = new \DBAL\Database\SQLDatabase( $databaseConfig['name'] );
-             $connection =  new \DBAL\Connection\SQLConnection
-                                     ( $databaseConfig['host'],
-                                       new \DBAL\User\SQLUser
-                                                ( $userConfig['name'],
-                                                  $userConfig['password']));
-             $connection->Connect();
-             $dataBase->setConnection( $connection );
-             $dataBase->Select();
-
-             $this->setDatabase( $dataBase );
-         }
-         catch( \Exception $e )
-         {
-             throw new \Core\Exception('Unable to connect to database('.$databaseConfig['name'].')');
-         }
-    }
-
     function getDatabase()
     {
-        if( !($this->_dataBase instanceof \DBAL\Database ))
-            $this->connect();
-
         return $this->_dataBase;
     }
 
