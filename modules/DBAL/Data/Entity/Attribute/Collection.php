@@ -29,7 +29,7 @@ class Collection extends \DBAL\Data\Model\Attribute\Collection
     function offsetSet( $offset, $attr )
     {
         if( $attr->HasFlag( \DBAL\Data\Entity\Attribute::PrimaryKey ))
-            $this->model->setKey( $attribute );
+            $this->model->setKey( $attr );
 
         parent::offsetSet( $offset, $attr );
     }

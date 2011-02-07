@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data;
 
-class Source extends Item
+class Source extends \Util\Collection\Persistent
 {
     private $_view;
     private $_viewClass;
@@ -24,6 +24,9 @@ class Source extends Item
 
         $adapter = $view->getAdapter();
 
+        if( !empty( $this->Data ))
+            $this->snapshot();
+        
         if( $adapter->isRead() )
             $this->setData( $results );
         

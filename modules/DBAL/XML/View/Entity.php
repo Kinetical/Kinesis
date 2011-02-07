@@ -3,6 +3,12 @@ namespace DBAL\XML\View;
 
 class Entity extends \DBAL\XML\View
 {
+    function initialize()
+    {
+        parent::initialize();
+
+        $this->setParameters( array( 'path' => 'site\entity.xml'));
+    }
     function prepare( \DBAL\Data\Source $dataSource = null )
     {
         parent::prepare();

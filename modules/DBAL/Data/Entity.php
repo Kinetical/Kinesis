@@ -1,7 +1,9 @@
 <?php
 namespace DBAL\Data;
 
-class Entity extends Model
+use \Util\Interfaces as I;
+
+class Entity extends Model implements I\Nameable
 {
     protected $relations;
     protected $behaviors = array();

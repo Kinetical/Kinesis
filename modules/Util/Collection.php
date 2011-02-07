@@ -1,24 +1,23 @@
 <?php
 namespace Util;
 
-use Interfaces as I;
+use Util\Interfaces as I;
 
 class Collection extends ArrayList
 {
     function add( $value, $key = null )
     {
-        if( is_null( $key ))
-            $key = $this->count();
-
         $this->insert( $key, $value );
     }
 
     function insert( $key = null, $value )
     {
-        if( is_null( $key )
-            && $value instanceof I\Nameable )
+        if( ( is_null( $key ) ||
+              is_int( $key ) ) &&
+            $value instanceof I\Nameable )
             $key = $value->getName();
-        elseif( is_null( $key ) )
+
+        if( is_null( $key ) )
             $key = $this->count();
 
         $this->offsetSet( $key, $value );
@@ -36,7 +35,8 @@ class Collection extends ArrayList
 
     function merge( array $data )
     {
-        $this->Data += $data;
+        array_walk( $data, array( $this, 'add'));
+        //$this->Data += $data;
     }
 
     function clear()
