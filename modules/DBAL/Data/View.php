@@ -127,8 +127,20 @@ abstract class View extends \Core\Object implements I\Nameable
     }
 
     abstract function getDefaultQuery();
-    abstract function getDefaultSelect();
-    abstract function getDefaultInsert();
-    abstract function getDefaultUpdate();
-    abstract function getDefaultDelete();
+    function getDefaultSelect()
+    {
+        return $this->getDefaultQuery();
+    }
+    function getDefaultInsert()
+    {
+        return $this->getDefaultQuery();
+    }
+    function getDefaultUpdate()
+    {
+        return $this->getDefaultQuery();
+    }
+    function getDefaultDelete()
+    {
+        return $this->getDefaultQuery();
+    }
 }

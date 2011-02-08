@@ -14,7 +14,6 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
     protected $results;
     protected $builder;
     protected $stream;
-    protected $map;
     
     private $_iterator;
 
@@ -31,7 +30,6 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
             $this->results = new Query\Result( $this );
 
         $this->parameters = new \Util\Collection();
-        $this->map = new \IO\Filter\Map();
 
         parent::initialize();
     }
@@ -206,16 +204,6 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
             $this->_iterator->getHandler()->setStream( $stream );
 
         return true;
-    }
-
-    function getMap()
-    {
-        return $this->map;
-    }
-
-    function setMap( IO\Filter\Map $map )
-    {
-        $this->map = $map;
     }
 
     abstract protected function execute( $stream );

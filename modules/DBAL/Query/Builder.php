@@ -6,7 +6,6 @@ use \Util\Interfaces as I;
 final class Builder extends \Core\Object
 {
     private $_nodes;
-    private $_parameters;
     private $_query;
 
     function __construct( \DBAL\Query $query, array $params = array() )
@@ -43,11 +42,11 @@ final class Builder extends \Core\Object
 
     public function getParameters()
     {
-        return $this->_parameters;
+        return $this->_query->getParameters();
     }
-    function setParameters( array $parameters)
+    function setParameters( array $params)
     {
-        $this->_parameters->merge($parameters);
+        $this->_query->setParameters( $params );
     }
 
     function __toString()
@@ -115,15 +114,5 @@ final class Builder extends \Core\Object
                 $this->_nodes[$name] = $node;
 
         return $this;
-    }
-
-    function getMap()
-    {
-        return $this->_query->getMap();
-    }
-
-    function setMap( \IO\Filter\Map $map )
-    {
-        $this->_query->setMap( $map );
     }
 }

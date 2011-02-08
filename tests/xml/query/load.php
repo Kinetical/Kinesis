@@ -9,8 +9,6 @@ $query = new XML\Query();
 $query->build()
       ->from('tests\test.xml');
 
-$query->Map->register( new XML\Filter\Node() );
-
 $results = $query->execute();
 
 $it = new Tree\Node\Iterator( $results[0] );

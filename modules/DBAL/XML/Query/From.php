@@ -12,9 +12,6 @@ class From extends \DBAL\Query\Node
                          'StreamCallback'   => 'readToEOF');
 
         $query = $this->getQuery();
-
-        $query->Map->register( new \DBAL\XML\Filter\SimpleXML() );
-
         $query->setParameters( $params );
         return parent::create();
     }

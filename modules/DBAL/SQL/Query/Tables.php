@@ -8,11 +8,10 @@ class Tables extends \DBAL\Query\Node
         if( $data instanceof \DBAL\Database )
             $this['database'] = $data;
 
+        $params = array( 'StreamCallback' => 'fetchRow' );
+
         $query = $this->getQuery();
-
-        $query->Parameters['StreamCallback'] = 'fetchRow';
-
-        $query->Map->register( new \DBAL\Data\Filter\Scalar() );
+        $query->setParameters( $params );
 
         return parent::create();
     }
