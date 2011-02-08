@@ -4,20 +4,19 @@ $database = new \DBAL\Database( $driver );
 
 $core->setDatabase( $database );
 
-$xmlSource = new \DBAL\Data\Source();
-$sqlSource = new \DBAL\Data\Source();
+$source = new \DBAL\Data\Source();
 
 $adapter = new \DBAL\Data\Adapter();
 
+
+
 $adapter->View = new \DBAL\XML\View\Entity();
-$adapter->Fill( $xmlSource );
+$adapter->Fill( $source );
 
-$adapter->View = new \DBAL\SQL\View\Model();
-$adapter->Fill( $sqlSource );
+$adapter->View = new \DBAL\SQL\View\Entity();
+$adapter->Fill( $source );
 
-var_dump( $xmlSource->Data );
-
-$adapter->Update( $sqlSource );
+$adapter->Update( $source );
 //foreach( $source as $entity )
 //{
 //    unset( $ent );

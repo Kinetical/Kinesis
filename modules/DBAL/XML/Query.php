@@ -14,14 +14,10 @@ class Query extends \DBAL\Query
         $this->results->clear();
 
         foreach( $this as $result )
-        {
-            $result = $this->filter( $result );
-            
             if( is_array( $result ))
                 $this->results->merge( $result );
             else
                 $this->results->add( $result );
-        }
 
         return $this->results->toArray();
     }

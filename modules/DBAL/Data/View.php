@@ -63,44 +63,52 @@ abstract class View extends \Core\Object implements I\Nameable
         $this->adapter = $adapter;
     }
 
-    function getFilters()
-    {
-        return $this->command->getFilters();
-    }
-
-    function setFilters( \Core\Filter\Chain $filters )
-    {
-        $this->command->setFilters( $filters );
-    }
-
     function prepared()
     {
         return $this->_prepared;
     }
-    function prepare( Source $dataSource = null )
+    function prepare( $source = null )
     {
         $this->_prepared = true;
 
         return $this->command;
     }
 
-    protected function execute()
+    function clear()
+    {
+        $this->_prepared = false;
+        unset( $this->command );
+        $this->adapter->clear();
+    }
+
+    protected function execute( &$dataSource = null )
     {
         if( !$this->prepared() )
-            $command = $this->prepare();
+            $command = $this->prepare( $dataSource );
         else
             $command = $this->command;
 
+        if( $dataSource instanceof \Util\Collection\Persistent &&
+            $this->adapter->isRead() )
+            $dataSource->snapshot();
+
         $result = $command();
 
-        $this->_prepared = false;
+        if( !is_null( $dataSource ) &&
+            $this->adapter->isRead() )
+            if( $dataSource instanceof \Core\Object )
+                $dataSource->setData( $result );
+            else
+                $dataSource = $result;
+
+        $this->clear();
 
         return $result;
     }
 
-    function __invoke()
+    function __invoke( &$dataSource = null )
     {
-        return $this->execute();
+        return $this->execute( $dataSource );
     }
 
     public function setCommand( $command )

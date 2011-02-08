@@ -66,7 +66,7 @@ class Query extends \DBAL\Query
         $this->results->clear();
 
         foreach( $this as $result )
-            $this->results->add( $this->filter( $result ) );
+            $this->results->add( $result );
 
         return $this->results->toArray();
     }
@@ -115,7 +115,7 @@ class Query extends \DBAL\Query
     function setText( $text )
     {
         if( !is_string( $text ))
-                throw new \InvalidArgumentException('Query text must be string, '.get_class( $text ).' provided.');
+            throw new \InvalidArgumentException('Query text must be string, '.get_class( $text ).' provided.');
 
         $this->_text = $text;
     }

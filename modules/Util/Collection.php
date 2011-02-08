@@ -36,7 +36,6 @@ class Collection extends ArrayList
     function merge( array $data )
     {
         array_walk( $data, array( $this, 'add'));
-        //$this->Data += $data;
     }
 
     function clear()

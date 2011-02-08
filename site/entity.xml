@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <core>
-<entity name="Control" behavior="NestedSet TimeStamp" loader="Control">
-	<attribute name="name" type="string"></attribute>
-	<attribute name="parent" type="Control"></attribute>
-	<attribute name="type" type="string" load="BaseType"></attribute>
-	<attribute name="properties" type="object"></attribute>
-	<many-one name="children" entity="Control"></many-one>
-</entity>
+    <entity name="Control" behavior="NestedSet TimeStamp" loader="Control">
+        <attribute name="name" type="string"></attribute>
+        <attribute name="parent" type="Control"></attribute>
+        <attribute name="type" type="string" load="BaseType"></attribute>
+        <attribute name="properties" type="object"></attribute>
+        <many-one name="children" entity="Control"></many-one>
+    </entity>
 
-<entity name="User">
-	<attribute name="name" type="string"></attribute>
-	<attribute name="password" type="string"></attribute>
-	<many-one name="address" entity="Address" inversedBy="user"></many-one>
-	<many-many name="phonenumbers" entity="PhoneNumber"></many-many>
-</entity>
+    <entity name="User">
+        <attribute name="name" type="string"></attribute>
+        <attribute name="password" type="string"></attribute>
+        <many-one name="address" entity="Address" inversedBy="user"></many-one>
+        <many-many name="phonenumbers" entity="PhoneNumber"></many-many>
+    </entity>
 
-<entity name="Address">
-	<attribute name="street" type="string"></attribute>
-	<attribute name="name" type="string"></attribute>
-	<one-many name="user" entity="User" mappedBy="address"></one-many>
-</entity>
+    <entity name="Address">
+        <attribute name="street" type="string"></attribute>
+        <attribute name="name" type="string"></attribute>
+        <one-many name="user" entity="User" mappedBy="address"></one-many>
+    </entity>
 
-<entity name="PhoneNumber">
-	<attribute name="code" type="integer"></attribute>
-</entity>
+    <entity name="PhoneNumber">
+        <attribute name="code" type="integer"></attribute>
+    </entity>
 
-<entity name="Manufacturer">
-	<attribute name="name" type="string"></attribute>
-	<one-many name="products" entity="Product" mappedBy="manufacturer"></one-many>
-</entity>
+    <entity name="Manufacturer">
+        <attribute name="name" type="string"></attribute>
+        <one-many name="products" entity="Product" mappedBy="manufacturer"></one-many>
+    </entity>
 
-<entity name="Product">
-	<attribute name="name" type="string"></attribute>
-	<attribute name="price" type="currency"></attribute>
-	<attribute name="test" type="string"></attribute>
-	<many-one name="manufacturer" entity="Manufacturer" inversedBy="products"></many-one>
-</entity>
+    <entity name="Product">
+        <attribute name="name" type="string"></attribute>
+        <attribute name="price" type="currency"></attribute>
+        <attribute name="test" type="string"></attribute>
+        <many-one name="manufacturer" entity="Manufacturer" inversedBy="products"></many-one>
+    </entity>
 
-<entity name="Clothing" type="Product">
-	<attribute name="Color" type="string"></attribute>
-</entity>
+    <entity name="Clothing" type="Product">
+        <attribute name="Color" type="string"></attribute>
+    </entity>
 </core>

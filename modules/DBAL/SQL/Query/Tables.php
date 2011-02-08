@@ -12,7 +12,7 @@ class Tables extends \DBAL\Query\Node
 
         $query->Parameters['StreamCallback'] = 'fetchRow';
 
-        $query->Filters->register( new \DBAL\Data\Filter\Scalar() );
+        $query->Map->register( new \DBAL\Data\Filter\Scalar() );
 
         return parent::create();
     }

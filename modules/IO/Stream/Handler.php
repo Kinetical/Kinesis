@@ -7,7 +7,6 @@ abstract class Handler extends \Core\Object
     protected $buffer;
     protected $handler;
 
-
     function __construct()
     {
         if( count( $args = func_get_args() ) > 0 )

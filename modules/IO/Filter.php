@@ -1,10 +1,14 @@
 <?php
-namespace Core;
+namespace IO;
 
 abstract class Filter extends Object
 {
+    const INPUT = 1;
+    const OUTPUT = 2;
+    
     protected $parameters;
     protected $delegate;
+    protected $state = 2;
 
     function __construct( array $params = array() )
     {
@@ -41,7 +45,7 @@ abstract class Filter extends Object
             $delegate = new Delegate( $filter );
 
         if( !($delegate instanceof Delegate)
-            || !$delegate->isType('Core\Filter') )
+            || !$delegate->isType('IO\Filter') )
             throw new \Core\Exception('Filter delegate must be instance of a Filter');
 
         $this->delegate = $delegate;
@@ -52,11 +56,18 @@ abstract class Filter extends Object
         return ( $this->delegate instanceof Delegate );
     }
 
+    function getState()
+    {
+        return $this->state;
+    }
+
     function __invoke( $params = null )
     {
         if( !is_null( $params )
             && !is_array( $params ))
-            $params = func_get_args();
+        {
+            $params = array( 'input' => func_get_args() );
+        }
 
         if( $this->hasDelegate() )
         {

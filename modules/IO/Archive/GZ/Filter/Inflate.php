@@ -1,7 +1,7 @@
 <?php
 namespace IO\Archive\GZ\Filter;
 
-class Inflate extends \Core\Filter
+class Inflate extends \IO\Filter
 {
     function execute( array $params = array() )
     {

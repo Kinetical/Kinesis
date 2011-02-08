@@ -9,15 +9,19 @@ class Entity extends \DBAL\XML\View
 
         $this->setParameters( array( 'path' => 'site\entity.xml'));
     }
-    function prepare( \DBAL\Data\Source $dataSource = null )
+    function prepare( $dataSource = null )
     {
         parent::prepare();
 
-        if( $this->adapter->isRead() )
+        if( $source instanceof \DBAL\Data\Source )
         {
-            $this->Filters->register( new \Core\Filter\Recursive( new \DBAL\Data\Filter\Entity() ) );
+            if( $this->adapter->isRead() )
+            {
+                $source->Map->recurse( new \DBAL\Data\Filter\Entity() );
+            }
         }
-
+        
+        
         return $this->command;
     }
 }

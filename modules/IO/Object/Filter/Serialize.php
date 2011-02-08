@@ -1,7 +1,7 @@
 <?php
 namespace IO\Object\Filter;
 
-final class Serialize extends \Core\Filter
+final class Serialize extends \IO\Filter
 {
     private $_sid = 1;
     private $_sids = array();

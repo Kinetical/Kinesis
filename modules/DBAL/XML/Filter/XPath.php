@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\XML\Filter;
 
-class XPath extends \Core\Filter
+class XPath extends \IO\Filter
 {
     protected function execute( array $params = null )
     {

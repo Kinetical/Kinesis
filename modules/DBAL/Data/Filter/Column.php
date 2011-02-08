@@ -3,7 +3,7 @@ namespace DBAL\Data\Filter;
 
 use DBAL\Data\Entity;
 
-class Column extends \Core\Filter
+class Column extends \IO\Filter
 {
     function execute( array $params = array() )
     {

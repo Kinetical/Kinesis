@@ -117,13 +117,13 @@ final class Builder extends \Core\Object
         return $this;
     }
 
-    function getFilters()
+    function getMap()
     {
-        return $this->_query->getFilters();
+        return $this->_query->getMap();
     }
 
-    function setFilters( \Core\Filter\Chain $filters )
+    function setMap( \IO\Filter\Map $map )
     {
-        $this->_query->setFilters( $filters );
+        $this->_query->setMap( $map );
     }
 }

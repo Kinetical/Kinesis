@@ -9,7 +9,7 @@ $query = new XML\Query();
 $query->build()
       ->from('tests\test.xml');
 
-$query->Filters->register( new XML\Filter\Node() );
+$query->Map->register( new XML\Filter\Node() );
 
 $results = $query->execute();
 

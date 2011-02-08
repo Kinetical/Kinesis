@@ -9,8 +9,7 @@ class Adapter extends \Core\Object
     const DELETE = 4;
     
     protected $commands;
-
-    private $_view;
+    protected $view;
 
     private function preserveKey( \Core\Object $dataItem )
     {
@@ -34,63 +33,67 @@ class Adapter extends \Core\Object
             return $dataItem;
     }
 
-    function getView( Source $dataSource = null )
+    function getView()
     {
-        if( !$this->hasView() )
-            if( $dataSource instanceof Source )
-                $this->_view = $dataSource->getView();
-            else
-                $this->_view = new View( $this );
-
-        return $this->_view;
+        return $this->view;
     }
 
     function setView( View $view )
     {
-        if( $view->getAdapter() !== $this )
-            $view->setAdapter( $this );
+        $view->setAdapter( $this );
 
-        return $this->_view = $view;
+        return $this->view = $view;
     }
 
     function hasView()
     {
-        return !is_null($this->_view);
+        return !is_null($this->view);
     }
 
-    protected function execute( $type, Source $dataSource  )
+    protected function execute( &$dataSource = null, $type = null  )
     {
-        $view = $this->getView( $dataSource );
+         if( !$this->hasView() )
+             if( $dataSource instanceof Source )
+                $view = $dataSource->getDefaultView();
+             else
+                 throw new \DBAL\Exception('Adapter('.get_class( $this ).') failed to locate a valid view');
+         else
+             $view = $this->view;
 
         if( !$view->hasCommand() )
-            $view->setCommand( $this->getCommand( $type ) );
+            if( !is_null( $type ))
+                $view->setCommand( $this->getCommand( $type ) );
+            elseif( $this->hasCommand() )
+                $view->setCommand( $this->getCommand() );
+            else
+                throw new \DBAL\Exception('Adapter('.get_class( $this ).') failed to locate a valid executable');
 
-        if( !$view->prepared() )
-            $view->prepare( $dataSource );
-
-        $dataSource( $view );
-
-        $this->commands = array();
+        return $view( $dataSource );
     }
 
-    function Fill( Source $dataSource )
+    function __invoke( &$dataSource = null )
     {
-        $this->execute( self::SELECT, $dataSource );
+        return $this->execute( $dataSource );
     }
 
-    function Insert( Source $dataSource )
+    function Fill( &$dataSource )
     {
-        $this->execute( self::INSERT, $dataSource );
+        $this->execute( $dataSource, self::SELECT );
     }
 
-    function Update( Source $dataSource )
+    function Insert( &$dataSource )
     {
-       $this->execute( self::UPDATE, $dataSource );
+        $this->execute( $dataSource, self::INSERT );
     }
 
-    function Delete( Source $dataSource )
+    function Update( &$dataSource )
     {
-        $this->execute( self::DELETE, $dataSource );
+       $this->execute( $dataSource, self::UPDATE );
+    }
+
+    function Delete( &$dataSource )
+    {
+        $this->execute( $dataSource, self::DELETE );
     }
 
     function getSelectCommand()
@@ -112,19 +115,19 @@ class Adapter extends \Core\Object
 
     function setSelectCommand( $command )
     {
-        $this->setCommand( self::SELECT, $command );
+        $this->setCommand( $command, self::SELECT );
     }
     function setInsertCommand( $command )
     {
-        $this->setCommand( self::INSERT, $command );
+        $this->setCommand( $command, self::INSERT );
     }
     function setUpdateCommand( $command )
     {
-        $this->setCommand( self::UPDATE, $command );
+        $this->setCommand( $command, self::UPDATE );
     }
     function setDeleteCommand( $command )
     {
-        $this->setCommand( self::DELETE, $command );
+        $this->setCommand( $command, self::DELETE );
     }
 
     function isSelectCommand()
@@ -146,54 +149,81 @@ class Adapter extends \Core\Object
 
     function isWrite()
     {
-        if( $this->isUpdateCommand()
-            || $this->isInsertCommand()
-            || $this->isDeleteCommand() )
-            return true;
+        if( $this->commands instanceof \DBAL\Query )
+            return $this->commands->isWrite();
+        elseif( is_array( $this->commands ) )
+            return $this->isUpdateCommand() ||
+                   $this->isInsertCommand() ||
+                   $this->isDeleteCommand();
 
         return false;
     }
 
     function isRead()
     {
-        return $this->isSelectCommand();
+        if( $this->commands instanceof \DBAL\Query )
+            return $this->commands->isWrite();
+        elseif( is_array( $commands ) )
+            return $this->isSelectCommand ();
+
+        return false;
     }
     
-    protected function hasCommand( $type )
+    protected function hasCommand( $type = null )
     {
-        return array_key_exists( $type, $this->commands );
+        if( is_null( $type ))
+            return $this->commands instanceof \Util\Interfaces\Executable;
+        elseif( is_array( $this->commands ))
+            return array_key_exists( $type, $this->commands );
+
+        return false;
     }
 
-    protected function getCommand( $type )
+    protected function getCommand( $type = null )
     {
-        if( !$this->hasCommand( $type )
-             && $this->hasView() )
+        if( is_null( $type ))
+            return $this->commands;
+        
+        if( !$this->hasCommand( $type ) &&
+             $this->hasView() )
         {
-            $view = $this->getView();
             switch( $type )
             {
                 case self::SELECT:
-                    $command = $view->getDefaultSelect();
+                    $command = $this->view->getDefaultSelect();
                 break;
                 case self::INSERT:
-                    $command = $view->getDefaultInsert();
+                    $command = $this->view->getDefaultInsert();
                 break;
                 case self::UPDATE:
-                    $command = $view->getDefaultUpdate();
+                    $command = $this->view->getDefaultUpdate();
                 break;
                 case self::DELETE:
-                    $command = $view->getDefaultDelete();
+                    $command = $this->view->getDefaultDelete();
                 break;
             }
 
-            $this->setCommand( $type, $command );
+            $this->setCommand( $command, $type );
         }
 
         return $this->commands[$type];
     }
 
-    protected function setCommand( $type, $command )
+    protected function setCommand( $command, $type = null )
     {
-        $this->commands[$type] = $command;
+        if( is_null( $type ))
+            $this->commands = $command;
+        else
+        {
+            if( is_null( $this->commands ))
+                $this->commands = array();
+            
+            $this->commands[$type] = $command;
+        }
+    }
+
+    function clear()
+    {
+        unset( $this->commands );
     }
 }

@@ -3,7 +3,7 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-class Entity extends Model implements I\Nameable
+class Entity extends Model
 {
     protected $relations;
     protected $behaviors = array();

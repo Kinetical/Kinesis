@@ -1,7 +1,7 @@
 <?php
 namespace IO\Archive\BZ\Filter;
 
-class Decompress extends \Core\Filter
+class Decompress extends \IO\Filter
 {
     function execute( array $params = array() )
     {

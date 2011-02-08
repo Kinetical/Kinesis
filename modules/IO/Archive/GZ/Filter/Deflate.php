@@ -1,7 +1,7 @@
 <?php
 namespace IO\Archive\BZ\Filter;
 
-class Deflate extends \Core\Filter
+class Deflate extends \IO\Filter
 {
     function execute( array $params = array() )
     {

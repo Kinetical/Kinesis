@@ -1,7 +1,9 @@
 <?php
 namespace DBAL;
 
-abstract class Query extends \Core\Object implements \IteratorAggregate
+use \Util\Interfaces as I;
+
+abstract class Query extends \Core\Object implements \IteratorAggregate, I\Executable
 {
     const SQL = 'SQL';
     const XML = 'XML';
@@ -12,9 +14,9 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     protected $results;
     protected $builder;
     protected $stream;
+    protected $map;
     
     private $_iterator;
-    private $_filter;
 
     function __construct( array $params = array() )
     {
@@ -25,11 +27,11 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
 
     function initialize()
     {
-        if( $this->results == null )
+        if( is_null( $this->results ) )
             $this->results = new Query\Result( $this );
 
         $this->parameters = new \Util\Collection();
-        $this->_filter = new \Core\Filter\Handler();
+        $this->map = new \IO\Filter\Map();
 
         parent::initialize();
     }
@@ -37,15 +39,19 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
     function isRead()
     {
         $stream = $this->getStream();
+        if( $stream instanceof \IO\Stream )
+            return $stream->isRead();
 
-        return $stream->isRead();
+        return false;
     }
 
     function isWrite()
     {
         $stream = $this->getStream();
+        if( $stream instanceof \IO\Stream )
+            return $stream->isWrite();
 
-        return $stream->isWrite();
+        return false;
     }
 
     function getParameters()
@@ -168,7 +174,6 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
         $streamMode = $this->parameters['StreamMode'];
         $streamResource = $this->parameters['StreamResource'];
 
-        //$test = new \IO\File\Stream();
         if( class_exists( $streamClass ))
             return new $streamClass( $streamResource, $streamMode );
         else
@@ -203,31 +208,14 @@ abstract class Query extends \Core\Object implements \IteratorAggregate
         return true;
     }
 
-    function getFilters()
+    function getMap()
     {
-        return $this->_filter->getFilters();
+        return $this->map;
     }
 
-    function setFilters( \Core\Filter\Chain $filters )
+    function setMap( IO\Filter\Map $map )
     {
-        $this->_filter->setFilters( $filters );
-    }
-
-    function hasFilters()
-    {
-        return $this->_filter->hasFilters();
-    }
-
-    protected function filter( $input, array $params = null )
-    {
-        if( is_null( $params ))
-            $params = array();
-
-        $params['input'] = $input;
-
-        $filter = $this->_filter;
-
-        return $filter( $params );
+        $this->map = $map;
     }
 
     abstract protected function execute( $stream );

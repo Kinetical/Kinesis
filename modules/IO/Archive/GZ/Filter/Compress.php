@@ -1,7 +1,7 @@
 <?php
 namespace IO\Archive\GZ\Filter;
 
-class Compress extends \Core\Filter
+class Compress extends \IO\Filter
 {
     function execute( array $params = array() )
     {

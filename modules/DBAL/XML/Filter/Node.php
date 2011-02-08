@@ -3,7 +3,7 @@ namespace DBAL\XML\Filter;
 
 use DBAL\XML\Data\Tree;
 
-class Node extends \Core\Filter
+class Node extends \IO\Filter
 {
     protected function execute( array $params = null )
     {

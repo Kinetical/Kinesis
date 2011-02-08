@@ -3,62 +3,43 @@ namespace DBAL\Data;
 
 class Source extends \Util\Collection\Persistent
 {
-    private $_view;
-    private $_viewClass;
+    protected $view;
+    protected $handler;
 
-    function setDataType( $type )
+    function initialize()
     {
-        if( class_exists( $type ))
-        {
-            $class = new \ReflectionClass( $type );
-            if( $class->isSubclassOf('\Core\Object'))
-                parent::setDataType( $type );
-            else
-                throw new \Core\Exception('Invalid data type');
-        }
+        parent::initialize();
+        $this->handler = new \IO\Filter\Handler();
     }
 
-    protected function execute( View $view )
+    function getMap()
     {
-        $results = $view();
-
-        $adapter = $view->getAdapter();
-
-        if( !empty( $this->Data ))
-            $this->snapshot();
-        
-        if( $adapter->isRead() )
-            $this->setData( $results );
-        
-        return $results;
+        return $this->handler->getMap();
     }
 
-    function __invoke( View $view )
+    function setMap( $map )
     {
-        return $this->execute( $view );
+        $this->handler->setMap( $map );
     }
 
-    function getView()
+    function hasMap()
     {
-        if( is_null( $this->_view ))
-            $this->_view = $this->getDefaultView();
-
-        return $this->_view;
+        return $this->handler->hasMap();
     }
 
     function getViewClass()
     {
-        return $this->_viewClass;
+        return $this->view;
     }
 
     function setViewClass( $className )
     {
         if( is_class( $className ))
-            $this->_viewClass = $className;
+            $this->view = $className;
     }
 
     protected function getDefaultView()
     {
-        return new $this->_viewClass();
+        return new $this->view();
     }
 }

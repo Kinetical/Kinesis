@@ -7,7 +7,7 @@ class Attributes extends Columns
     {
         $query = $this->getQuery();
 
-        $query->Filters->register( new \DBAL\Data\Filter\Column() );
+        $query->Map->register( new \DBAL\Data\Filter\Column() );
 
         return parent::create( $data );
     }

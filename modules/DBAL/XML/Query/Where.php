@@ -11,7 +11,7 @@ class Where extends \DBAL\Query\Node
             $this->openChildren();
             $this['xpath'] .= ']';
         }
-        $xpath = $this->getQuery()->Filters['XPath'];
+        $xpath = $this->getQuery()->Map['XPath'];
 
         $xpath->Parameters['xpath'] = $this['xpath'];
     }
@@ -25,7 +25,7 @@ class Where extends \DBAL\Query\Node
         else
         {
             $this['xpath'] = $data;
-            $queryBuilder->Filters->register( new \DBAL\XML\Filter\Xpath() );
+            $queryBuilder->Map->register( new \DBAL\XML\Filter\Xpath() );
             return parent::create();
         }
 

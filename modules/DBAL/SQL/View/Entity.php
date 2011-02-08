@@ -20,7 +20,7 @@ class Entity extends \DBAL\SQL\View
 
     function getDefaultUpdate()
     {
-
+        return $this->getDefaultQuery();
     }
 
     function getDefaultDelete()
@@ -28,12 +28,20 @@ class Entity extends \DBAL\SQL\View
 
     }
 
-    function prepare()
+    function prepare( $source = null )
     {
-        if( $this->adapter->isRead() )
+        if( $source instanceof \DBAL\Data\Source )
         {
-            $this->command->Filters->register( new \DBAL\Data\Filter\Table() );
+            if( $this->adapter->isRead() )
+            {
+                $source->Map->register( new \DBAL\Data\Filter\Table() );
+            }
+            elseif( $this->adapter->isWrite() )
+            {
+                $source->Map->register( new \DBAL\SQL\Filter\Entity() );
+            }
         }
+        
         return parent::prepare();
     }
 }

@@ -37,26 +37,29 @@ class View extends \DBAL\Data\View
         return $this->getDefaultUpdate();
     }
 
-    function prepare( \DBAL\Data\Source $dataSource = null )
+    function prepare( $source = null )
     {
-        if( $this->adapter->isRead() )
+        if( $source instanceof \DBAL\Data\Source )
         {
-            if( $this->parameters->exists('xpath'))
-                $this->command->build()
-                              ->where( $this->parameters['xpath'] );
+            if( $this->adapter->isRead() )
+            {
+                if( $this->parameters->exists('xpath'))
+                    $this->command->build()
+                                  ->where( $this->parameters['xpath'] );
 
-            $this->Filters->register( new \Core\Filter\Recursive( new Filter\Node() ) );
-        }
-        elseif( $this->adapter->isWrite() )
-        {
-            if( $dataSource instanceof \DBAL\XML\Document )
-                $root = $dataSource->getRoot();
-            else
-                $root = $dataSource->Data[0];
+                $source->Map->recurse( new Filter\Node() );
+            }
+            elseif( $this->adapter->isWrite() )
+            {
+                if( $source instanceof \DBAL\XML\Document )
+                    $root = $source->getRoot();
+                else
+                    $root = $source->Data[0];
 
-            if( $root instanceof \DBAL\Data\Tree\Node )
-                $this->command->build()
-                              ->set( $root );
+                if( $root instanceof \DBAL\Data\Tree\Node )
+                    $this->command->build()
+                                  ->set( $root );
+            }
         }
 
         return parent::prepare();

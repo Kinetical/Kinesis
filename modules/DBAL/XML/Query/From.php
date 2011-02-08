@@ -13,7 +13,7 @@ class From extends \DBAL\Query\Node
 
         $query = $this->getQuery();
 
-        $query->Filters->register(  new \DBAL\XML\Filter\SimpleXML() );
+        $query->Map->register( new \DBAL\XML\Filter\SimpleXML() );
 
         $query->setParameters( $params );
         return parent::create();

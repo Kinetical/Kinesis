@@ -1,7 +1,7 @@
 <?php
 namespace IO\Object\Filter;
 
-final class Unserialize extends \Core\Filter
+final class Unserialize extends \IO\Filter
 {
     private $_unpacked = array();
     private $_references = array();

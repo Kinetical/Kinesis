@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Filter;
 
-class Collection extends \Core\Filter
+class Collection extends \IO\Filter
 {
     protected function execute( array $params )
     {
