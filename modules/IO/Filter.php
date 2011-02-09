@@ -63,11 +63,9 @@ abstract class Filter extends Object
 
     function __invoke( $params = null )
     {
-        if( !is_null( $params )
-            && !is_array( $params ))
-        {
+        if( !is_null( $params ) &&
+            !is_array( $params ))
             $params = array( 'input' => func_get_args() );
-        }
 
         if( $this->hasDelegate() )
         {

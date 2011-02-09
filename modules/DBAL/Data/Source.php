@@ -27,6 +27,16 @@ class Source extends \Util\Collection\Persistent
         return $this->handler->hasMap();
     }
 
+    function getHandler()
+    {
+        return $this->handler;
+    }
+
+    function setHandler( IO\Filter\Handler $handler )
+    {
+        $this->handler = $handler;
+    }
+
     function getViewClass()
     {
         return $this->view;

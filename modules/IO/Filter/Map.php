@@ -28,8 +28,12 @@ class Map extends \Util\Collection\Iterator
         return $this->current()->execute( $params );
     }
 
-    function __invoke( array $params = array() )
+    function __invoke( $params = null )
     {
+        if( !is_null( $params ) &&
+            !is_array( $params ))
+            $params = array( 'input' => func_get_args() );
+
         return $this->execute( $params );
     }
 

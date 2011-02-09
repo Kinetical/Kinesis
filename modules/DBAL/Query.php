@@ -14,6 +14,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
     protected $results;
     protected $builder;
     protected $stream;
+    protected $handler;
     
     private $_iterator;
 
@@ -116,6 +117,9 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
         
         $iterator = new \IO\Stream\Iterator( $delegate );
 
+        if( $this->handler instanceof \IO\Filter\Handler )
+            $iterator->setHandler( $this->handler );
+
         if( !is_null( $streamInput ))
             $iterator->setInput( $streamInput );
 
@@ -151,6 +155,16 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
             $this->builder =  new Query\Builder( $this );
 
         return $this->builder;
+    }
+
+    function getHandler()
+    {
+        return $this->handler;
+    }
+
+    function setHandler( \IO\Filter\Handler $handler )
+    {
+        $this->handler = $handler;
     }
 
     function setStream( \IO\Stream $stream )
@@ -225,6 +239,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
         if( is_null( $stream ))
             $stream = $this->getStream();
 
-        return $this->execute( $stream );
+        $result = $this->execute( $stream );
+
+        unset( $this->_iterator );
+
+        return $result;
     }
 }

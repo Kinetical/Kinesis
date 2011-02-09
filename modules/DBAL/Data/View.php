@@ -92,6 +92,10 @@ abstract class View extends \Core\Object implements I\Nameable
             $this->adapter->isRead() )
             $dataSource->snapshot();
 
+        if( $dataSource instanceof \DBAL\Data\Source &&
+            $dataSource->hasMap() )
+            $command->setHandler( $dataSource->getHandler() );
+
         $result = $command();
 
         if( !is_null( $dataSource ) &&

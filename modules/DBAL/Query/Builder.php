@@ -115,4 +115,14 @@ final class Builder extends \Core\Object
 
         return $this;
     }
+
+    function getHandler()
+    {
+        return $this->_query->getHandler();
+    }
+
+    function setHandler( \IO\Filter\Handler $handler )
+    {
+        $this->_query->setHandler( $handler );
+    }
 }

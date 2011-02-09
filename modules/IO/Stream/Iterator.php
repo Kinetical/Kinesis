@@ -1,12 +1,15 @@
 <?php
 namespace IO\Stream;
 
+use IO\Filter;
+
 class Iterator extends \Util\Iterator
 {
     private $_outputBuffer;
     private $_inputBuffer;
     private $_stream;
     private $_shared = false;
+    private $_handler;
 
     protected $delegate;
 
@@ -37,7 +40,32 @@ class Iterator extends \Util\Iterator
         else
             $position = $this->position;
 
-        return $this->_inputBuffer[ $position ];
+
+        $input = $this->_inputBuffer[ $position ];
+
+        if( $this->inputFiltered() )
+        {
+            $handler = $this->_handler;
+
+            $params = array('input' => $input,
+                            'state' => Filter::INPUT );
+
+            $input = $handler( $params );
+        }
+
+        return $input;
+    }
+
+    private function inputFiltered()
+    {
+        if( $this->hasMap() )
+            if( $this->isShared() &&
+                $this->position < 1 )
+                return true;
+            else
+                return true;
+
+        return false;
     }
 
     public function current()
@@ -45,6 +73,16 @@ class Iterator extends \Util\Iterator
         $delegate = $this->delegate;
 
         $buffer = $delegate( $this->getInputArguments() );
+
+        if( $this->hasMap() )
+        {
+            $handler = $this->_handler;
+
+            $params = array('input' => $buffer,
+                            'state' => Filter::OUTPUT );
+
+            $buffer = $handler( $params );
+        }
 
         $this->_outputBuffer = $buffer;
 
@@ -141,5 +179,36 @@ class Iterator extends \Util\Iterator
     function setOutputBuffer( $output )
     {
         return $this->_outputBuffer = $output;
+    }
+
+    function getHandler()
+    {
+        return $this->_handler;
+    }
+
+    function setHandler( \IO\Filter\Handler $handler )
+    {
+        $this->_handler = $handler;
+    }
+
+    function setMap( $map )
+    {
+        if( is_null( $this->_handler ))
+            $this->_handler = new \IO\Filter\Handler();
+
+        $this->_handler->setMap( $map );
+    }
+
+    function getMap()
+    {
+        if( !$this->filtered() )
+             return null;
+        
+        return $this->_handler->getMap();
+    }
+
+    function hasMap()
+    {
+        return !is_null( $this->_handler );
     }
 }
