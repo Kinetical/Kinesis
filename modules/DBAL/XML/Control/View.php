@@ -8,10 +8,12 @@ class View extends \DBAL\XML\Configuration\View
         parent::__construct('control', $controlNames );
     }
 
-    function prepare()
+    function prepare( $source = null )
     {
-        parent::prepare();
+        parent::prepare( $source );
 
-        $this->getCommand()->getResource()->addMapper( new \ORM\Mapper\ControlTypeMapper() );
+        $source->Map->register( new \ORM\Mapper\ControlTypeMapper() );
+
+        return $this->command;
     }
 }

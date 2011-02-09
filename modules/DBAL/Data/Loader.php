@@ -87,12 +87,15 @@ class Loader extends \Core\Loader
         if( !empty( $dataSource ) )
         {
             if( count( $dataSource ) == 1 )
-                $result = $dataSource[0];
+            {
+                $keys = $dataSource->keys();
+                $result = $dataSource[ $keys[0] ];
+            }
             else
                 $result = $dataSource->toArray();
 
-            if( is_string( $name )
-                && $this->caching() )
+            if( is_string( $name ) &&
+                $this->caching() )
                 return $this->cache[$name] = $result;
             else
                 return $result;

@@ -25,6 +25,6 @@ class Table extends \DBAL\SQL\View
             }
         }
 
-        return parent::prepare();
+        return parent::prepare( $source );
     }
 }

@@ -15,12 +15,7 @@ class Map extends \Util\Collection\Iterator
 
     function recurse( \IO\Filter $filter, array $params = array() )
     {
-        $this->handle( new \IO\Filter\Recursive( $filter, $params ));
-    }
-
-    function handle( \IO\Filter\Handler $handler )
-    {
-        $this->register( $handler );
+        $this->register( new \IO\Filter\Recursive( $filter, $params ));
     }
 
     protected function execute( array $params = array() )

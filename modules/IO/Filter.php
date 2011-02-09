@@ -1,7 +1,7 @@
 <?php
 namespace IO;
 
-abstract class Filter extends Object
+abstract class Filter extends \Core\Object
 {
     const INPUT = 1;
     const OUTPUT = 2;

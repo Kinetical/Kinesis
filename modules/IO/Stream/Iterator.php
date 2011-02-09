@@ -43,7 +43,8 @@ class Iterator extends \Util\Iterator
 
         $input = $this->_inputBuffer[ $position ];
 
-        if( $this->inputFiltered() )
+        if( !is_null( $input ) &&
+             $this->inputFiltered() )
         {
             $handler = $this->_handler;
 
@@ -123,12 +124,27 @@ class Iterator extends \Util\Iterator
     function getStream()
     {
         if( is_null( $this->_stream ))
-            $this->_stream = $this->getHandler()->getStream();
+        {
+            $target = $this->getTarget();
+
+            if( $target instanceof \IO\Stream\Handler )
+                $this->_stream = $target->getStream();
+        }
 
         return $this->_stream;
     }
 
-    function getHandler()
+    function setStream( \IO\Stream $stream )
+    {
+        $target = $this->getTarget();
+
+        if( $target instanceof \IO\Stream\Handler )
+            $target->setStream( $stream );
+
+        $this->_stream = $stream;
+    }
+
+    protected function getTarget()
     {
         return $this->delegate->getTarget();
     }

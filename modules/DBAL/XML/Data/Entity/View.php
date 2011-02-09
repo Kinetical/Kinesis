@@ -8,10 +8,12 @@ class View extends \DBAL\XML\Configuration\View
         parent::__construct('entity', $entityNames );
     }
 
-    function prepare()
+    function prepare( $source = null )
     {
-        parent::prepare();
+        parent::prepare( $source );
 
-        $this->Command->Resource->addMapper( new \ORM\Mapper\SQLEntityMapper() );
+        $source->Map->regster( new \ORM\Mapper\SQLEntityMapper() );
+
+        return $this->command;
     }
 }

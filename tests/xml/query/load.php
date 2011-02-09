@@ -9,7 +9,9 @@ $query = new XML\Query();
 $query->build()
       ->from('tests\test.xml');
 
-$results = $query->execute();
+$results = $query();
+
+var_dump( $results );
 
 $it = new Tree\Node\Iterator( $results[0] );
 $rit = new Tree\Node\IteratorIterator( $it );

@@ -42,6 +42,6 @@ class Entity extends \DBAL\SQL\View
             }
         }
         
-        return parent::prepare();
+        return parent::prepare( $source );
     }
 }

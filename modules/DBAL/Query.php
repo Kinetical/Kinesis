@@ -164,7 +164,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
 
     function setHandler( \IO\Filter\Handler $handler )
     {
-        $this->handler = $handler;
+        if( $this->handler instanceof IO\Filter\Handler )
+            $this->handler->setMap( $handler->getMap() );
+        else
+            $this->handler = $handler;
     }
 
     function setStream( \IO\Stream $stream )
@@ -215,7 +218,7 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
 
         if( $this->_iterator instanceof IO\Stream\Iterator &&
             $this->_iterator->wrapped() )
-            $this->_iterator->getHandler()->setStream( $stream );
+            $this->_iterator->setStream( $stream );
 
         return true;
     }

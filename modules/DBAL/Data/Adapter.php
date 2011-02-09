@@ -163,7 +163,7 @@ class Adapter extends \Core\Object
     {
         if( $this->commands instanceof \DBAL\Query )
             return $this->commands->isWrite();
-        elseif( is_array( $commands ) )
+        elseif( is_array( $this->commands ) )
             return $this->isSelectCommand ();
 
         return false;

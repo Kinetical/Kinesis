@@ -10,6 +10,6 @@ $params = array( 'path' => 'tests\test.xml' );
 
 $dataAdapter->View = new XML\View( $params );
 
-//$dataAdapter->Fill( $dataSource );
+$dataAdapter->Fill( $dataSource );
 
-//var_dump( $dataSource->Data[0] );
+var_dump( $dataSource->Data );

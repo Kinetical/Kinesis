@@ -87,8 +87,8 @@ class Object implements I\Object
 
     function setData( $data )
     {
-        if( is_array( $data )
-            || $data instanceof Traversable )
+        if( is_array( $data ) ||
+            $data instanceof Traversable )
             $this->Data = $data;
         else
             $this->Data[] = $data;

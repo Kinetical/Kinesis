@@ -50,7 +50,7 @@ class Handler extends \IO\Filter
         $input = $params['input'];
         $state = $params['state'];
         
-        if( !$this->hasFilters( $state ) )
+        if( !$this->hasMap( $state ) )
             return $input;
 
         $filters = $this->map->getFilters( $state );

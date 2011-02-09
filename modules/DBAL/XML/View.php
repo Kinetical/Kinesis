@@ -64,6 +64,6 @@ class View extends \DBAL\Data\View
             }
         }
 
-        return parent::prepare();
+        return parent::prepare( $source );
     }
 }

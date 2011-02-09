@@ -9,9 +9,9 @@ class Entity extends \DBAL\XML\View
 
         $this->setParameters( array( 'path' => 'site\entity.xml'));
     }
-    function prepare( $dataSource = null )
+    function prepare( $source = null )
     {
-        parent::prepare();
+        parent::prepare( $source );
 
         if( $source instanceof \DBAL\Data\Source )
         {
