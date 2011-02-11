@@ -23,20 +23,23 @@ class Iterator extends \Util\Iterator
         $this->input = new \Util\Collection();
     }
 
-    protected function input()
+    function input()
     {
-        if( !$this->isFiltered( \IO\Filter::INPUT ))
-             return null;
-
+        
         $input = $this->input[ $this->position() ];
 
-        $params = array('input' => $input,
-                        'state' => \IO\Filter::INPUT );
+        if( $this->isFiltered( \IO\Filter::INPUT ))
+        {
+            $params = array('input' => $input,
+                            'state' => \IO\Filter::INPUT );
 
-        return $this->execute( $params );
+            return $this->execute( $params );
+        }
+
+        return $input;
     }
 
-    protected function output( $input = null )
+    function output( $input = null )
     {
         if( !$this->isFiltered( \IO\Filter::OUTPUT ))
              return $input;
@@ -53,12 +56,10 @@ class Iterator extends \Util\Iterator
 
         $output = $handler( $params );
 
-        var_dump( $output );
-
         return $output;
     }
 
-    function __invoke( array $params = array() )
+    protected function __invoke( array $params = array() )
     {
         return !is_null($this->execute( $params ));
     }
@@ -83,7 +84,7 @@ class Iterator extends \Util\Iterator
 
     function rewind()
     {
-        unset($this->Data);
+        $this->Data = null;
         return parent::rewind();
     }
 

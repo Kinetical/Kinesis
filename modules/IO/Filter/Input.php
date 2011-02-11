@@ -1,7 +1,7 @@
 <?php
 namespace IO\Filter;
 
-abstract class Input extends Filter
+abstract class Input extends \IO\Filter
 {
     function initialize()
     {

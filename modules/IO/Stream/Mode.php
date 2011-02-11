@@ -8,7 +8,7 @@ class Mode
 
     public $Description;
 
-    function __construct( $mode = self::READ )
+    function __construct( $mode = self::Read )
     {
         $this->Description = $mode;
     }

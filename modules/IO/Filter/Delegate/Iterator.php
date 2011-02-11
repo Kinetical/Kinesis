@@ -12,7 +12,7 @@ class Iterator extends \IO\Filter\Iterator
 
     function __construct( \Core\Delegate $delegate = null )
     {
-        $this->delegate = $delegate;
+        $this->setDelegate( $delegate );
 
         parent::__construct();
     }
@@ -56,7 +56,7 @@ class Iterator extends \IO\Filter\Iterator
     {
         $delegate = $this->delegate;
 
-        $buffer = $delegate( $input );
+        $buffer = $delegate( $this->input() );
 
         return parent::current( $buffer );
     }

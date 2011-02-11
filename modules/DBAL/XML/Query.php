@@ -15,7 +15,6 @@ class Query extends \DBAL\Query
 
         foreach( $this as $result )
         {
-            var_dump( $result );
             if( is_array( $result ))
                 $this->results->merge( $result );
             else

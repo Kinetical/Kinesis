@@ -37,7 +37,8 @@ class Iterator extends \IO\Stream\Iterator
 
     function setInput( $input )
     {
-        $this->_limit = $this->_platform->rowCount( $input );
+        if( is_resource( $input ))
+            $this->_limit = $this->_platform->rowCount( $input );
 
         parent::setInput( $input );
     }

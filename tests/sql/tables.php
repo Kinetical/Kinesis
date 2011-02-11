@@ -9,6 +9,7 @@ $tables = $query( $database );
 
 foreach( $tables as $table )
 {
+    var_dump( $table );
     $query = new \DBAL\SQL\Query();
     $query->build()
           ->columns()

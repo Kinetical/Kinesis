@@ -217,9 +217,15 @@ class Adapter extends \Core\Object
         {
             if( !is_array( $this->commands ))
                 $this->clear();
-            
+
             $this->commands[$type] = $command;
         }
+        
+        $command->setParameters(
+                array('StreamMode' => $this->isRead()
+                                      ? \IO\Stream\Mode::Read
+                                      : \IO\Stream\Mode::Write )
+                );
     }
 
     function clear()

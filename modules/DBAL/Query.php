@@ -37,6 +37,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
 
     function isRead()
     {
+        if( $this->parameters->exists('StreamMode') &&
+            $this->parameters['StreamMode'] == 'r')
+            return true;
+
         $stream = $this->getStream();
         if( $stream instanceof \IO\Stream )
             return $stream->isRead();
@@ -46,6 +50,10 @@ abstract class Query extends \Core\Object implements \IteratorAggregate, I\Execu
 
     function isWrite()
     {
+        if( $this->parameters->exists('StreamMode') &&
+            $this->parameters['StreamMode'] == 'w')
+            return true;
+
         $stream = $this->getStream();
         if( $stream instanceof \IO\Stream )
             return $stream->isWrite();

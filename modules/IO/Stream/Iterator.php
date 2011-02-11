@@ -5,12 +5,13 @@ use IO\Filter;
 
 class Iterator extends \IO\Filter\Delegate\Iterator
 {
-    private $_stream;
+    protected  $stream;
+    
     private $_shared = false;
 
     function __construct( \Core\Delegate $delegate = null, \IO\Stream $stream = null )
     {
-        $this->_stream = $stream;
+        $this->stream = $stream;
 
         parent::__construct( $delegate );
     }
@@ -32,27 +33,24 @@ class Iterator extends \IO\Filter\Delegate\Iterator
     {
         parent::rewind();
 
-        $stream = $this->getStream();
-        if( !is_null( $stream ) &&
-            $stream->Type->hasMethod('rewind'))
-            $stream->rewind();
+        if( !is_null( $this->stream ) &&
+            $this->stream->Type->hasMethod('rewind'))
+            $this->stream->rewind();
     }
 
     function valid()
     {
-        $stream = $this->getStream();
-
-        if( $stream->eof() )
+        if( $this->stream->eof() )
             return false;
 
         try {
-            if( !$stream->isOpen() )
-             $stream->open();
+            if( ! $this->stream->isOpen() )
+              $this->stream->open();
         } catch ( \Exception $e ){
             return false; }
 
-        if( method_exists( $stream, 'isWrite' )
-             && $stream->isWrite() // HAS INPUT
+        if( method_exists(  $this->stream, 'isWrite' )
+             &&  $this->stream->isWrite() // HAS INPUT
              && parent::valid() ) // EXHAUSTED INPUT
             return false;
 
@@ -61,25 +59,24 @@ class Iterator extends \IO\Filter\Delegate\Iterator
 
     function getStream()
     {
-        if( is_null( $this->_stream ))
-        {
-            $target = $this->getTarget();
-
-            if( $target instanceof \IO\Stream\Handler )
-                $this->_stream = $target->getStream();
-        }
-
-        return $this->_stream;
+        return $this->stream;
     }
 
     function setStream( \IO\Stream $stream )
     {
-        $target = $this->getTarget();
+        if( $this->delegate->isType('IO\Stream\Handler') )
+            $this->delegate->getTarget()->setStream( $stream );
 
-        if( $target instanceof \IO\Stream\Handler )
-            $target->setStream( $stream );
-
-        $this->_stream = $stream;
+        $this->stream = $stream;
+    }
+    
+    function setDelegate( \Core\Delegate $delegate )
+    {
+        if( is_null( $this->stream ) &&
+            $delegate->isType('IO\Stream\Handler'))
+            $this->stream = $delegate->getTarget()->getStream();
+        
+        parent::setDelegate( $delegate );
     }
 
     function isShared()
