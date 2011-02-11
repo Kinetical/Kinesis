@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Alter extends \DBAL\Query\Model\Node
+class Alter extends \DBAL\Query\Node\Container
 {
 	function create( $data )
 	{

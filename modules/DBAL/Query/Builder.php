@@ -6,23 +6,17 @@ use \Util\Interfaces as I;
 final class Builder extends \Core\Object
 {
     private $_nodes;
-    private $_query;
+    protected $query;
+    protected $container;
 
     function __construct( \DBAL\Query $query, array $params = array() )
     {
         $this->_nodes = array();
-        $this->_query = $query;
+        $this->query = $query;
 
         parent::__construct();
 
         $this->setParameters( $params );
-    }
-
-    function  initialize()
-    {
-        parent::initialize();
-
-        $this->_parameters = new \Util\Collection();
     }
 
     public function getNodes()
@@ -40,13 +34,18 @@ final class Builder extends \Core\Object
         $this->_nodes = $nodes;
     }
 
+    function getContainer()
+    {
+        return $this->container;
+    }
+
     public function getParameters()
     {
-        return $this->_query->getParameters();
+        return $this->query->getParameters();
     }
     function setParameters( array $params)
     {
-        $this->_query->setParameters( $params );
+        $this->query->setParameters( $params );
     }
 
     function __toString()
@@ -64,7 +63,7 @@ final class Builder extends \Core\Object
 
     protected function execute( $stream = null )
     {
-        $query = $this->_query;
+        $query = $this->query;
 
         $text = (string)$this;
 
@@ -81,17 +80,17 @@ final class Builder extends \Core\Object
 
     function getQuery()
     {
-        return $this->_query;
+        return $this->query;
     }
 
     function setDataType( $type )
     {
-        $this->_query->setDataType( $type );
+        $this->query->setDataType( $type );
     }
 
     function getDataType()
     {
-        return $this->_query->getDataType();
+        return $this->query->getDataType();
     }
 
     function __call( $name, array $arguments )
@@ -102,7 +101,7 @@ final class Builder extends \Core\Object
                 $arguments = $arguments[0];
 
         $node->setQueryBuilder( $this );
-        if( $node->create( $arguments ) )
+        if( $created = $node->create( $arguments ) )
             if( array_key_exists( $name, $this->_nodes ))
             {
                 if( !is_array( $this->_nodes ))
@@ -113,16 +112,20 @@ final class Builder extends \Core\Object
             else
                 $this->_nodes[$name] = $node;
 
+        if( $created &&
+            $node instanceof Node\Container )
+            $this->container = $node;
+
         return $this;
     }
 
     function getHandler()
     {
-        return $this->_query->getHandler();
+        return $this->query->getHandler();
     }
 
     function setHandler( \IO\Filter\Handler $handler )
     {
-        $this->_query->setHandler( $handler );
+        $this->query->setHandler( $handler );
     }
 }

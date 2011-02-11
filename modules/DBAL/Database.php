@@ -100,7 +100,7 @@ class Database extends \Core\Object implements I\Nameable
 
     function select()
     {
-        $this->_selected = $this->getPlatform()->select( $this->_connection );
+        $this->_selected = $this->_driver->select( $this->_connection );
         return $this->_selected;
     }
 
@@ -111,7 +111,7 @@ class Database extends \Core\Object implements I\Nameable
 
     function query( $sql )
     {
-        return $this->getPlatform()->query( $sql, $this->_connection );
+        return $this->_driver->query( $sql, $this->_connection );
     }
 
     function getLink()

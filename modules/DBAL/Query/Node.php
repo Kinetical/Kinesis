@@ -3,7 +3,7 @@ namespace DBAL\Query;
 
 abstract class Node extends \DBAL\Data\Tree\Node
 {
-	private $_queryBuilder;
+	protected $builder;
 	private $_modelNode;
         private $_preBuilt = false;
 
@@ -57,42 +57,31 @@ abstract class Node extends \DBAL\Data\Tree\Node
         }
 
 	public function getQueryBuilder() {
-		return $this->_queryBuilder;
+		return $this->builder;
 	}
 
 	function getQuery()
 	{
-		return $this->_queryBuilder->getQuery();
+		return $this->builder->getQuery();
 	}
 
-	function getModelNode()
+	function getContainer()
 	{
-		if( $this->_modelNode == null )
-			foreach( $this->_queryBuilder->Nodes as $node )
-			{
-				if( $node instanceof Model\Node )
-				{
-					$this->_modelNode = $node;
-					break;
-				}
-
-			}
-
-		return $this->_modelNode;
+            return $this->getQuery()->container;
 	}
 
-	function getModel()
+	function getOwner()
 	{
-            $modelNode = $this->getModelNode();
+            $container = $this->getContainer();
 
-            if( $modelNode instanceof Model\Node )
-                $model = $modelNode->getModel();
+            if( $container instanceof Node\Container )
+                return $container->getOwner();
 
-            return $model;
+            return null;
 	}
 
 	function setQueryBuilder( Builder $queryBuilder) {
-		$this->_queryBuilder = $queryBuilder;
+		$this->builder = $queryBuilder;
 	}
 
 	public function offsetSet($offset, $value) {

@@ -23,7 +23,7 @@ class Select extends \DBAL\Query\Node
 
 		$c = 0;
 
-                $model = $this->getModel();
+                $model = $this->Owner();
 
 		foreach( $this['variables'] as $var )
 		{

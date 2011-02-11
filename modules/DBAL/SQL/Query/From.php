@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class From extends \DBAL\Query\Model\Node
+class From extends \DBAL\Query\Node\Container
 {
 	private $_alias;
 
@@ -38,7 +38,7 @@ class From extends \DBAL\Query\Model\Node
 	{
 		$sql  = "FROM \n";
 
-                $model = $this->getModel();
+                $model = $this->getOwner();
 
                 if( $model instanceof \DBAL\Data\Model )
                 {

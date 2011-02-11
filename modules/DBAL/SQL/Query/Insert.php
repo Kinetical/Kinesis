@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Insert extends \DBAL\Query\Model\Node
+class Insert extends \DBAL\Query\Node\Container
 {
 	function create( $data )
 	{
@@ -9,15 +9,13 @@ class Insert extends \DBAL\Query\Model\Node
 
             if( is_string( $data ))
                 $this['table'] = $table;
-            elseif( $data instanceof \DBAL\Data\Model )
-                $this->setModel( $data );
 
             return parent::create( $data );
 	}
 
 	function open()
 	{
-            $model = $this->getModel();
+            $model = $this->getOwner();
 
             if( $model !== null )
                 $table = $model->getName();

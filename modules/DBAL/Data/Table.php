@@ -5,15 +5,8 @@ use \Util\Interfaces as I;
 
 class Table extends \Core\Object implements I\Nameable
 {
-    private $_model;
     private $_columns;
     private $_rows;
-
-    function __construct( Model $model )
-    {
-        $this->setModel( $model );
-        parent::__construct();
-    }
 
     function initialize()
     {
@@ -22,23 +15,25 @@ class Table extends \Core\Object implements I\Nameable
         $this->_columns = new \Util\Collection\Dictionary(array(),'\DBAL\Data\Table\Column');
         $this->_rows = new \Util\Collection\Dictionary(array(),'\DBAL\Data\Table\Row');
     }
-    function getName()
+
+    function getColumns()
     {
-        return $this->getModel()->getName();
+        return $this->_columns;
     }
 
-    function setName( $name )
+    function setColumns( array $columns )
     {
-        $this->getModel()->setName( $name );
+        $this->_columns->merge( $columns );
     }
 
-    function getModel()
+    function getRows()
     {
-        return $this->_model;
+        return $this->_columns;
     }
 
-    function setModel( Model $model )
+    function setRows( array $rows )
     {
-        $this->_model = $model;
+        $this->_columns->merge( $rows );
     }
+
 }

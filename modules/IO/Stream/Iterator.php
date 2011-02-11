@@ -49,11 +49,6 @@ class Iterator extends \IO\Filter\Delegate\Iterator
         } catch ( \Exception $e ){
             return false; }
 
-        if( method_exists(  $this->stream, 'isWrite' )
-             &&  $this->stream->isWrite() // HAS INPUT
-             && parent::valid() ) // EXHAUSTED INPUT
-            return false;
-
         return true;
     }
 
