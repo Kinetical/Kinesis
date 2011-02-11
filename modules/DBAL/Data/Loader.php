@@ -82,6 +82,8 @@ class Loader extends \Core\Loader
 
         $dataAdapter->Fill( $dataSource );
 
+        var_dump( $dataSource->Data );
+
         unset( $this->view );
 
         if( !empty( $dataSource ) )
@@ -93,6 +95,8 @@ class Loader extends \Core\Loader
             }
             else
                 $result = $dataSource->toArray();
+
+            var_dump( $result );
 
             if( is_string( $name ) &&
                 $this->caching() )

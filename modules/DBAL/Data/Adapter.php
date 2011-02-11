@@ -215,8 +215,8 @@ class Adapter extends \Core\Object
             $this->commands = $command;
         else
         {
-            if( is_null( $this->commands ))
-                $this->commands = array();
+            if( !is_array( $this->commands ))
+                $this->clear();
             
             $this->commands[$type] = $command;
         }
@@ -224,6 +224,6 @@ class Adapter extends \Core\Object
 
     function clear()
     {
-        unset( $this->commands );
+        $this->commands = array();
     }
 }

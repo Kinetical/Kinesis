@@ -70,6 +70,9 @@ abstract class Cache extends \Util\Collection
         if( $this->parameters->exists('hash') )
             $offset = $this->hash( $offset );
 
+        if( !is_object( $value ))
+            throw new \Core\Exception( 'Cannot only cache objects, '. gettype( $value) .' provided');
+
         $this->save( $offset, clone $value );
     }
 

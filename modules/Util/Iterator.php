@@ -52,8 +52,8 @@ abstract class Iterator extends \Core\Object implements \Iterator
             $this->position = $position;
             return $this;
         }
-        else
-            return $this->position;
+
+        return $this->position;
     }
 
     protected function shift( $amount )

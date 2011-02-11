@@ -169,7 +169,10 @@ class Object implements I\Object
                 && $this->Type->preProcess($this, $methodName, $arguments) == false)
                 return null;
 
-                $results = call_user_func_array( array( $this, $methodName ), $arguments );
+                $delegate = new Delegate( $this, $methodName );
+
+                $results = $delegate( $arguments );
+
             if( $this->Type->hasPostProcess($methodName))
                 $this->Type->postProcess ($this, $methodName, $arguments);
         }

@@ -11,7 +11,7 @@ foreach( $tables as $table )
 {
     $query = new \DBAL\SQL\Query();
     $query->build()
-          ->attributes()
+          ->columns()
           ->from( $table );
 
     $columns = $query( $database );
