@@ -5,7 +5,10 @@ class Property extends \Kinesis\Parameter
 {
     function get( $name, &$ref )
     {
-        return $ref->$name;
+        if( !is_null( $value = $ref->$name ))
+            return $value;
+
+        return null;
     }
 
     function set( $name, $value, &$ref )

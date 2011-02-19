@@ -49,30 +49,30 @@ class Type
         self::$types[ $this->Name ] = $this;
     }
 
-    function initialise( Reference $ref )
+    function initialise( $ref )
     {
+        if( $ref instanceof Object )
+            $ref = Reference\Object::cache( $ref );
+
         $type = $this->resolve( $ref );
         $ref->Type = $type;
+        
+        if( $ref instanceof Reference )
+        {
+            if( is_null( $ref->Parameter ) )
+                $ref->Parameter = $this->field( $ref );
 
-        if( is_null( $this->field ))
-            
-
-        if( is_null( $ref->Parameter ) )
-            $ref->Parameter = $this->field( $ref );
-
-        $ref->Parameter->assign( $ref );
-
+            $ref->Parameter->assign( $ref );
+        }
     }
 
     protected function resolve( $ref )
-    {
+    {      
         if( $ref instanceof Reference )
             $ref = $ref->Container;
 
         if( is_object( $ref ) )
-        {
             return $this->resolveObject($ref);
-        }
 
         return $this->resolveScalar( $ref );
     }
@@ -80,6 +80,12 @@ class Type
     private function resolveObject( $ref )
     {
         $name = get_class( $ref );
+
+        if( stripos( $name, 'factory') !== false )
+            $type = new Type\FactoryType();
+
+        if( stripos( $name, 'builder') !== false )
+            $type = new Type\BuilderType();
 
         if( stripos( $name, 'controller') !== false )
             $type = new Type\ControlType();
@@ -107,7 +113,7 @@ class Type
         $type = get_class( $ref->Type );
 
         if( !array_key_exists( $type, self::$parameters ))
-            self::$parameters[ $type ] = new Field( $this->Name, $ref->Type );
+            self::$parameters[ $type ] = new Parameter\Field( $this->Name, $ref->Type );
 
         return self::$parameters[ $type ];
     }

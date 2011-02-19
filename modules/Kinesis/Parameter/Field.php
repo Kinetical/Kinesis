@@ -1,37 +1,49 @@
 <?php
-namespace Kinesis;
+namespace Kinesis\Parameter;
 
-class Field extends Parameter
+use Kinesis\Task\Statement as Statement;
+
+class Field extends \Kinesis\Parameter
 {
     private static $_replacements = array( 'get'      => '__get',
                                            'set'      => '__set',
                                            'call'     => '__call',
                                            'has'      => '__isset',
                                            'toString' => '__toString',
-                                           'copy'     => '__clone' );
+                                           'copy'     => '__clone',
+                                           'invoke'   => '__invoke' );
     public $Expression;
 
     private $listener = array();
 
-    function intercept( $native, Parameter $param )
+    function listen( $method, $delegate )
+    {
+        if( !array_key_exists( $method, $this->listener ) ||
+            !is_array( $this->listener[ $method ] ))
+            $this->listener[ $method ] = array();
+
+        $this->listener[$method][] = $delegate;
+    }
+
+    function intercept( $native, \Kinesis\Parameter $param )
     {
         $this->state( new Statement\Delegate\Intercept( $this->build( $native, $param ) ) );
     }
 
-    function bypass( $native, Parameter $param  )
+    function bypass( $native, \Kinesis\Parameter $param  )
     {
          $this->state( new Statement\Delegate\Bypass( $this->build( $native, $param ) ) );
     }
 
-    function build( $native, Parameter $param )
+    function build( $native, \Kinesis\Parameter $param )
     {
-        if( $native instanceof Reference )
+        if( $native instanceof \Kinesis\Reference )
             $native = $native->Container;
         
-        return new Object( $native, $param );
+        return new \Kinesis\Reference\Object( $native, $param );
     }
 
-    private function intersect( Statement $statement, array $intercede  )
+    private function intersect( \Kinesis\Task\Statement $statement, array $intercede  )
     {
         $flipped = array_flip( self::$_replacements );
 
@@ -56,18 +68,13 @@ class Field extends Parameter
         return $intercede;
     }
 
-    private function listen( Statement $statement, $intersect )
+    private function apply( \Kinesis\Task\Statement $statement, $intersect )
     {
         if( !empty( $intersect ))
         {
             while( !empty( $intersect ) )
             {
-                $name = array_pop( $intersect );
-                if( !array_key_exists( $name, $this->listener ) ||
-                    !is_array( $this->listener[ $name ] ))
-                    $this->listener[ $name ] = array();
-
-                $this->listener[ $name ][] = $statement;
+                $this->listen( array_pop( $intersect ), $statement );
             }
         }
 //        else
@@ -79,7 +86,7 @@ class Field extends Parameter
 //        }
     }
 
-    protected function state( Statement $statement )
+    protected function state( \Kinesis\Task\Statement $statement )
     {
         $methods = get_class_methods( $statement->Reference->Parameter );
         $intercede = array_intersect( array_values( $methods ), array_keys( self::$_replacements ) );
@@ -87,15 +94,12 @@ class Field extends Parameter
         $intersect = $this->intersect( $statement, $intercede );
 
         if( !empty( $intersect ))
-            $this->listen( $statement, $intersect );
+            $this->apply( $statement, $intersect );
     }
 
     function assign( $ref )
     {
         $behaviors = $this->Type->roles();
-
-        var_dump( $this->Type );
-        var_dump( $behaviors );
 
         if( is_callable( $behaviors ))
             $behaviors = $behaviors();

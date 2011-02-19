@@ -5,6 +5,6 @@ class Callback extends \Kinesis\Parameter
 {
     function invoke( array $arguments, &$ref )
     {
-
+        return $ref->execute( $arguments );
     }
 }

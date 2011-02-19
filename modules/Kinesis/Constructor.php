@@ -3,11 +3,16 @@ namespace Kinesis;
 
 class Constructor
 {
+    public $ScalarArguments = false;
+    
     private static $types = array();
 
     function __call( $className, $args )
     {
         $class = $this->reflect( $className );
+
+        if( $this->ScalarArguments )
+            $args = $args[0];
 
         return $class->newInstanceArgs( $args );
     }

@@ -1,14 +1,13 @@
 <?php
-namespace Kinesis\Statement\Delegate;
+namespace Kinesis\Task\Statement\Delegate;
 
-class Intercept extends \Kinesis\Statement\Delegate
+abstract class Route extends \Kinesis\Task\Statement\Delegate
 {
     function execute()
     {
-        if( method_exists( $this->Reference, $this->Method ) &&
-            !is_null( $value = parent::execute()))
-            return $value;
-
+        if( func_num_args() > 0 )
+            return parent::execute();
+        
         $ref = $this->Reference;
         $this->Reference = $this->Reference->Parameter;
         $this->Reference->Reference = $this->Source;

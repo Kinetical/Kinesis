@@ -1,7 +1,7 @@
 <?php
-namespace Kinesis\Statement;
+namespace Kinesis\Task\Statement;
 
-class Delegate extends \Kinesis\Statement
+class Delegate extends \Kinesis\Task\Statement
 {
     public $Method;
     public $Arguments;

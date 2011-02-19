@@ -5,14 +5,16 @@ use Kinesis\Parameter\Object as Object;
 
 class ObjectType
 {
-    function roles( $roles = array() )
-    {
-        if( !is_array( $roles ))
-            $roles = func_get_args();
+    protected $behaviors = array();
 
-        return array_merge( $roles,
-                            array( new Object\Property(),
-                                   new Object\Property\Method() )
-                          );
+    function __construct()
+    {
+        $this->behaviors = array( new Object\Property(),
+                                  new Object\Property\Method() );
+    }
+
+    function roles()
+    {
+        return $this->behaviors;
     }
 }

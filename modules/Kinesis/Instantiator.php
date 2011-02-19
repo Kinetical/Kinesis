@@ -9,6 +9,8 @@ namespace Kinesis;
  */
 class Instantiator extends Constructor
 {
+    
+    
     private static $types;
     
     private $_namespace;
@@ -24,15 +26,26 @@ class Instantiator extends Constructor
 
         $rClass = $this->reflect( $qualified );
 
-        if( $rClass->isSubclassOf('Kinesis\Reference') )
+        if( $rClass->isSubclassOf('Kinesis\Reference') ||
+            $rClass->isSubclassOf('Kinesis\Object') )
             $instance = parent::__call( $qualified, $args );
+        else
+            $instance = new Reference\Object( parent::__call( $qualified, $args ) );
 
-        $instance = new \Kinesis\Object( parent::__call( $qualified, $args ) );
-
-        if( array_key_exists( $class, self::$types ))
-            self::$types[ $class ]->initialise( $instance );
+        if( !( $instance instanceof Object ))
+            self::initialise( $instance, $class );
 
         return $instance;
+    }
+
+    static function initialise( $instance, $class )
+    {
+        if( array_key_exists( $class, self::$types ))
+            $type = self::$types[ $class ];
+        else
+            $type = new Type( $class );
+
+        $type->initialise( $instance );
     }
 
     private function clear()

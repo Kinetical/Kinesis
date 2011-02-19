@@ -1,21 +1,19 @@
 <?php
-namespace Kinesis;
+namespace Kinesis\Task;
 
-abstract class Statement
+abstract class Statement extends \Kinesis\Task
 {
     public $Reference;
     public $Source;
-
 
     function __construct( $reference )
     {
         $this->Reference = $reference;
     }
 
-    abstract protected function execute();
     function parse( array $array = null )
     {
-        if( $this instanceof Delegate )
+        if( $this instanceof Statement\Delegate )
             $this->Arguments = $array;
 
         return $array;

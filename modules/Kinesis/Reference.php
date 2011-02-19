@@ -18,12 +18,10 @@ abstract class Reference
             $this->initialise();
     }
 
-    protected function __express( $method, array $args = null, $statement = null )
+    protected function overload( $method, array $args = null, $statement = null )
     {
-        $expression = new Statement\Expression( $this, $method, $this->_cache );
+        $expression = new Task\Statement\Expression( $this, $method, $this->_cache );
 
-        if( is_null( $args ))
-            $args = array();
         return $expression( $statement, $args );
     }
 

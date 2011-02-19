@@ -1,56 +1,41 @@
 <?php
 namespace Kinesis;
 
-class Object extends Reference
+class Object
 {
-    private $id;
+    private $reference;
 
-    function __construct( $obj, Parameter $parameter = null )
-    {
-        if( is_null( $obj ))
-            $obj = array();
-        parent::__construct( $obj, $parameter );
-    }
 
-    function initialise()
+    private function integrity()
     {
-        if( is_object( $this->Container ))
+        if( is_null( $this->reference ))
         {
-            $this->id = spl_object_hash( $this->Container );
-            if( method_exists( $this->Container, 'initialise' ) &&
-                ( !isset( $this->Container->initialised ) ||
-                   $this->Container->initialised == false ) )
-            {
-
-                $this->Container->initialise();
-                $this->Container->initialised = true;
-            }
+            $this->reference = new Reference\Object( $this );
+            Instantiator::initialise( $this->reference );
         }
     }
 
-    protected function __express( $method, array $args = null, $statement = null )
+    function __construct()
     {
-        if( method_exists( $this->Container, 'initialise') &&
-            ( $this->Container->initialised == false  ||
-            $this->id !== spl_object_hash( $this->Container ) ))
-            $this->initialise();
-
-        return parent::__express( $method, $args, $statement );
+        $this->integrity();
     }
 
     function __get( $name )
     {
-        return $this->__express( __FUNCTION__, func_get_args() );
+        $this->integrity();
+        return $this->reference->__get( $name );
     }
 
     function __set( $name, $value )
     {
-        $this->__express( __FUNCTION__, func_get_args() );
+        $this->integrity();
+        $this->reference->__set( $name, $value );
     }
 
     function __isset( $name )
     {
-        return $this->__express( 'has', func_get_args() );
+        $this->integrity();
+        return $this->reference->__isset( $name );
     }
 
     function __unset( $name )
@@ -60,16 +45,24 @@ class Object extends Reference
 
     function __call( $method, array $arguments)
     {
-        return $this->__express( __FUNCTION__, array( $method, $arguments ) );
+        $this->integrity();
+        return $this->reference->__call( $method, $arguments );
     }
 
-    function  __toString()
+    function __invoke()
     {
-        return print_r( $this->Container, true );
+        $this->integrity();
+        if( func_num_args() > 0 )
+            $args = func_get_args();
+        else
+            $args = array();
+
+        return call_user_func_array( $this->reference, $args );
     }
 
-    function __clone()
+    function reference()
     {
-        $this->__express( 'copy' );
+        $this->integrity();
+        return $this->reference;
     }
 }

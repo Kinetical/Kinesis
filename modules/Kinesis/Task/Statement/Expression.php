@@ -1,5 +1,5 @@
 <?php
-namespace Kinesis\Statement;
+namespace Kinesis\Task\Statement;
 
 class Expression extends Delegate
 {
@@ -16,7 +16,7 @@ class Expression extends Delegate
 
     protected function getStatements()
     {
-        if( $this->Reference->Parameter instanceof \Kinesis\Field )
+        if( $this->Reference->Parameter instanceof \Kinesis\Parameter\Field )
             return $this->Reference->Parameter->listeners( $this->_method );
 
         return null;
@@ -29,15 +29,17 @@ class Expression extends Delegate
         {
             $statement = array_reverse( $statement );
             foreach( $statement as $stmt )
+            {
                 if( !is_null( $value = $this( $stmt, $args ) ) )
                      return $value;
+            }
 
         }
 
         return null;
     }
 
-    protected function isBypassed( $name, \Kinesis\Statement $statement )
+    protected function isBypassed( $name, \Kinesis\Task\Statement $statement )
     {
         $method = $this->_method;
 
@@ -53,19 +55,25 @@ class Expression extends Delegate
 
     protected function isImplemented( )
     {
-        if( is_object( $this->Reference->Container ) &&
-            method_exists( $this->Reference->Container, $this->Method ))
+        if(  is_object( $this->Reference->Container ) &&
+             method_exists( $this->Reference->Container, $this->Method ) &&
+           !($this->Reference->Container instanceof \Kinesis\Object ) )
             return true;
 
         return false;
     }
 
-    function __invoke( \Kinesis\Statement $statement = null, array $args = array() )
+    function __invoke( $statement = null, array $args = array() )
     {
         if( is_null( $statement ))
             return $this->recurse( $args );
 
-        if( !($statement instanceof \Kinesis\Statement))
+        if( get_class( $statement ) == 'Closure' )
+        {
+            return call_user_func_array( $statement, $args );
+        }
+
+        if( !($statement instanceof \Kinesis\Task\Statement))
             return null;
 
         $acc = count( $args );
