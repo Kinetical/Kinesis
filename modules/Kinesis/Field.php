@@ -15,12 +15,20 @@ class Field extends Parameter
 
     function intercept( $native, Parameter $param )
     {
-        $this->state( new Intercept( new Object( $native, $param ) ) );
+        $this->state( new Statement\Delegate\Intercept( $this->build( $native, $param ) ) );
     }
 
     function bypass( $native, Parameter $param  )
     {
-         $this->state( new Bypass( new Object( $native, $param ) ) );
+         $this->state( new Statement\Delegate\Bypass( $this->build( $native, $param ) ) );
+    }
+
+    function build( $native, Parameter $param )
+    {
+        if( $native instanceof Reference )
+            $native = $native->Container;
+        
+        return new Object( $native, $param );
     }
 
     private function intersect( Statement $statement, array $intercede  )
@@ -80,6 +88,28 @@ class Field extends Parameter
 
         if( !empty( $intersect ))
             $this->listen( $statement, $intersect );
+    }
+
+    function assign( $ref )
+    {
+        $behaviors = $this->Type->roles();
+
+        var_dump( $this->Type );
+        var_dump( $behaviors );
+
+        if( is_callable( $behaviors ))
+            $behaviors = $behaviors();
+
+        if( is_array( $behaviors ))
+        {
+            foreach( $behaviors as $type => $param )
+            {
+                if( !is_string( $type ))
+                    $type = 'bypass';
+                
+                $this->$type( $ref->Container, $param );
+            }
+        }
     }
 
     function listeners( $method = null )

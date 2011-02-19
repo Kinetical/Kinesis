@@ -1,7 +1,7 @@
 <?php
-namespace Kinesis;
+namespace Kinesis\Statement;
 
-class Expression extends Statement\Delegate
+class Expression extends Delegate
 {
     private $_method;
     private $_statement;
@@ -16,7 +16,7 @@ class Expression extends Statement\Delegate
 
     protected function getStatements()
     {
-        if( $this->Reference->Parameter instanceof Field )
+        if( $this->Reference->Parameter instanceof \Kinesis\Field )
             return $this->Reference->Parameter->listeners( $this->_method );
 
         return null;
@@ -37,14 +37,14 @@ class Expression extends Statement\Delegate
         return null;
     }
 
-    protected function isBypassed( $name, Statement $statement )
+    protected function isBypassed( $name, \Kinesis\Statement $statement )
     {
         $method = $this->_method;
 
         if( $method !== 'set' &&
             $method !== 'unset' &&
             $method !== 'isset' &&
-            $statement instanceof Bypass &&
+            $statement instanceof Delegate\Bypass &&
             array_key_exists( $name, $this->Source ) )
             return true;
 
@@ -60,12 +60,12 @@ class Expression extends Statement\Delegate
         return false;
     }
 
-    function __invoke( Statement $statement = null, array $args = array() )
+    function __invoke( \Kinesis\Statement $statement = null, array $args = array() )
     {
         if( is_null( $statement ))
             return $this->recurse( $args );
 
-        if( !($statement instanceof Statement))
+        if( !($statement instanceof \Kinesis\Statement))
             return null;
 
         $acc = count( $args );
@@ -87,7 +87,7 @@ class Expression extends Statement\Delegate
 
         if( $acc > 0 &&
             !is_null( $result ) &&
-            $statement instanceof Bypass )
+            $statement instanceof Delegate\Bypass )
             return $this->Source[ $args[0] ] = $result;
 
         return $result;

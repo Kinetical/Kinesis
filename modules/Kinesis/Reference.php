@@ -20,7 +20,7 @@ abstract class Reference
 
     protected function __express( $method, array $args = null, $statement = null )
     {
-        $expression = new Expression( $this, $method, $this->_cache );
+        $expression = new Statement\Expression( $this, $method, $this->_cache );
 
         if( is_null( $args ))
             $args = array();

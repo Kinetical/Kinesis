@@ -14,9 +14,6 @@ class Object extends Reference
 
     function initialise()
     {
-        if( is_null( $this->Parameter ) )
-            $this->Parameter = new Field( null, new Type\ObjectType( $this ) );
-
         if( is_object( $this->Container ))
         {
             $this->id = spl_object_hash( $this->Container );

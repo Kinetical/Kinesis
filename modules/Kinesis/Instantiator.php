@@ -7,30 +7,43 @@ namespace Kinesis;
  * NOT MEANT TO BE FACTORY PATTERN
  * REPEAT: DO NOT MODIFY PROVIDED NAMESPACE RESOLUTION
  */
-class Instantiator
+class Instantiator extends Constructor
 {
-    public $Types;
+    private static $types;
     
-    private static $_namespace;
-    static function __call( $class, array $args = null )
+    private $_namespace;
+
+    function __call( $class, array $args = null )
     {
-        if( is_null( self::$_namespace ))
+        if( is_null( $this->_namespace ))
             $qualified = $class;
         else
-            $qualified = self::$_namespace . '\\'. $class;
+            $qualified = $this->_namespace . '\\'. $class;
 
-        self::$_namespace = null;
+        $this->clear();
 
-        $reflect = new \ReflectionClass( $qualified );
-        if( $reflect->isSubclassOf('Kinesis\Reference') )
-            return $reflect->newInstanceArgs( $args );
+        $rClass = $this->reflect( $qualified );
 
-        return new \Kinesis\Object( $reflect->newInstanceArgs( $args ));
+        if( $rClass->isSubclassOf('Kinesis\Reference') )
+            $instance = parent::__call( $qualified, $args );
+
+        $instance = new \Kinesis\Object( parent::__call( $qualified, $args ) );
+
+        if( array_key_exists( $class, self::$types ))
+            self::$types[ $class ]->initialise( $instance );
+
+        return $instance;
+    }
+
+    private function clear()
+    {
+        $this->_namespace = null;
+        self::$types = Type::all( $this );
     }
 
     function __invoke( $namespace )
     {
-        self::$_namespace = $namespace;
+        $this->_namespace = $namespace;
 
         return $this;
     }
@@ -40,7 +53,7 @@ class Instantiator
         return function( $namespace )
         {
             static $instant;
-            if( is_null( $instance ))
+            if( is_null( $instant ))
                 $instant = new Instantiator();
 
             return $instant( $namespace );
