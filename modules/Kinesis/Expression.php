@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis;
 
-class Expression extends Delegate
+class Expression extends Statement\Delegate
 {
     private $_method;
     private $_statement;

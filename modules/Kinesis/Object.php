@@ -3,14 +3,19 @@ namespace Kinesis;
 
 class Object extends Reference
 {
-    public $Data;
-
     private $id;
+
+    function __construct( $obj, Parameter $parameter = null )
+    {
+        if( is_null( $obj ))
+            $obj = array();
+        parent::__construct( $obj, $parameter );
+    }
 
     function initialise()
     {
         if( is_null( $this->Parameter ) )
-            $this->Parameter = new Field( null, new ObjectType( $this ) );
+            $this->Parameter = new Field( null, new Type\ObjectType( $this ) );
 
         if( is_object( $this->Container ))
         {
@@ -64,14 +69,10 @@ class Object extends Reference
     function  __toString()
     {
         return print_r( $this->Container, true );
-        //return $this->__express( __FUNCTION__, $arguments );
     }
 
     function __clone()
     {
-        $this->Data = 'fuck';
         $this->__express( 'copy' );
-
-        return 'yea';
     }
 }
