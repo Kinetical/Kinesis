@@ -82,22 +82,23 @@ class Type
         $name = get_class( $ref );
 
         if( stripos( $name, 'factory') !== false )
-            $type = new Type\FactoryType();
+            $type = new Type\Object\Factory();
 
         if( stripos( $name, 'builder') !== false )
-            $type = new Type\BuilderType();
+            $type = new Type\Object\Builder();
 
         if( stripos( $name, 'controller') !== false )
-            $type = new Type\ControlType();
+            $type = new Type\Object\Control();
 
         if( is_null( $type ))
-            $type = new Type\ObjectType();
+            $type = new Type\Object();
 
         return $type;
     }
 
     private function resolveScalar( $ref )
     {
+        // TODO: SCALAR TYPES
         $name = gettype( $ref );
         switch( $name )
         {

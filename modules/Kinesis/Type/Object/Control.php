@@ -1,9 +1,9 @@
 <?php
-namespace Kinesis\Type;
+namespace Kinesis\Type\Object;
 
 use Kinesis\Parameter\Object as Object;
 
-class ControlType extends ObjectType
+class Control extends \Kinesis\Type\Object
 {
     function __construct()
     {

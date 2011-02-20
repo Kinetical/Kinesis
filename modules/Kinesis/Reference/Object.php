@@ -5,6 +5,7 @@ class Object extends \Kinesis\Reference
 {
     private static $cache = array();
     private static $objects = array();
+    private static $initialised = array();
     private $id;
 
     function __construct( $obj, \Kinesis\Parameter $parameter = null )
@@ -23,14 +24,17 @@ class Object extends \Kinesis\Reference
             self::$objects[ $id ] = $this->Container;
             $this->id = $id;
 
-            if( method_exists( $this->Container, 'initialise' ) &&
-                ( !isset( $this->Container->initialised ) ||
-                   $this->Container->initialised == false ) )
-            {
+            $this->_initialise();
+        }
+    }
 
-                $this->Container->initialise();
-                $this->Container->initialised = true;
-            }
+    private function _initialise()
+    {
+        if( method_exists( $this->Container, 'initialise' ) &&
+           !array_key_exists( $this->id, self::$initialised ))
+        {
+            $this->Container->initialise();
+            self::$initialised[ $this->id ] = true;
         }
     }
 
@@ -45,10 +49,7 @@ class Object extends \Kinesis\Reference
 
     protected function overload( $method, array $args = null, $statement = null )
     {
-        if( method_exists( $this->Container, 'initialise') &&
-            ( $this->Container->initialised == false  ||
-            $this->id !== spl_object_hash( $this->Container ) ))
-            $this->initialise();
+        $this->_initialise();
 
         return parent::overload( $method, $args, $statement );
     }

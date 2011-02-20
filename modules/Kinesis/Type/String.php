@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis\Type;
 
-class StringType extends ValueType
+class String extends Value
 {
     public $Name = 'string';
 

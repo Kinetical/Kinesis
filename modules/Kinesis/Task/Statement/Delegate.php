@@ -30,6 +30,7 @@ class Delegate extends \Kinesis\Task\Statement
         if( $c < 5 )
         {
             $method = $this->Method;
+
             switch( $c )
             {
                 case 0:

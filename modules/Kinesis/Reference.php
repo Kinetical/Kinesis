@@ -7,20 +7,29 @@ abstract class Reference
     public $Container;
     public $Type;
 
-    private $_cache = array();
+    private $_cache = array('statements' => array(), 'values' => array() );
+    private $_expression;
 
     function __construct( $obj, Parameter $parameter = null )
     {
         $this->Container = $obj;
         $this->Parameter = $parameter;
-
-        if( method_exists( $this, 'initialise') )
-            $this->initialise();
     }
 
     protected function overload( $method, array $args = null, $statement = null )
     {
-        $expression = new Task\Statement\Expression( $this, $method, $this->_cache );
+        if( is_null( $this->_expression ))
+            $this->_expression = $expression = new Task\Statement\Expression( $this, $method, $this->_cache );
+        else
+        {
+            $expression = $this->_expression;
+            $expression->Method = $method;
+            $expression->Arguments = array();
+        }
+
+        if( is_null( $statement ) &&
+            array_key_exists( $method, $this->_cache['statements'] ))
+            $statement = $this->_cache['statements'][ $method ];
 
         return $expression( $statement, $args );
     }

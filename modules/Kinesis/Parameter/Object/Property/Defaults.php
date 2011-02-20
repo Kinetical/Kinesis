@@ -8,7 +8,12 @@ class Defaults extends \Kinesis\Parameter
         $m = 'getDefault'.$name;
         if( is_null( $result ) &&
             method_exists( $ref, $m ))
-            return $ref->$m();
+            {
+                $result = $ref->$m();
+                $ref->$name = $result;
+                
+                return $result;
+            }
 
         return null;
     }

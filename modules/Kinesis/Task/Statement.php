@@ -4,16 +4,15 @@ namespace Kinesis\Task;
 abstract class Statement extends \Kinesis\Task
 {
     public $Reference;
-    public $Source;
 
-    function __construct( $reference )
+    function __construct( $reference = null )
     {
         $this->Reference = $reference;
     }
 
     function parse( array $array = null )
     {
-        if( $this instanceof Statement\Delegate )
+        if( property_exists( get_class( $this ), 'Arguments' ) )
             $this->Arguments = $array;
 
         return $array;

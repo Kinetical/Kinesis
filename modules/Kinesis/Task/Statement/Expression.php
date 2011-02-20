@@ -8,8 +8,8 @@ class Expression extends Delegate
 
     function __construct( &$ref, $method, &$cache )
     {
-        $this->_method = str_replace('__','', $method);
-        $this->Source = &$cache;
+        
+        $this->Parameters['Source'] = &$cache;
 
         parent::__construct( $ref, $method );
     }
@@ -30,10 +30,14 @@ class Expression extends Delegate
             $statement = array_reverse( $statement );
             foreach( $statement as $stmt )
             {
+                
                 if( !is_null( $value = $this( $stmt, $args ) ) )
-                     return $value;
-            }
+                {
+                    $this->Parameters['Source']['statements'][$args[0]] = $stmt;
 
+                    return $value;
+                }
+            }
         }
 
         return null;
@@ -47,7 +51,7 @@ class Expression extends Delegate
             $method !== 'unset' &&
             $method !== 'isset' &&
             $statement instanceof Delegate\Bypass &&
-            array_key_exists( $name, $this->Source ) )
+            array_key_exists( $name, $this->Parameters['Source']['values'] ) )
             return true;
 
         return false;
@@ -65,6 +69,8 @@ class Expression extends Delegate
 
     function __invoke( $statement = null, array $args = array() )
     {
+        $this->_method = str_replace('__','', $this->Method);
+
         if( is_null( $statement ))
             return $this->recurse( $args );
 
@@ -76,11 +82,15 @@ class Expression extends Delegate
         if( !($statement instanceof \Kinesis\Task\Statement))
             return null;
 
+        
+
         $acc = count( $args );
 
         if( $acc > 0 &&
             $this->isBypassed( $args[0], $statement ))
-            return $this->Source[ $args[0] ];
+        {
+            return $this->Parameters['Source']['values'][ $args[0] ];
+        }
 
         if( $this->isImplemented() )
         {
@@ -94,9 +104,11 @@ class Expression extends Delegate
         $result = $this->execute();
 
         if( $acc > 0 &&
-            !is_null( $result ) &&
             $statement instanceof Delegate\Bypass )
-            return $this->Source[ $args[0] ] = $result;
+            if( is_null( $result ) )
+                unset( $this->Parameters['Source']['values'][ $args[0] ] );
+            else
+                return $this->Parameters['Source']['values'][ $args[0] ] = $result;
 
         return $result;
     }
@@ -112,7 +124,7 @@ class Expression extends Delegate
         {
             $statement->Method = $this->_method;
             $statement->Arguments =  $args;
-            $statement->Source = $this->Reference;
+            $statement->Parameters['Source'] = $this->Reference;
 
             return $statement();
         }

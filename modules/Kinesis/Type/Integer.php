@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis\Type;
 
-class IntegerType extends ValueType
+class Integer extends Value
 {
     public $Name = 'int';
 

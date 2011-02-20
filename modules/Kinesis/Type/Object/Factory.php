@@ -1,9 +1,9 @@
 <?php
-namespace Kinesis\Type;
+namespace Kinesis\Type\Object;
 
 use Kinesis\Parameter\Object as Object;
 
-class FactoryType extends TaskType
+class Factory extends Task
 {
     function __construct()
     {

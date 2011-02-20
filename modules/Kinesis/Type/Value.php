@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis\Type;
 
-abstract class ValueType
+abstract class Value
 {
     public $Name;
 

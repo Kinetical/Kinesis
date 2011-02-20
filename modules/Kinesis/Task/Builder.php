@@ -3,11 +3,28 @@ namespace Kinesis\Task;
 
 class Builder extends Factory
 {
-    public $Tasks = array();
+    protected $Stream;
+
+    function setStream( $stream )
+    {
+        $this->Stream = $stream;
+    }
+    function getStream()
+    {
+        return $this->Stream;
+    }
+
+
+//TODO: MAKE ABSTRACT
+//    function getDefaultStream()
+//    {
+//        var_dump('ubernig');
+//        return 'faggots';
+//    }
 
     protected function execute()
     {
-        $tasks = $this->Tasks;
+        $tasks = $this->Children;
         
         $result = '';
         if( is_array( $tasks ) &&
@@ -15,7 +32,7 @@ class Builder extends Factory
         {
             foreach( $tasks as $statement )
             {
-                if( $statement instanceof Statement )
+                if( is_callable( $statement ) )
                 {
                     $val = $statement();
                     if( is_string( $val ))
@@ -25,10 +42,5 @@ class Builder extends Factory
         }
 
         return $result;
-    }
-
-    function clear()
-    {
-        $this->Tasks = array();
     }
 }

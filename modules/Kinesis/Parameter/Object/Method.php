@@ -5,7 +5,7 @@ class Method extends \Kinesis\Parameter
 {
     function call( $name, array $arguments, &$ref )
     {
-        $delegate = new Delegate( $ref, $name, $arguments );
+        $delegate = new \Kinesis\Task\Statement\Delegate( $ref, $name, $arguments );
         try {
             return $delegate();
         } catch( Exception $e ) {

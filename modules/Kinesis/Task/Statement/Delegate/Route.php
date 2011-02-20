@@ -10,7 +10,7 @@ abstract class Route extends \Kinesis\Task\Statement\Delegate
         
         $ref = $this->Reference;
         $this->Reference = $this->Reference->Parameter;
-        $this->Reference->Reference = $this->Source;
+        $this->Reference->Reference = $this->Parameters['Source'];
 
         $value = parent::execute();
         $this->Reference = $ref;
