@@ -3,18 +3,28 @@ namespace Kinesis\Task\Statement;
 
 class Delegate extends \Kinesis\Task\Statement
 {
+    public $Reference;
     public $Method;
     public $Arguments;
 
     function __construct( $reference, $method = null, array $arguments = array() )
     {
         $this->Method = $method;
-        parent::__construct( $reference );
+        $this->Reference = $reference;
         $this->Arguments = $arguments;
+    }
+    
+    function parse( array $array = null )
+    {
+        if( property_exists( get_class( $this ), 'Arguments' ) )
+            $this->Arguments = $array;
+
+        return $array;
     }
 
     function __invoke()
     {
+        // LAST DITCH EFFORT TO ACQUIRE ARGUMENTS
         if( empty( $this->Arguments ) &&
             func_num_args() > 0 )
             $this->parse( func_get_args() );

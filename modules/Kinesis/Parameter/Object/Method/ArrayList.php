@@ -61,7 +61,7 @@ class ArrayList extends Control
         return true;
     }
 
-    function exists( $key, &$ref )
+    function has( $key, &$ref )
     {
         return array_key_exists( $key, $ref );
 

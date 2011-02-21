@@ -13,7 +13,8 @@ class Property extends \Kinesis\Parameter
 
     function set( $name, $value, &$ref )
     {
-        $ref->$name = $value;
+        if( !is_null( $value ))
+            $ref->$name = $value;
     }
 
     function has( $name, &$ref )

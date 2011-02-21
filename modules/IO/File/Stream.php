@@ -3,7 +3,7 @@ namespace IO\File;
 
 class Stream extends \IO\Resource\Stream
 {
-    function __construct( $file = null, $mode = \IO\Stream\Mode::READ )
+    function __construct( $file = null, $mode = \IO\Stream\Mode::Read )
     {
         if( is_string( $file ) )
             $file = new \IO\File( $file );

@@ -14,8 +14,11 @@ class Factory extends \Kinesis\Parameter
         {
             $refl = new \ReflectionClass( $classPath );
             
+            $arguments[] = $ref;
+            
             $object = $refl->newInstanceArgs( $arguments );
-            $object->Parent = $ref;
+            if( property_exists( get_class( $object ), 'Parent' ))
+                $object->Parent = $ref;
 
             return $object;
         }

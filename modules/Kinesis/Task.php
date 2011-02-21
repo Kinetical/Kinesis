@@ -4,13 +4,11 @@ namespace Kinesis;
 abstract class Task extends Object
 {
     public $Parameters = array();
-    public $Parent;
-    public $Children = array();
 
-    function __construct( array $params = array(), Task $parent = null )
+    function __construct( array $params = null )
     {
-        $this->Parameters = $params;
-        $this->Parent = $parent;
+        if( !is_null( $params ))
+            $this->Parameters = $params;
 
         parent::__construct();
     }

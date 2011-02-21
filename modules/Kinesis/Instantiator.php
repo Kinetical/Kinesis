@@ -46,6 +46,8 @@ class Instantiator extends Constructor
             $type = new Type( $class );
 
         $type->initialise( $instance );
+        if( method_exists( $instance, 'initialise' ))
+            $instance->initialise();
     }
 
     private function clear()
