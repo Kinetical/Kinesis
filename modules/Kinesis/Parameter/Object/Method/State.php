@@ -1,5 +1,5 @@
 <?php
-namespace Kinesis\Parameter\Object;
+namespace Kinesis\Parameter\Object\Method;
 
 class State extends Method
 {

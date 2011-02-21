@@ -7,15 +7,15 @@ class Factory extends \Kinesis\Parameter
     {
         $className = ucfirst($name);
         $classPath = $className;
-        if( is_string( $ref->Namespace ))
-            $classPath = $ref->Namespace.'\\'.$classPath;
+        if( array_key_exists( 'Namespace', $ref->Parameters ))
+            $classPath = $ref->Parameters['Namespace'].'\\'.$classPath;
 
         if( class_exists( $classPath ))
         {
             $refl = new \ReflectionClass( $classPath );
             
             $object = $refl->newInstanceArgs( $arguments );
-            $object->Builder = $ref;
+            $object->Parent = $ref;
 
             return $object;
         }

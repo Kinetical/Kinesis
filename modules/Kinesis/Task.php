@@ -11,6 +11,8 @@ abstract class Task extends Object
     {
         $this->Parameters = $params;
         $this->Parent = $parent;
+
+        parent::__construct();
     }
     
     abstract protected function execute();

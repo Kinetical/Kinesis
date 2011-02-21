@@ -3,25 +3,6 @@ namespace Kinesis\Task;
 
 class Builder extends Factory
 {
-    protected $Stream;
-
-    function setStream( $stream )
-    {
-        $this->Stream = $stream;
-    }
-    function getStream()
-    {
-        return $this->Stream;
-    }
-
-
-//TODO: MAKE ABSTRACT
-//    function getDefaultStream()
-//    {
-//        var_dump('ubernig');
-//        return 'faggots';
-//    }
-
     protected function execute()
     {
         $tasks = $this->Children;

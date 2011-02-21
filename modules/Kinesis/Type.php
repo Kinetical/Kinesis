@@ -83,12 +83,12 @@ class Type
 
         if( stripos( $name, 'factory') !== false )
             $type = new Type\Object\Factory();
-
-        if( stripos( $name, 'builder') !== false )
+        elseif( stripos( $name, 'builder') !== false )
             $type = new Type\Object\Builder();
-
-        if( stripos( $name, 'controller') !== false )
+        elseif( stripos( $name, 'controller') !== false )
             $type = new Type\Object\Control();
+        elseif( $ref instanceof Task )
+            $type = new Type\Object\Task();
 
         if( is_null( $type ))
             $type = new Type\Object();

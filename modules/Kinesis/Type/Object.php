@@ -9,7 +9,7 @@ class Object
 
     function __construct()
     {
-        $this->behaviors[] = new Parameter\Object\Property();
+        //$this->behaviors[] = new Parameter\Object\Property();
         $this->behaviors[] = new Parameter\Object\Property\Method();
     }
 
