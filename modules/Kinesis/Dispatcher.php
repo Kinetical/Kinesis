@@ -3,9 +3,11 @@ namespace Kinesis;
 
 class Dispatcher extends Task
 {
-    protected function execute()
+    protected function execute( $args = null )
     {
-        $args = func_get_args();
+        if( !is_array( $args ))
+            return null;
+        
         $tasks = $args[0];
         
         $result = '';
