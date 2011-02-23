@@ -1,31 +1,26 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Insert extends \DBAL\Query\Node\Container
+use Util\Interfaces as I;
+
+class Insert extends Container
 {
-	function create( $data )
-	{
-            //$this->Resource->Stream = new SQLStream( Stream::WRITE );
+    function __construct( $table, \Kinesis\Task $parent )
+    {
+        if( $table instanceof I\Nameable )
+            $table = $table->getName();
 
-            if( is_string( $data ))
-                $this['table'] = $table;
-
-            return parent::create( $data );
-	}
-
-	function open()
-	{
-            $model = $this->getOwner();
-
-            if( $model !== null )
-                $table = $model->getName();
-            else
-                $table = $this['table'];
-
-		$sql  = "INSERT INTO  \n";
-		$sql .= $table;
-		$sql .= "\n";
-
-		return $sql;
-	}
+        $params = array('Table' => $table );
+        
+        parent::__construct( $params, $parent );
+    }
+    
+    function execute()
+    {
+        extract( $this->Parameters );
+        
+        $platform = $this->getPlatform();
+        
+        return $platform->insert( $Table ).parent::execute();
+    }
 }

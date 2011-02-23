@@ -1,25 +1,29 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Add extends \DBAL\Query\Node
+class Add extends Statement
 {
-	//ADD  `test` INT( 1 ) NOT NULL
-	function create( $data )
-	{
-		if( $data instanceof EntityAttribute )
-		{
-			$this['attribute'] = $data;
-			$attrNode = new SQLQueryAttribute( $this->QueryBuilder, $this );
-			$attrNode->create( $this['attribute'] );
-		}
-
-		$this->QueryBuilder->Nodes['alter']->addChild( $this );
-		return false;
-	}
-
-	function open()
-	{
-		//echo '+column: '.$this['attribute']->InnerName."<br/>\n";
-		return 'ADD ';
-	}
+    function __construct( $attribute, \Kinesis\Task $parent )
+    {
+        $parent->Children['Alter']->addChild( $this );
+        parent::__construct( array('Attribute' => $attribute ),
+                          $parent->Children['Alter'] );
+    }
+    
+    function initialise()
+    {
+        $attribute = $this->Parameters['Attribute'];
+        
+        if( $attribute instanceof \DBAL\Data\Entity\Attribute )
+        {
+            $this->Children[] = new Attribute( $attribute, $this );
+        }
+    }
+    
+    function execute()
+    {
+        $platform = $this->getPlatform();
+        
+        return $platform->add().parent::execute();
+    }
 }

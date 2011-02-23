@@ -1,16 +1,23 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Alter extends \DBAL\Query\Node\Container
-{
-	function create( $data )
-	{
-		$this->Resource->Stream = new \ORM\SQLStream( Stream::WRITE );
-		return parent::create( $data );
-	}
+use Util\Interfaces as I;
 
-	function open()
-	{
-		return 'ALTER TABLE '. $this->Entity->InnerName."\n";
-	}
+class Alter extends Container
+{
+    function __construct( $table, \Kinesis\Task $parent = null )
+    {
+        if( $table instanceof I\Nameable )
+            $table = $table->getName();
+        
+        parent::__construct( array('Table' => $table ), $parent );
+    }
+    
+    function execute()
+    {
+        $platform = $this->getPlatform();
+        
+        return $platform->alter( $this->Parameters['Table'] ).
+               parent::execute();
+    }
 }

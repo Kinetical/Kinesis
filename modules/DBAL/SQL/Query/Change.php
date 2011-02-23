@@ -1,28 +1,33 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Change extends \DBAL\Query\Node
+class Change extends Statement
 {
-	//CHANGE  `test`  `test` INT( 10 ) NOT NULL
-	function create( $data )
-	{
-		if( is_array( $data ))
-		{
-			$this['oldName'] = $data[0];
-			$this['attribute'] = $data[1];
-		}
-
-		$this->QueryBuilder->Nodes['alter']->addChild( $this );
-		$attrNode = new SQLQueryAttribute( $this->QueryBuilder, $this );
-		$attrNode->create( $this['attribute'] );
-
-		return false;
-	}
-
-	function open()
-	{
-		//echo 'changing '.$this['oldName']."<br/>\n";
-		$sql = 'CHANGE `'.$this['oldName'].'` ';
-		return $sql;
-	}
+    function __construct( $name, $attribute, \Kinesis\Task $parent )
+    {
+        $parent->Children['Alter']->addChild( $this );
+        
+        $params = array('Attribute' => $attribute,
+                        'Name' => $name );
+        
+        parent::__construct( $params,
+                          $parent->Children['Alter'] );
+    }
+    
+    function initialise()
+    {
+        $attribute = $this->Parameters['Attribute'];
+        if( $attribute instanceof \DBAL\Data\Entity\Attribute )
+        {
+            $this->Children[] = new Attribute( $attribute, $this );
+        }
+    }
+    
+    function execute()
+    {
+        $platform = $this->getPlatform();
+        
+        return $platform->change( $this->Parameters['Name'] ).
+               parent::execute(); 
+    }
 }

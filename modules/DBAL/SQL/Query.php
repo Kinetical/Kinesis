@@ -5,6 +5,11 @@ class Query extends \DBAL\Query
 {
     private $_text;
     private $_database;
+    
+    function initialise()
+    {
+        $this->Parameters['Namespace'] = 'DBAL\SQL\Query';
+    }
 
     function __construct( $text = null, $params = array() )
     {
@@ -12,12 +17,6 @@ class Query extends \DBAL\Query
             $this->setText( $text );
 
         parent::__construct( $params );
-    }
-
-    function initialize()
-    {
-        parent::initialize();
-        $this->setFormat( self::SQL );
     }
 
     function getDatabase()
@@ -36,7 +35,7 @@ class Query extends \DBAL\Query
 
     function getConnection()
     {
-        return $this->getStream();
+        return $this->Stream;
     }
 
     function setConnection( \DBAL\Connection $connection )
@@ -46,8 +45,8 @@ class Query extends \DBAL\Query
 
     function getDefaultIterator()
     {
-        $streamCallback = $this->parameters['StreamCallback'];
-        $streamInput = $this->parameters['StreamInput'];
+        $streamCallback = $this->Parameters['StreamCallback'];
+        $streamInput = $this->Parameters['StreamInput'];
 
         return new \DBAL\Data\Iterator( $this->getDatabase(), $streamInput, $streamCallback );
     }
@@ -59,16 +58,16 @@ class Query extends \DBAL\Query
         return $this->_database->getConnection();
     }
 
-    function execute( $connection = null )
+    function execute()
     {
-        $this->parameters['StreamInput'] = $this->_database->query( $this->getText() );
+        $this->Parameters['StreamInput'] = $this->_database->query( $this->getText() );
 
-        $this->results->clear();
+        $results = array();
 
         foreach( $this as $result )
-            $this->results->add( $result );
+            $results[] = $result ;
 
-        return $this->results->toArray();
+        return $results;
     }
 
     function resolve( $connection = null )
@@ -120,12 +119,17 @@ class Query extends \DBAL\Query
         $this->_text = $text;
     }
 
+    function assemble()
+    {
+        $this->_text = parent::assemble();
+        
+        return $this->_text;
+    }
 
     function __toString()
     {
-        if( is_null( $this->_text ) &&
-            $this->builder instanceof \DBAL\Query\Builder )
-            $this->_text = (string)$this->builder;
+        if( is_null( $this->_text ) )
+            $this->assemble();
 
         return $this->_text;
     }

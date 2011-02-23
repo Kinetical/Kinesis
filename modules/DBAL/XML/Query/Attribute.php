@@ -1,30 +1,35 @@
 <?php
 namespace DBAL\XML\Query;
 
-class Attribute extends \DBAL\Query\Node
+class Attribute extends \Kinesis\Task\Statement
 {
-    function create( $data )
+    function __construct( $name, $value, $operator = null, \Kinesis\Task $parent = null )
     {
-        $this['attribName'] = $data[0];
-        $this['attribValue'] = $data[1];
-
-        if( count( $data ) == 3
-            && is_bool($data[2] ))
-            $this['equals'] = $data[2];
-        else
-            $this['equals'] = true;
-
-        $this->getQueryBuilder()->Nodes['where']->addChild( $this );
-
-        return false;
+        if( is_null( $operator ))
+            $operator = '=';
+        
+        $params = array('Name'      => $name,
+                        'Value'     => $value,
+                        'Operator'  => $operator);
+        
+        $parent->Children['Where']->addChild( $this );
+        parent::__construct( $params, $parent->Children['Where'] );
     }
-
-    function open()
+    
+    function execute()
     {
-         $newPath= "@".$this['attribName']."='".$this['attribValue']."'";
-         if( !$this['equals'] )
+        $params = $this->Parameters;
+        
+        if( strpos( $params['Operator'], '!') !== false )
+        {
+            $negate = true;
+            $params['Operator'] = str_replace('!','',$params['Operator']);
+        }
+        
+        $newPath= '@'.$params['Name'].$params['Operator']."'".$params['Value']."'";
+         if( $negate )
              $newPath = 'not('.$newPath.')';
          
-         $this->getQueryBuilder()->Nodes['where']['xpath'] .= $newPath;
+        return $newPath;
     }
 }

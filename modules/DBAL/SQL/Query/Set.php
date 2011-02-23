@@ -1,139 +1,73 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Set extends \DBAL\Query\Node
+class Set extends Statement
 {
-    function create( $data )
+    function __construct( array $data, \Kinesis\Task $parent )
     {
-        if( is_array( $data ))
-        {
-            if( $this->ModelNode instanceof \DBAL\SQL\Query\Update )
-            {
-                    foreach( $this->Model->Attributes as $attr )
-                    {
-                            if( array_key_exists( $attr->OuterName, $data )
-                                    && !$this->Model->hasRelation( $attr->InnerName ))
-                            {
-                                    $value = $data[ $attr->OuterName ];
-                                    if( $value instanceof Object
-                                            && $value->Type->isPersisted()
-                                            && $value->Type->isPersistedBy('EntityObject')
-                                            && $value->Type->getPersistenceObject()->PrimaryKey !== null )
-                                            {
-                                                    $primaryKey = $value->Type->getPersistenceObject()->PrimaryKey->OuterName;
-                                                    if( $value->$primaryKey !== null )
-                                                            $value = $value->$primaryKey;
-                                            }
-
-                                    $innerData[ $attr->InnerName ] = $value;
-                            }
-                    }
-            }
-            elseif( $this->ModelNode instanceof \DBAL\SQL\Query\Insert )
-            {
-                    if( $this->QueryBuilder->hasNode('set')
-                            && $this->QueryBuilder->Nodes['set']->Oid !== $this->Oid )
-                    {
-                            $this->QueryBuilder->Nodes['set']->create( $data );
-                            return false;
-                    }
-
-
-                    if( count( $data ) == count( $data, COUNT_RECURSIVE ) )
-                            $data = array( $data );
-
-                    $innerData = $data;
-            }
-        }
-
-        if( is_array( $this['innerData'] ))
-                $innerData = array_merge( $this['innerData'], $innerData );
-
-        $this['innerData'] = $innerData;
-
-        //TODO: single instance of set per querybuilder, multiple sets are appended to first
-        return parent::create();
+        $parent->Parameters['Container']->addChild( $this );
+        parent::__( array('Data'=>$data), $parent->Parameters['Container'] );
     }
-
-    function open()
+    
+    function initialise()
     {
-            if( $this->ModelNode instanceof \DBAL\SQL\Query\Update )
+        $data = $this->Parameters['Data'];
+
+        if( $this->Parent instanceof Update )
+        {
+            if( count( $data ) == count( $data, COUNT_RECURSIVE ) )
+                $data = array( $data );
+            
+            $this->Parameters['Data'] = $data;
+        }
+        elseif( $this->Parent instanceof Insert )
+        {
+            $this->Parameters['Attributes'] = $this->Parent->getTable()->getAttributes();
+            //TODO: RETRIEVE RELATIONSHIPS
+        }
+    }
+    
+    function execute()
+    {
+        $platform = $this->getPlatform();
+        $table = $this->Parent->getTable();
+        $data = $this->Parameters['Data'];
+        
+        if( $table->hasAlias() )
+            $alias = $table->getAlias();
+        
+        if( $this->Parent instanceof Update )
+        {
+            $q = $platform->set();
+            $clauses = array();
+            foreach( $data as $key => $value )
             {
-                    $sql  = "SET ";
-
-                    $count = 1;
-
-                    $alias = $this->Model->Alias;
-                    foreach( $this['innerData'] as $name => $value )
-                    {
-                            $sql .= $alias.'.'.$name.' = ';
-                            if( is_string( $value ))
-                            $sql .= "'";
-                            $sql .= $value;
-                            if( is_string( $value ))
-                            $sql .= "'";
-                            if( $count < count( $this['innerData'] ) )
-                                    $sql .= ",\n";
-                            $count++;
-                    }
-
-                    $sql .= "\n";
+                $column = $this->identifier( $key, $alias );
+                
+                $clauses[] = $this->clause( $column, $value );
             }
-            elseif( $this->ModelNode instanceof \DBAL\SQL\Query\Insert )
+            
+            $q .= implode( ',', $clauses );
+        }
+        elseif( $this->Parent instanceof Insert )
+        {
+            $attributes = $this->Parameters['Attributes'];
+            $columns = array();
+            $values = array();
+            
+            foreach( $attributes as $name => $attr )
             {
-                    $sql = " (";
-                    $attributes = $this->Model->Attributes;
-                    //unset( $attributes[ $this->Entity->PrimaryKey->InnerName ] );
-                    $names = array_keys( $attributes );
-
-                    for( $i = 0; $i < count( $names ); $i++ )
-                    {
-                            if( $i > 0 )
-                                    $sql .= ',';
-                            $sql .= '`'.$this->Entity->Attributes[ $names[$i] ]->OuterName.'`';
-                    }
-
-                    $sql .= " ) VALUES ";
-
-                    $index = array_keys( $this['innerData'] );
-
-                    for( $i = 0; $i < count( $index ); $i++ )
-                    {
-
-                            if( $i > 0 )
-                                            $sql .= ',';
-
-                            $sql .= ' ( ';
-                            $row = $this['innerData'][ $index[$i] ];
-                            if( $row instanceof Object )
-                                    $row = $row->Data;
-
-                            for( $c = 0; $c < count( $names ); $c++ )
-                            {
-                                    $attr = $this->Entity->Attributes[ $names[$c] ];
-                                    if( $c > 0 )
-                                            $sql .= ',';
-
-
-
-                                    $value = $row[$attr->OuterName];
-
-                                    if( $attr->IsPrimaryKey()
-                                            && $value == null )
-                                            $value = 0;
-
-                                    if( is_string( $value )
-                                            || $value === null )
-                                            $sql .= "'";
-                                    $sql .= $value;
-                                    if( is_string( $value )
-                                            || $value === null)
-                                            $sql .= "'";
-                            }
-                            $sql .= ' ) ';
-                    }
+                $columns[] = $platform->identifier( $name );
+                
+                if( $attr->isPrimaryKey() )
+                    $values[] = 0;
+                else
+                    $values[] = $platform->value( $data[$name] );
             }
-
-            return $sql;
+            
+            $q = $platform->values( $columns, $values );
+        }
+        
+        return $q;
     }
 }

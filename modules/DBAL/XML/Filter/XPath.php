@@ -18,6 +18,6 @@ class XPath extends \IO\Filter
                 return $result;
         }
         else
-            throw new \DBAL\Exception('XPath filter input must implement xpath() method,'.get_class( $input ).' does not');
+            throw new \DBAL\Exception('XPath filter input('.gettype( $input ).') must implement xpath() method,'.get_class( $input ).' does not');
     }
 }

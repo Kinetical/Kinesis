@@ -1,63 +1,35 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Attribute extends \DBAL\Query\Node
+class Attribute extends Statement
 {
-	function create( $data )
-	{
-		if( $data instanceof EntityAttribute )
-		{
-			if( $data->Length == null )
-			{
-				$data->Length = $data->DataType->DefaultLength;
-			}
-			$this['attribute'] = $data;
-		}
-
-		if( $this->QueryBuilder->hasNode('create'))
-			$this->QueryBuilder->Nodes['create']->addChild( $this );
-
-			//TODO: MUST GOTO CORRECT ALTER CHILD QUERYNODE
-
-		return false;
-	}
-
-	function open()
-	{
-		$attr = $this['attribute'];
-
-		$results .= '`'.$attr->InnerName.'`';
-		$results .= ' ';
-		$results .= (string)$attr->DataType;
-	if( $attr->Length > 0 )
-		$results .= '('.$attr->Length.')';
-		$results .= $this->flags();
-	if( $attr->Default !== null )
-		$results .= ' default '. $attr->Default;
-
-		if( $this->QueryBuilder->hasNode('create'))
-			if( $attr->InnerName !== $this->getLastAttribute()
-				|| $attr->Entity->PrimaryKey !== null )
-				$results .= ',';
-
-		return $results;
-	}
-
-	private function flags()
-	{
-		foreach( $this['attribute']->Flags as $flag )
-			if( $flag == EntityAttribute::AutoIncrement )
-				$flags .= ' auto_increment';
-			elseif( $flag == EntityAttribute::NotNull )
-				$flags .= ' NOT NULL';
-
-		return $flags;
-	}
-
-	private function getLastAttribute()
-	{
-		$entity = $this['attribute']->Entity;
-		$keys = array_keys( $entity->Attributes );
-		return $keys[count($keys)-1];
-	}
+    function __construct( $attribute, \Kinesis\Task $parent )
+    {
+        $parent->Children['Create']->addChild( $this );
+        parent::__construct( array('Attribute' => $attribute ),
+                          $parent->Children['Create'] );
+    }
+    
+    function initialise()
+    {
+        $attribute = $this->Parameters['Attribute'];
+        
+        if( $attribute instanceof \DBAL\Entity\Attribute )
+        {
+            $this->Parameters['Name']   = $attribute->getName();
+            $this->Parameters['Type']   = (string)$attribute->DataType;
+            $this->Parameters['Length'] = $attribute->Length;
+            $this->Parameters['Default']= $attribute->Default;
+            $this->Parameters['Flags']  = $attribute->Flags;
+        }
+    }
+    
+    function execute()
+    {
+        extract( $this->Parameters );
+        
+        $platform = $this->getPlatform();
+        
+        return $platform->column( $Name, $Type, $Length, $Default, $Flags );
+    }
 }

@@ -1,33 +1,24 @@
 <?php
 namespace DBAL\XML\Query;
 
-class Where extends \DBAL\Query\Node
+class Where extends \Kinesis\Task\Statement
 {
-    function open()
+    public $XPath;
+    
+    function __construct($xpath, \Kinesis\Task $parent = null )
     {
-        if( $this->hasChildren() )
-        {
-            $this['xpath'] .= '[';
-            $this->openChildren();
-            $this['xpath'] .= ']';
-        }
-
-        $query = $this->getQuery();
-        $query->setParameters( array('xpath' => $this['xpath'] ));
+        if( is_string( $xpath ))
+            $this->XPath = $xpath;
+        
+        parent::__construct( array(), $parent );
     }
-
-    function create($data)
-    {
-        $queryBuilder = $this->getQueryBuilder();
-
-        if( $queryBuilder->hasNode('where'))
-            $queryBuilder->Nodes['where']['xpath'] = $data;
-        else
-        {
-            $this['xpath'] = $data;
-            return parent::create();
-        }
-
-        return false;
+    
+    function execute()
+    {       
+        $children = parent::execute();
+        
+        $this->XPath .= '['.$children.']';
+        
+        $this->getQuery()->Parameters['xpath'] = $this->XPath;
     }
 }

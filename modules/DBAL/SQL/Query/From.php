@@ -1,58 +1,41 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class From extends \DBAL\Query\Node\Container
+class From extends Container
 {
-	private $_alias;
-
-	function hasAlias()
-	{
-		return ( is_string($this->_alias) ) ? true : false;
-	}
-
-	function getAlias()
-	{
-		return $this->_alias;
-	}
-
-	function setAlias( $alias )
-	{
-		$this->_alias = $alias;
-	}
-
-	function create( $data )
-	{
-            $create = parent::create( $data );
-
-            if( is_array( $data )
-                    && (!array_key_exists( 1, $data )
-                    || $data[1] == true ))
-                    $this->Alias = $this->Model->Alias;
-            elseif( !is_array( $data ))
-                    $this->Alias = $this->Model->Alias;
-
-            return $create;
-	}
-
-	function open()
-	{
-		$sql  = "FROM \n";
-
-                $model = $this->getOwner();
-
-                if( $model instanceof \DBAL\Data\Model )
-                {
-                    $sql .= $model->Name;
-                    if( $this->hasAlias() )
-                             $sql .= ' AS ' . $this->Alias;
-                }
-                else
-                {
-                    $sql .= $this['table'];
-                }    
-
-		$sql .= "\n";
-
-		return $sql;
-	}
+    function __construct( $table, $alias = '', \Kinesis\Task $parent  )
+    {
+        $params = array('Table' => $table,
+                        'Alias' => $alias );
+        parent::__construct( $params, $parent );
+    }
+    
+    function initialise()
+    {
+        $table = $this->Parameters['Table'];
+        $alias = $this->Parameters['Alias'];
+        
+        if( $table instanceof \DBAL\Data\Entity )
+        {
+            if( empty( $alias ) &&
+                $table->hasAlias() )
+                $this->Parameters['Alias'] = $table->getAlias();
+            
+            $this->Parameters['Table']= $table->getName();
+        }
+    }
+    
+    function execute()
+    {
+        extract( $this->Parameters );
+        
+        $platform = $this->getPlatform();
+        
+        $sql = $platform->from( $Table );
+        if( !is_null( $Alias ))
+            $sql.=$platform->alias( $Alias );
+        
+        return $sql;
+        
+    }
 }

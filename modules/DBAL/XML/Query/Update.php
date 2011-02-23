@@ -1,18 +1,24 @@
 <?php
 namespace DBAL\XML\Query;
 
-class Update extends \DBAL\Query\Node
+class Update extends \Kinesis\Task\Statement
 {
-    function create($data)
+    function __construct( $file, Task $parent = null )
     {
+        $params = array('File' => $file);
+
+        return parent::__construct( $params, $parent );
+    }
+    
+    function execute()
+    {
+        $resource = new \IO\File( $this->Parameters['File'] );
         $params = array( 'StreamType'       => 'IO\File\Stream',
                          'StreamMode'       => \IO\Stream\Mode::Write,
-                         'StreamResource'   => new \IO\File( $data ),
+                         'StreamResource'   => $resource,
                          'StreamHandler'    => 'IO\File\Writer',
                          'HandlerChain'     => 'DBAL\XML\Text\Writer' );
-
-        $query = $this->getQuery();
-        $query->setParameters( $params );
-        return parent::create();
+        
+        $this->getQuery()->Parameters += $params;
     }
 }

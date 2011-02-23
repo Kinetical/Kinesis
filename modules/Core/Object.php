@@ -13,11 +13,6 @@ class Object implements I\Object
 
     private static $types;
 
-    function  __destruct() {
-//        \Core::getInstance()->getLoader()->remove( $this->Oid );
-
-    }
-
     private static function setCachedType( Object\ReflectionClass $objReflection )
     {
         return self::$types[ $objReflection->getName() ] = $objReflection;

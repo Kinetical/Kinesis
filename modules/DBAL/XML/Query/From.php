@@ -1,18 +1,24 @@
 <?php
 namespace DBAL\XML\Query;
 
-class From extends \DBAL\Query\Node
+class From extends \Kinesis\Task\Statement
 {
-    function create($data)
+    public $File;
+
+    function __construct( $file, \Kinesis\Task $parent )
+    {
+        $this->File = $file;
+       
+        parent::__construct( null, $parent );
+    }
+    function execute()
     {
         $params = array( 'StreamType'       => 'IO\File\Stream',
                          'StreamMode'       => \IO\Stream\Mode::Read,
-                         'StreamResource'   => new \IO\File( $data ),
                          'StreamHandler'    => 'IO\File\Reader',
-                         'StreamCallback'   => 'readToEOF');
-
-        $query = $this->getQuery();
-        $query->setParameters( $params );
-        return parent::create();
+                         'StreamCallback'   => 'readToEOF',
+                         'StreamResource'   => new \IO\File( $this->File ));
+        
+        $this->getQuery()->Parameters += $params;
     }
 }

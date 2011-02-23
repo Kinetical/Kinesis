@@ -1,19 +1,23 @@
 <?php
 namespace DBAL\XML\Query;
 
-class Set extends \DBAL\Query\Node
+class Set extends \Kinesis\Task\Statement
 {
-    function create($data)
+    function __construct( $input, Task $parent = null )
     {
-        $params = array( 'StreamInput' => $data );
+        parent::__construct( array( 'Input' => $input ), $parent );
+    }
+    
+    function execute()
+    {
+        $input = $this->Parameters['Input'];
+        $params = array( 'StreamInput' => $input );
 
-        if( $data instanceof \DBAL\XML\Document )
+        if( $input instanceof \DBAL\XML\Document )
             $params['StreamCallback'] = 'writeDocument';
-        elseif( $data instanceof \DBAL\Data\Tree\Node )
+        elseif( $input instanceof \DBAL\Data\Tree\Node )
             $params['StreamCallback'] = 'writeNodes';
-
-        $query = $this->getQuery();
-        $query->setParameters( $params );
-        return parent::create();
+        
+        $this->getQuery()->Parameters += $params;
     }
 }

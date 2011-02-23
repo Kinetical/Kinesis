@@ -94,8 +94,9 @@ class Loader extends \Core\Loader
             else
                 $result = $dataSource->toArray();
 
-            if( is_string( $name ) &&
-                $this->caching() )
+            if( $this->caching() &&
+                is_string( $name ) &&
+                !is_null( $result))
                 return $this->cache[$name] = $result;
             else
                 return $result;

@@ -3,24 +3,20 @@ namespace DBAL\XML;
 
 class Query extends \DBAL\Query
 {
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
-        $this->setFormat( self::XML );
+        $this->Parameters['Namespace'] = 'DBAL\XML\Query';
     }
-
-    protected function execute( $stream )
+    
+    protected function execute()
     {
-        $this->results->clear();
-
+        $results = array();
         foreach( $this as $result )
-        {
             if( is_array( $result ))
-                $this->results->merge( $result );
+                $results = array_merge( $results, $result );
             else
-                $this->results->add( $result );
-        }
+                $results[] = $result;
 
-        return $this->results->toArray();
+        return $result;
     }
 }
