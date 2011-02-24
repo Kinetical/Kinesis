@@ -98,7 +98,7 @@ abstract class View extends \Core\Object implements I\Nameable
 
         $result = $command();
 
-         if( !is_null( $dataSource ) &&
+        if( !is_null( $dataSource ) &&
             $this->adapter->isRead() )
             if( $dataSource instanceof \Core\Object )
                 $dataSource->setData( $result );
@@ -106,6 +106,7 @@ abstract class View extends \Core\Object implements I\Nameable
                 $dataSource = $result;
 
         $this->clear();
+        $dataSource->setMap( null );
 
         return $result;
     }

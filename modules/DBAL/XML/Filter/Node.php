@@ -10,7 +10,7 @@ class Node extends \IO\Filter
         $input = $params['input'];
        
         if( !( $input instanceof \SimpleXMLElement ) )
-            throw new \DBAL\Exception('Node filter input must be a SimpleXMLElement, '.get_class( $input ).' provided.');
+            throw new \DBAL\Exception('Node filter input must be a SimpleXMLElement, '.gettype( $input ).' provided.');
         
         $parent = $params['parent'];
 

@@ -45,7 +45,7 @@ class Node extends \DBAL\Data\Tree\Node
 
             $filter = new \IO\Filter\Recursive( new XML\Filter\Node() );
 
-            $results = array_map( array( $filter, 'execute' ), $nodes );
+            $results = array_map( $filter, $nodes );
 
             if( count($results) == 0 )
                 return $results[0];

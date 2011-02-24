@@ -26,7 +26,7 @@ class Attribute extends \Kinesis\Task\Statement
             $params['Operator'] = str_replace('!','',$params['Operator']);
         }
         
-        $newPath= '@'.$params['Name'].$params['Operator']."'".$params['Value']."'";
+        $newPath= '@'.$params['Name'].$params['Operator'].'"'.$params['Value'].'"';
          if( $negate )
              $newPath = 'not('.$newPath.')';
          

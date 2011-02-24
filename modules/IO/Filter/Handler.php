@@ -32,7 +32,10 @@ class Handler extends \IO\Filter
         if( $map instanceof \IO\Filter\Map )
             $map = $map->getFilters();
         
-        $this->map->setFilters( $map );
+        if( is_null( $map ))
+            $this->map->clear();
+        else
+            $this->map->setFilters( $map );
     }
 
     function hasMap( $state = null )

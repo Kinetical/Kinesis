@@ -65,7 +65,10 @@ abstract class Filter extends \Core\Object
     {
         if( !is_null( $params ) &&
             !is_array( $params ))
-            $params = array( 'input' => func_get_args() );
+            if( func_num_args() == 1 )
+                $params = array( 'input' => func_get_arg(0) );
+            else
+                $params = array( 'input' => func_get_args() );
 
         if( $this->hasDelegate() )
         {

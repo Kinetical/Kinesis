@@ -35,6 +35,11 @@ abstract class Query extends Task implements \IteratorAggregate
         
         return null;
     }
+    
+    function __toString()
+    {
+        return $this->assemble();
+    }
 
     function getIterator()
     {
