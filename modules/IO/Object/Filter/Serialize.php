@@ -21,7 +21,7 @@ final class Serialize extends \IO\Filter
         $this->_packed[$sid] = $object;
         $this->_sids[$object->Oid] = $sid;
 
-
+        
         $methods = $object->Type->getMethods( \ReflectionMethod::IS_PUBLIC );
         foreach( $methods as $method )
         {
@@ -35,14 +35,25 @@ final class Serialize extends \IO\Filter
             {
                 $value = $object->{$method->name}();
 
-                if( $value instanceof \Core\Object )
-                    if( array_key_exists( $value->Oid,  $this->_sids ))
-                        $object->Data[$propertySetter] = new \Core\Object\Reference( $this->_sids[$value] );
-                    else
-                        $object->Data[$propertySetter] = $this->pack($value);
-                elseif(  !is_null( $value )
-                        && !empty( $value ))
-                    $object->Data[$propertySetter] = $value;
+                if( $value instanceof \Serializable )
+                {
+                    if( $value instanceof \Core\Object )
+                        if( array_key_exists( $value->Oid,  $this->_sids ))
+                            $object->Data[$propertySetter] = new \Core\Object\Reference( $this->_sids[$value] );
+                        else
+                            $object->Data[$propertySetter] = $this->pack($value);
+                    
+                }
+                elseif( !is_null( $value ) &&
+                        !empty( $value ) )
+                {
+                    if( is_scalar( $value ) ||
+                       (is_object( $value ) &&
+                        $value instanceof \Serializable) )
+                    {
+                        $object->Data[$propertySetter] = $value;
+                    }
+                }
             }
             }
         }

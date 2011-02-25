@@ -76,4 +76,9 @@ abstract class Stream extends \Core\Object
     {
         $this->_timeout = $timeout;
     }
+
+    function __destruct()
+    {
+        //TODO: LOG STREAM CLOSE & IP
+    }
 }

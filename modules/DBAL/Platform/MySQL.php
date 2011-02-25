@@ -156,4 +156,19 @@ class MySQL extends \DBAL\Platform
     {
         return ' SET ';
     }
+    
+    function beginTransaction()
+    {
+        return 'START TRANSACTION;';
+    }
+    
+    function applyTransaction()
+    {
+        return 'COMMIT;';
+    }
+    
+    function undoTransaction()
+    {
+        return 'ROLLBACK;';
+    }
 }

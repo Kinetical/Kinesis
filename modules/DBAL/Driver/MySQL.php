@@ -1,8 +1,15 @@
 <?php
 namespace DBAL\Driver;
 
-class MySQL extends \DBAL\Driver
+final class MySQL extends \DBAL\Driver
 {
+    private $errors = false;
+    
+    function errors()
+    {
+        return $this->errors;
+    }
+    
     function initialize()
     {
         parent::initialize();
@@ -34,7 +41,18 @@ class MySQL extends \DBAL\Driver
 
     function query( $sql, \DBAL\Connection $conn )
     {
-        return mysql_query( $sql, $conn->getLink() );
+        $this->errors = false;
+        return ($result = mysql_query( $sql, $conn->getLink() ))
+                ? $result
+                : $this->error( $conn );
+    }
+    
+    function error( \DBAL\Connection $conn )
+    {
+        $link = $conn->getLink();
+        $this->errors = true;
+        return array( mysql_errno( $link ), 
+                      mysql_error( $link ));
     }
 
     function fetchRow( $result )

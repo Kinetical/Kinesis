@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\SQL\Query;
 
-class Update extends Statement
+class Update extends Container
 {
     function __construct( $table, \Kinesis\Task $parent )
     {
@@ -24,9 +24,11 @@ class Update extends Statement
         extract( $this->Parameters );
         $platform = $this->getPlatform();
         
-        $q = $platform->update( $Table );
+        $q = $platform->update( $Name );
         if( isset( $Alias ))
             $q .= $platform->alias( $Alias );
+        
+        $q .= parent::execute();
         
         return $q;
     }

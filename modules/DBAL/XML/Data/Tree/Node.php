@@ -8,7 +8,7 @@ class Node extends \DBAL\Data\Tree\Node
 {
     private $_element;
 
-    function getElement()
+    protected function getElement()
     {
         if( is_null( $this->_element ))
             $this->_element = $this->toElement();
@@ -16,7 +16,7 @@ class Node extends \DBAL\Data\Tree\Node
         return $this->_element;
     }
 
-    function setElement( $element )
+    protected function setElement( $element )
     {
         $this->_element = $element;
     }
@@ -52,6 +52,8 @@ class Node extends \DBAL\Data\Tree\Node
 
             return $results;
         }
+        
+        unset( $this->_element );
 
         return false;
     }

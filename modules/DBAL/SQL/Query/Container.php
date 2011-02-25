@@ -14,4 +14,10 @@ class Container extends Statement
     {
         return $this->Parameters['Table'];
     }
+    
+    function addChild( Statement $child )
+    {
+        $this->Parameters['Query'] = $this->Parent->Parameters['Query'];
+        parent::addChild( $child );
+    }
 }

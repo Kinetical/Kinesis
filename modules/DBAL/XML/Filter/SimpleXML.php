@@ -10,7 +10,7 @@ class SimpleXML extends \IO\Filter
             if( array_key_exists('ClassName', $params ))
                 $className = $params['ClassName'];
 
-        if( $className == null )
+        if( is_null( $className ) )
             $className = 'SimpleXMLIterator';
 
        return simplexml_load_string( $input, $className );

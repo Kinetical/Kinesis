@@ -6,7 +6,7 @@ class Set extends Statement
     function __construct( array $data, \Kinesis\Task $parent )
     {
         $parent->Parameters['Container']->addChild( $this );
-        parent::__( array('Data'=>$data), $parent->Parameters['Container'] );
+        parent::__construct( array('Data'=>$data), $parent->Parameters['Container'] );
     }
     
     function initialise()
@@ -15,7 +15,7 @@ class Set extends Statement
 
         if( $this->Parent instanceof Update )
         {
-            if( count( $data ) == count( $data, COUNT_RECURSIVE ) )
+            if( count( $data ) !== count( $data, COUNT_RECURSIVE ) )
                 $data = array( $data );
             
             $this->Parameters['Data'] = $data;
@@ -42,9 +42,12 @@ class Set extends Statement
             $clauses = array();
             foreach( $data as $key => $value )
             {
-                $column = $this->identifier( $key, $alias );
-                
-                $clauses[] = $this->clause( $column, $value );
+                if( !is_null( $value ))
+                {
+                    $column = $platform->identifier( $key, $alias );
+
+                    $clauses[] = $platform->clause( $column, $value );
+                }
             }
             
             $q .= implode( ',', $clauses );
