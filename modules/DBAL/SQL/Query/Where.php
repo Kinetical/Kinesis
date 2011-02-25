@@ -19,7 +19,7 @@ class Where extends Statement
         extract( $this->Parameters );
         
         $platform = $this->getPlatform();
-        
+        $Name = $platform->identifier( $Name );
         return $platform->where( $Name, $Value, $Operator );
     }
 }

@@ -3,10 +3,10 @@ namespace Kinesis\Reference;
 
 class Object extends \Kinesis\Reference
 {
-    private static $cache = array();
-    private static $objects = array();
-    private static $initialised = array();
-    private $id;
+    protected static $cache = array();
+    protected static $objects = array();
+    protected static $initialised = array();
+    protected $id;
 
     function __construct( $obj, \Kinesis\Parameter $parameter = null )
     {

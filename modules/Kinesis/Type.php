@@ -11,7 +11,6 @@ class Type
 
     public $Name;
     public $Parent;
-//    public $Parameters;
 
     function __construct()
     {
@@ -35,10 +34,6 @@ class Type
                {
                    $this->Parent = $value;
                }
-//               elseif( is_array( $value ))
-//               {
-//                   $this->Parameters = $value;
-//               }
             }
         }
         

@@ -13,6 +13,11 @@ class MySQL extends \DBAL\Platform
         return 'UPDATE '.$table;
     }
     
+    function delete()
+    {
+        return 'DELETE ';
+    }
+    
     function identifier( $id, $alias = null )
     {
         if( !is_null( $alias ))

@@ -22,7 +22,13 @@ final class Loader extends \DBAL\Data\Loader
                  $this->parameters['ViewArguments'] = array();
 
             $viewArgs = $this->parameters['ViewArguments'];
-            $viewArgs['xpath'] = 'entity[@name="'.$params['name'].'"]';
+            $query = new \DBAL\XML\Query();
+            $query->build()
+                  ->where('entity')
+                  ->attribute('name', $params['name'] );
+
+            // RETRIEVE XPATH
+            $viewArgs['xpath'] = (string)$query;
             $this->parameters['ViewArguments'] = $viewArgs;
         }
 

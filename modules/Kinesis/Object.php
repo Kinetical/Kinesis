@@ -19,6 +19,11 @@ class Object
     {
         $this->integrity();
     }
+    
+    function __destruct()
+    {
+        unset( $this->reference );
+    }
 
     function __get( $name )
     {

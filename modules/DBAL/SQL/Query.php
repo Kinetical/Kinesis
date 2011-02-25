@@ -20,12 +20,16 @@ class Query extends Transaction
 
     function execute()
     {
-        $this->Parameters['StreamInput'] = $this->database->query( $this->getText() );
+        $resource = $this->database->query( $this->getText() );
 
         $results = array();
-
-        foreach( $this as $result )
-            $results[] = $result ;
+        
+        if( is_resource( $resource ))
+        {
+            $this->Parameters['StreamInput'] = $resource;
+            foreach( $this as $result )
+                $results[] = $result ;
+        }
 
         return $results;
     }

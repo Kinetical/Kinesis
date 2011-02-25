@@ -3,10 +3,18 @@ namespace DBAL\SQL\Query;
 
 class Set extends Statement
 {
-    function __construct( array $data, \Kinesis\Task $parent )
+    function __construct( $name, $value = null, \Kinesis\Task $parent )
     {
+        if( is_array( $name ) &&
+            is_null( $value ))
+            $params = array( 'Data' => $name );
+        elseif( is_scalar( $name ) &&
+                !is_null( $value ))
+            $params = array( 'Data' => array( $name => $value ) );
+        
         $parent->Parameters['Container']->addChild( $this );
-        parent::__construct( array('Data'=>$data), $parent->Parameters['Container'] );
+        
+        parent::__construct( $params, $parent->Parameters['Container'] );
     }
     
     function initialise()
@@ -57,17 +65,33 @@ class Set extends Statement
             $attributes = $this->Parameters['Attributes'];
             $columns = array();
             $values = array();
+            $key = false;
             
-            foreach( $attributes as $name => $attr )
+            foreach( $attributes as $attr )
             {
-                $columns[] = $platform->identifier( $name );
-                
-                if( $attr->isPrimaryKey() )
-                    $values[] = 0;
-                else
-                    $values[] = $platform->value( $data[$name] );
+                $name = $attr->getName();
+                $value = $data[$name];
+                if( !is_null( $value ))
+                {
+                    $columns[$name] = $platform->identifier( $name );
+
+                    if( $attr->isPrimaryKey() )
+                    {
+                        $values[] = 0;
+                        $key = true;
+                    }
+                    else
+                        $values[] = $platform->value( $value );
+                }
             }
             
+            if( !$key && 
+                !array_key_exists('id',$columns))
+            {
+                array_unshift( $columns, $platform->identifier( 'id' ) );
+                array_unshift( $values, "''");
+            }
+                
             $q = $platform->values( $columns, $values );
         }
         

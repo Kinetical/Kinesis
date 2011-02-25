@@ -30,7 +30,7 @@ class From extends Container
         extract( $this->Parameters );
         
         $platform = $this->getPlatform();
-        
+        $Table = $platform->identifier( $Table );
         $sql = $platform->from( $Table );
         if( !is_null( $Alias ))
             $sql.=$platform->alias( $Alias );
