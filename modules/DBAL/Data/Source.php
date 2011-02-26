@@ -6,9 +6,9 @@ class Source extends \Util\Collection\Persistent
     protected $view;
     protected $handler;
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
         $this->handler = new \IO\Filter\Handler();
     }
 

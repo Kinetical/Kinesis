@@ -1,7 +1,7 @@
 <?php 
 namespace Util\Interfaces;
 
-interface Collection extends \ArrayAccess, \IteratorAggregate, Object
+interface Collection extends \ArrayAccess, \IteratorAggregate
 {
 	///function __construct( array $data, $strong = false );
 	//function setData( array $data );

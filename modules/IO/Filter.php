@@ -1,7 +1,7 @@
 <?php
 namespace IO;
 
-abstract class Filter extends \Core\Object
+abstract class Filter extends \Kinesis\Object
 {
     const INPUT = 1;
     const OUTPUT = 2;
@@ -17,11 +17,17 @@ abstract class Filter extends \Core\Object
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
         
         $this->parameters = new \Util\Collection();
+    }
+    
+    function getName()
+    {
+        //TODO: ReflectionClass::getShortName
+        return basename( get_class( $this ));
     }
 
     function getParameters()

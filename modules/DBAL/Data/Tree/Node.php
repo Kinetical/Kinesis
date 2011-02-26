@@ -20,11 +20,12 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
 
         if( is_array( $attributes ) )
             $this->setAttributes( $attributes );
+        
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->_children = new Node\Collection( $this );
         $this->_attributes = new \Util\Collection();

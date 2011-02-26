@@ -3,7 +3,7 @@ namespace Util;
 
 use Util\Interfaces as I;
 
-class ArrayList extends \Core\Object implements I\Collection, \Countable
+class ArrayList extends \Kinesis\Object implements I\Collection, \Countable
 {
     private $_iterator = 'ArrayIterator';
     public $Data = array();

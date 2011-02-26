@@ -7,9 +7,9 @@ class Filter extends \DBAL\Data\Mapping\Filter
 {
     protected $bindings;
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
 
         $this->bindings = new \DBAL\Data\Binding( array(), $this );
     }

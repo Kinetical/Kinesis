@@ -3,12 +3,12 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-abstract class View extends \Core\Object implements I\Nameable
+abstract class View extends \Kinesis\Object implements I\Nameable
 {
     private $_prepared = false;
 
     protected $parameters;
-    protected $command = null;
+    protected $command = false;
     protected $adapter;
 
     function __construct( array $params = array(), Adapter $adapter = null )
@@ -21,9 +21,9 @@ abstract class View extends \Core\Object implements I\Nameable
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
         
         $this->parameters = new \Util\Collection();
     }
@@ -77,7 +77,7 @@ abstract class View extends \Core\Object implements I\Nameable
     function clear()
     {
         $this->_prepared = false;
-        unset( $this->command );
+        $this->command = false;
         $this->adapter->clear();
     }
 
@@ -100,13 +100,15 @@ abstract class View extends \Core\Object implements I\Nameable
 
         if( !is_null( $dataSource ) &&
             $this->adapter->isRead() )
-            if( $dataSource instanceof \Core\Object )
-                $dataSource->setData( $result );
+            if( $dataSource instanceof \Util\ArrayList )
+                $dataSource->Data = $result;
             else
                 $dataSource = $result;
 
         $this->clear();
-        $dataSource->setMap( null );
+        
+        if( $dataSource instanceof \DBAL\Data\Source )
+            $dataSource->setMap( null );
 
         return $result;
     }
@@ -128,7 +130,7 @@ abstract class View extends \Core\Object implements I\Nameable
 
     function hasCommand()
     {
-        return !is_null($this->command);
+        return $this->command !== false;
     }
 
     abstract function getDefaultQuery();

@@ -14,9 +14,9 @@ class Filter extends \IO\Filter
         $this->setMapping( $mapping );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
 
         $this->mapping = new \DBAL\Data\Mapping( array(), $this );
     }

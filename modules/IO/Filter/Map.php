@@ -8,7 +8,7 @@ class Map extends \Util\Collection\Iterator
     function register( \IO\Filter $filter )
     {
         $c = count( $this->Keys );
-        $this->Keys[$c] = $filter->Type->getName( false );
+        $this->Keys[$c] = $filter->getName();
         $this->Data[$c] = $filter;
         $this->_states[$c] = $filter->getState();
     }

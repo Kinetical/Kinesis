@@ -75,10 +75,7 @@ class Loader extends \Core\Loader
 
         $dataSource  = new \DBAL\Data\Source();
         $dataAdapter = $this->getAdapter();
-        if( is_null( $view ))
-        {
-            echo 'fuckall';
-        }
+
         $dataAdapter->setView( $view );
 
         $dataAdapter->Fill( $dataSource );

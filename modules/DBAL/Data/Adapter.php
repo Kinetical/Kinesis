@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data;
 
-class Adapter extends \Core\Object
+class Adapter extends \Kinesis\Object
 {
     const SELECT = 1;
     const INSERT = 2;
