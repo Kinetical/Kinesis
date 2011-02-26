@@ -6,13 +6,13 @@ use \Util\Interfaces as I;
 class Object implements I\Object
 {
     private $_initialized = false;
-
+//
     public $Oid;
     public $Data = array();
     public $Type;
-
+//
     private static $types;
-
+//
     private static function setCachedType( Object\ReflectionClass $objReflection )
     {
         return self::$types[ $objReflection->getName() ] = $objReflection;
@@ -26,9 +26,10 @@ class Object implements I\Object
 
         return false;
     }
-
+//
     public function __construct()
     {
+       // parent::__construct();
         if( !$this->initialized() )
              $this->initialize();
     }
@@ -37,7 +38,7 @@ class Object implements I\Object
     {
         return $this->_initialized;
     }
-
+//
     function initialize()
     {
         if( $this->Type instanceof Object\ReflectionClass )
@@ -56,30 +57,30 @@ class Object implements I\Object
 //            && \Core::initialized() )
 //            $loader = \Core::getInstance()->getLoader()->add( $this );
     }
-
-
+//
+//
     static function getObject($id)
     {
         //        return \Core::getInstance()->getLoader()->has( $id );
 
         //return array_key_exists( $id, self::$instances ) ? self::$instances[$id] : null;
     }
-
+//
     function getType() {
 
        return $this->Type;
     }
-
+//
     function getOid()
     {
         return $this->Oid;
     }
-
+//
     function equals( Object $object )
     {
         return ($this->Oid == $object->Oid) ? true : false;
     }
-
+//
     function setData( $data )
     {
         if( is_array( $data ) ||
@@ -95,12 +96,12 @@ class Object implements I\Object
     {
         return $this->Data;
     }
-
+//
     function __toString()
     {
         return '';
     }
-
+//
     function __get( $name )
     {
         if( $this->Type instanceof \Core\Object\ReflectionClass
@@ -130,7 +131,7 @@ class Object implements I\Object
 
         $this->Data[ $propertyName ] = $value;
     }
-
+//
     function __unset( $name )
     {
         $this->Type->setPropertyValue( $this, $name, null );
@@ -177,6 +178,6 @@ class Object implements I\Object
 
         return null;
     }
-
-    
+//
+//    
 }

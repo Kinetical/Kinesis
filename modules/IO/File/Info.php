@@ -3,7 +3,7 @@ namespace IO\File;
 
 use \Util\Interfaces as I;
 
-abstract class Info extends \Core\Object implements I\Node, I\Nameable
+abstract class Info extends \Kinesis\Object implements I\Node, I\Nameable
 {
     private $_path;
     private $_parent;

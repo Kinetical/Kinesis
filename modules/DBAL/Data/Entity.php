@@ -5,17 +5,17 @@ use \Util\Interfaces as I;
 
 class Entity extends Model
 {
-    protected $relations;
+    public $Relations;
     protected $behaviors = array();
     protected $alias;
 
     private $_key;
 
-    function initialize()
+    function initialise()
     {
-        $this->relations = new Entity\Relationship\Collection( $this );
-        $this->attributes = new Entity\Attribute\Collection( $this );
-        parent::initialize();
+        $this->Relations = new Entity\Relationship\Collection( $this );
+        $this->Attributes = new Entity\Attribute\Collection( $this );
+        parent::initialise();
     }
 
     function hasBehavior( $behavior )
@@ -28,7 +28,7 @@ class Entity extends Model
         if( $this->_key instanceof Entity\Attribute )
             return $this->_key;
 
-        foreach( $this->attributes as $attr )
+        foreach( $this->Attributes as $attr )
             if( $attr->HasFlag( Entity\Attribute::PrimaryKey ) )
                 return $attr;
 
@@ -65,7 +65,7 @@ class Entity extends Model
 
     function setRelations( array $relations )
     {
-        $this->relations->merge( $relations );
+        $this->Relations->merge( $relations );
     }
 
     function setBehaviors( $behaviors )
@@ -91,7 +91,7 @@ class Entity extends Model
     function getRelationsTo( $entity )
     {
         $relations = array();
-        foreach( $this->relations as $relation )
+        foreach( $this->Relations as $relation )
             if( $relation->getEntity()->getName()  == $entity->getName() )
                 $relations[ $relation->getName() ] = $relation;
 

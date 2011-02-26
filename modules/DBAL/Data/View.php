@@ -8,7 +8,7 @@ abstract class View extends \Core\Object implements I\Nameable
     private $_prepared = false;
 
     protected $parameters;
-    protected $command;
+    protected $command = null;
     protected $adapter;
 
     function __construct( array $params = array(), Adapter $adapter = null )

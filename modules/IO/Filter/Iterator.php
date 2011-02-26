@@ -59,7 +59,7 @@ class Iterator extends \Util\Iterator
         return $output;
     }
 
-    protected function __invoke( array $params = array() )
+    function __invoke( array $params = array() )
     {
         return !is_null($this->execute( $params ));
     }

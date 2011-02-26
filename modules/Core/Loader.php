@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-abstract class Loader extends Object
+abstract class Loader extends \Kinesis\Task
 {
     protected $parameters;
     protected $manager;
@@ -18,9 +18,9 @@ abstract class Loader extends Object
         $this->setCache( $cache );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialise();
 
         $this->parameters = new \Util\Collection();
     }
@@ -83,7 +83,7 @@ abstract class Loader extends Object
     }
 
     abstract protected function parse( array $params = null );
-    abstract protected function execute( array $params = null );
+    //abstract protected function execute( array $params = null );
 
     function __invoke( $params = null )
     {

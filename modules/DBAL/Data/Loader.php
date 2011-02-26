@@ -8,9 +8,6 @@ class Loader extends \Core\Loader
 
     function getView()
     {
-        if( is_null( $this->view ))
-            $this->view = $this->getDefaultView();
-        
         return $this->view;
     }
 
@@ -31,7 +28,7 @@ class Loader extends \Core\Loader
         $this->adapter = $adapter;
     }
 
-    protected function getDefaultAdapter()
+    function getDefaultAdapter()
     {
         if( $this->parameters->exists('AdapterClass'))
             $adapterClass = $this->parameters['AdapterClass'];
@@ -41,7 +38,7 @@ class Loader extends \Core\Loader
         return new $adapterClass();
     }
 
-    protected function getDefaultView()
+    function getDefaultView()
     {
         if( $this->parameters->exists('ViewClass'))
         {
@@ -57,7 +54,7 @@ class Loader extends \Core\Loader
     protected function parse( array $params = null )
     {
         if( !array_key_exists('view', $params ))
-            $params['view'] = $this->getView();
+            $params['view'] = $this->View;
         else
             $this->view = $params['view'];
 
@@ -78,11 +75,15 @@ class Loader extends \Core\Loader
 
         $dataSource  = new \DBAL\Data\Source();
         $dataAdapter = $this->getAdapter();
+        if( is_null( $view ))
+        {
+            echo 'fuckall';
+        }
         $dataAdapter->setView( $view );
 
         $dataAdapter->Fill( $dataSource );
 
-        unset( $this->view );
+        //unset( $this->view );
 
         if( !empty( $dataSource ) )
         {

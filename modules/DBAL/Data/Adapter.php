@@ -62,9 +62,13 @@ class Adapter extends \Core\Object
 
         if( !$view->hasCommand() )
             if( !is_null( $type ))
+            {
                 $view->setCommand( $this->getCommand( $type ) );
+            }
             elseif( $this->hasCommand() )
+            {
                 $view->setCommand( $this->getCommand() );
+            }
             else
                 throw new \DBAL\Exception('Adapter('.get_class( $this ).') failed to locate a valid executable');
 

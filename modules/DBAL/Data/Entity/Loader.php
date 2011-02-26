@@ -3,9 +3,9 @@ namespace DBAL\Data\Entity;
 
 final class Loader extends \DBAL\Data\Loader
 {
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
 
         $params = array('ViewClass' => 'DBAL\XML\View\Entity',
                         'ViewArguments' => array( 'path' => 'site\entity.xml') );

@@ -3,9 +3,10 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-abstract class Model extends \Core\Object implements I\Nameable, I\Attributable
+abstract class Model extends \Kinesis\Object implements I\Nameable, I\Attributable
 {
     protected $attributes;
+    public $Attributes;
     protected $name;
 
     private $_base;
@@ -22,11 +23,11 @@ abstract class Model extends \Core\Object implements I\Nameable, I\Attributable
         $this->setAttributes( $attributes );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
-        if( is_null( $this->attributes ))
-            $this->attributes = new Model\Attribute\Collection( $this );
+        //parent::initialise();
+        if( is_null( $this->Attributes ))
+            $this->Attributes = new Model\Attribute\Collection( $this );
     }
 
     public function getName()
@@ -41,12 +42,12 @@ abstract class Model extends \Core\Object implements I\Nameable, I\Attributable
 
     function getAttributes()
     {
-        return $this->attributes;
+        return $this->Attributes;
     }
 
     function setAttributes( array $attributes )
     {
-        $this->attributes->merge( $attributes );
+        $this->Attributes->merge( $attributes );
     }
 
     function hasLoader()
