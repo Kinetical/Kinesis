@@ -1,9 +1,10 @@
 <?php
 namespace Util;
 
-abstract class Iterator extends \Core\Object implements \Iterator
+abstract class Iterator extends \Kinesis\Object implements \Iterator
 {
     protected $position = 0;
+    public $Data = array();
     
     function valid()
     {

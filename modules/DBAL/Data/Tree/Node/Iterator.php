@@ -7,6 +7,8 @@ class Iterator extends \Util\Collection\Iterator implements \RecursiveIterator
     {
         if( $node instanceof \DBAL\Data\Tree\Node )
             parent::__construct( $node->getChildren()->toArray() );
+        else
+            parent::__construct();
     }
 
     public function getChildren()

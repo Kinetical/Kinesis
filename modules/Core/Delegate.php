@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-final class Delegate extends Object
+final class Delegate extends \Kinesis\Object
 {
     private $method;
     private $target;

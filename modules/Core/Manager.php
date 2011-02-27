@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-abstract class Manager extends Object
+abstract class Manager extends \Kinesis\Object
 {
     protected $loaders;
     protected $parameters;
@@ -13,9 +13,9 @@ abstract class Manager extends Object
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->parameters = new \Util\Collection();
         $this->loaders = new \Util\Collection\Dictionary( array(), 'Core\Loader' );

@@ -10,6 +10,7 @@ class Delegate extends \Kinesis\Task\Statement
     function __construct( $reference, $method = null, array $arguments = array() )
     {
         $this->Method = $method;
+        
         $this->Reference = $reference;
         $this->Arguments = $arguments;
     }
@@ -35,7 +36,7 @@ class Delegate extends \Kinesis\Task\Statement
     }
 
     protected function execute()
-    {
+    {       
         $c = count( $this->Arguments );
         if( $c < 5 )
         {

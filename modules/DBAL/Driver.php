@@ -3,22 +3,23 @@ namespace DBAL;
 
 use \Util\Interfaces as I;
 
-abstract class Driver extends \Core\Object implements I\Nameable
+abstract class Driver extends \Kinesis\Object implements I\Nameable
 {
     protected $parameters;
 
     protected $platform;
 
-    function __construct( array $params = array() )
+    function __construct( array $params = null )
     {
         parent::__construct();
 
+        if( is_array( $params ))
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->parameters = new \Util\Collection();
     }

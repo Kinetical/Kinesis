@@ -3,7 +3,7 @@ namespace DBAL;
 
 use \Util\Interfaces as I;
 
-class Database extends \Core\Object implements I\Nameable
+class Database extends \Kinesis\Object implements I\Nameable
 {
     private $_configuration;
     private $_connection;
@@ -27,9 +27,9 @@ class Database extends \Core\Object implements I\Nameable
         parent::__construct();
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $user = $this->getConfiguration()->getUser();
         $this->setUser( new \DBAL\Data\User( $user['name'], $user['password'] ) );

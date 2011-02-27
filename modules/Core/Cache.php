@@ -14,9 +14,9 @@ abstract class Cache extends \Util\Collection
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->parameters = new \Util\Collection();
     }

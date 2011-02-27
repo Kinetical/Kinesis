@@ -16,9 +16,9 @@ class Iterator extends \Util\Iterator
             $this->setInput( $input );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->input = new \Util\Collection();
     }

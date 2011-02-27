@@ -3,9 +3,9 @@ namespace DBAL;
 
 class Configuration extends \Core\Configuration
 {
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $params = array('CacheClass' => 'IO\Object\Cache',
                         'ViewClass' => 'DBAL\XML\View',

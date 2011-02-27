@@ -104,6 +104,7 @@ abstract class Transaction extends \DBAL\Query
             $result = parent::__invoke();
             if( $driver->errors() )
             {
+                var_dump( $result );
                 throw new \DBAL\Exception('Transaction query failed to execute:');
             }
         }

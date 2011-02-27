@@ -10,9 +10,9 @@ final class MySQL extends \DBAL\Driver
         return $this->errors;
     }
     
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->setPlatform( new \DBAL\Platform\MySQL() );
     }
@@ -35,7 +35,7 @@ final class MySQL extends \DBAL\Driver
     function select( \DBAL\Connection $conn  )
     {
         $name = $conn->Database->Name;
-
+        
         return mysql_select_db( $name, $conn->getLink() ) ;
     }
 

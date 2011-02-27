@@ -12,7 +12,8 @@ class Iterator extends \IO\Filter\Iterator
 
     function __construct( \Core\Delegate $delegate = null )
     {
-        $this->setDelegate( $delegate );
+        if( !is_null( $delegate ))
+            $this->setDelegate( $delegate );
 
         parent::__construct();
     }
