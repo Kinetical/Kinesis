@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\XML;
 
-class Document extends \Core\Object
+class Document extends \Kinesis\Object
 {
     private $_root;
     private $_version;

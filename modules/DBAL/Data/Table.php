@@ -3,15 +3,13 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-class Table extends \Core\Object implements I\Nameable
+class Table extends \Kinesis\Object implements I\Nameable
 {
     private $_columns;
     private $_rows;
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
-
         $this->_columns = new \Util\Collection\Dictionary(array(),'\DBAL\Data\Table\Column');
         $this->_rows = new \Util\Collection\Dictionary(array(),'\DBAL\Data\Table\Row');
     }

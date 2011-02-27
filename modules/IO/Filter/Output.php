@@ -3,9 +3,9 @@ namespace IO\Filter;
 
 abstract class Output extends \IO\Filter
 {
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
         $this->state = self::OUTPUT;
     }
 }

@@ -11,9 +11,9 @@ class Source extends \DBAL\Data\Source
             unset( $this->DataType);
         }
 
-        function initialize()
+        function initialise()
         {
-            parent::initialize();
+            parent::initialise();
             $this->Database = \Core::getInstance()->getDatabase();
         }
 

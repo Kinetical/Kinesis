@@ -9,9 +9,9 @@ class Adapter extends \DBAL\SQL\Data\Adapter
 		parent::__construct( $resource );
 	}
 
-        function initialize()
+        function initialise()
         {
-            parent::initialize();
+            parent::initialise();
             if( !$this->getResource()->hasBehavior( \ORM\Entity\EntityObject::NestedSet ))
                  throw new \InvalidArgumentException('Tree Adapter only compatible with Nested Set entity');
         }

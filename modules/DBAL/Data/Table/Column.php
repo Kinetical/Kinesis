@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data\Table;
 
-class Column extends \Core\Object
+class Column extends \Kinesis\Object
 {
     private $_name;
     private $_attribute;

@@ -1,7 +1,7 @@
 <?php
 namespace IO\Stream;
 
-abstract class Handler extends \Core\Object
+abstract class Handler extends \Kinesis\Object
 {
     protected $stream;
     protected $buffer;

@@ -3,9 +3,9 @@ namespace DBAL\XML\View;
 
 class Entity extends \DBAL\XML\View
 {
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
 
         $this->setParameters( array( 'path' => 'site\entity.xml'));
     }

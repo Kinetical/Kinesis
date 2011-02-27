@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-class User extends Object
+class User extends \Kinesis\Object
 {
     private $_username;
     private $_password;

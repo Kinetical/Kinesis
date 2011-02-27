@@ -1,7 +1,7 @@
 <?php 
 namespace Core;
 
-class Module extends Object 
+class Module extends \Kinesis\Object 
 {
     const Component = 'Component';
     const Action = 'Action';
@@ -19,9 +19,9 @@ class Module extends Object
         parent::__construct();        
     }
     
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
         
         $this->_components = array();
         $this->setPath( 'modules'.DIRECTORY_SEPARATOR.$this->getName());

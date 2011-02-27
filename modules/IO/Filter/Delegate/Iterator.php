@@ -18,9 +18,9 @@ class Iterator extends \IO\Filter\Iterator
         parent::__construct();
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
 
         $this->input = new \Util\Collection();
     }

@@ -3,7 +3,7 @@ namespace DBAL\Data\Entity;
 
 use \Util\Interfaces as I;
 
-abstract class Relationship extends \Core\Object implements I\Nameable
+abstract class Relationship extends \Kinesis\Object implements I\Nameable
 {
     const OneToOne='OneToOne';
     const OneToMany='OneToMany';

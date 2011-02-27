@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data;
 
-abstract class Type extends \Core\Object
+abstract class Type extends \Kinesis\Object
 {
 	protected $_name;
 

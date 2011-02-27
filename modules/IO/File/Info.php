@@ -18,9 +18,9 @@ abstract class Info extends \Kinesis\Object implements I\Node, I\Nameable
         parent::__construct();
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->_children = new \Util\Collection\Dictionary(array(),'\IO\File\Info');
     }

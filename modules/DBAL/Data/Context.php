@@ -1,7 +1,7 @@
 <?php
 namespace DBAL\Data;
 
-class Context extends \Core\Object
+class Context extends \Kinesis\Object
 {
 	const Deferred = 1;
 	const Immediate = 2;

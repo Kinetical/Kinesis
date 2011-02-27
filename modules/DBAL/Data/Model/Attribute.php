@@ -3,7 +3,7 @@ namespace DBAL\Data\Model;
 
 use \Util\Interfaces as I;
 
-abstract class Attribute extends \Core\Object implements I\Nameable
+abstract class Attribute extends \Kinesis\Object implements I\Nameable
 {
     private $_name;
     private $_dataType;

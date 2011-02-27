@@ -4,13 +4,13 @@ namespace Core\Object;
 class Loader extends \IO\Serial\Loader
 {
 
-    function initialize()
+    function initialise()
     {
         if( !$this->caching() )
             parent::setCache(
                     new \Core\Object\Cache($this));
 
-        parent::initialize();
+        parent::initialise();
     }
     function match( $path )
     {

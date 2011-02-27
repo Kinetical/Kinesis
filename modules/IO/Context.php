@@ -3,7 +3,7 @@ namespace IO;
 
 use \Util\Interfaces as I;
 
-class Context extends \Core\Object implements I\Parameterized
+class Context extends \Kinesis\Object implements I\Parameterized
 {
     protected $parameters;
     protected $options;
@@ -17,9 +17,9 @@ class Context extends \Core\Object implements I\Parameterized
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->options    = new Context\Options\Collection();
         $this->parameters = new Context\Parameter\Collection();

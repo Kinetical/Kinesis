@@ -2,15 +2,14 @@
 namespace DBAL\Data;
 
 // TODO: EXTEND CORE\MANAGER
-class Set extends \Core\Object
+class Set extends \Kinesis\Object
 {
     private $_tables;
     private $_models;
     private $_typeLoader;
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
         $this->_typeLoader = new Loader\TypeLoader();
     }
 

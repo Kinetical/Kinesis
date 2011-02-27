@@ -1,7 +1,7 @@
 <?php
 namespace IO;
 
-abstract class Stream extends \Core\Object
+abstract class Stream extends \Kinesis\Object
 {
     private $_timeout;
     private $_encoding;
@@ -14,9 +14,9 @@ abstract class Stream extends \Core\Object
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        //parent::initialize();
 
         $this->parameters = new \Util\Collection();
     }

@@ -78,9 +78,9 @@ class Loader extends \IO\File\PatternLoader
         return false;
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
+        parent::initialise();
 
         $this->setExtension('php');
     }

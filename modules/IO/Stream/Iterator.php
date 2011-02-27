@@ -34,7 +34,7 @@ class Iterator extends \IO\Filter\Delegate\Iterator
         parent::rewind();
 
         if( !is_null( $this->stream ) &&
-            $this->stream->Type->hasMethod('rewind'))
+            method_exists( $this->stream, 'rewind') )
             $this->stream->rewind();
     }
 
