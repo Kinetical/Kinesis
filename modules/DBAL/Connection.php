@@ -3,11 +3,11 @@ namespace DBAL;
 
 class Connection extends \IO\Resource\Stream
 {
-    private $_database;
+    public $Database;
     
     function __construct( Database $database, array $params = array() )
     {
-        $this->_database = $database;
+        $this->Database = $database;
 
         parent::__construct( $params );
     }
@@ -22,24 +22,14 @@ class Connection extends \IO\Resource\Stream
         $this->setPointer( $link );
     }
 
-    public function getDatabase()
-    {
-        return $this->_database;
-    }
-
-    function setDatabase( Database $database )
-    {
-        $this->_database = $database;
-    }
-
     function getDriver()
     {
-        return $this->_database->getDriver();
+        return $this->Database->getDriver();
     }
 
     function getConfiguration()
     {
-        return $this->_database->getConfiguration();
+        return $this->Database->getConfiguration();
     }
 
     public function getDefaultTimeout()

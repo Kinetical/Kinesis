@@ -13,7 +13,6 @@ class Mapper extends \DBAL\Data\Entity\Object\Mapper
 	function map( Object $item )
 	{
 		$test = $this;
-		//var_dump( $item );
 		$data = $item->Data;
 		$relations = array_intersect_key( $data, $this->Entity->Relations );
 

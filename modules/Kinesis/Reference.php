@@ -9,6 +9,8 @@ abstract class Reference
 
     private $_cache = array('statements' => array(), 'values' => array() );
     private $_expression;
+    
+    public static $all = array();
 
     function __construct( $obj, Parameter $parameter = null )
     {
@@ -18,6 +20,9 @@ abstract class Reference
 
     protected function overload( $method, array $args = null, $statement = null )
     {
+        $tname = $method.'_'.$args[0];
+
+        self::$all[ $tname ] += 1;
         if( is_null( $this->_expression ))
             $this->_expression = $expression = new Task\Statement\Expression( $this, $method, $this->_cache );
         else

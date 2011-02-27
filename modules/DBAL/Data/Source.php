@@ -5,22 +5,24 @@ class Source extends \Util\Collection\Persistent
 {
     protected $view;
     protected $handler;
+    public $Map;
 
     function initialise()
     {
         //parent::initialize();
         $this->handler = new \IO\Filter\Handler();
+        $this->Map = &$this->handler->Map;
     }
 
-    function getMap()
-    {
-        return $this->handler->getMap();
-    }
-
-    function setMap( $map )
-    {
-        $this->handler->setMap( $map );
-    }
+//    function getMap()
+//    {
+//        return $this->handler->Map;
+//    }
+//
+//    function setMap( $map )
+//    {
+//        $this->handler->setMap( $map );
+//    }
 
     function hasMap()
     {

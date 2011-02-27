@@ -108,7 +108,7 @@ abstract class View extends \Kinesis\Object implements I\Nameable
         $this->clear();
         
         if( $dataSource instanceof \DBAL\Data\Source )
-            $dataSource->setMap( null );
+            $dataSource->Map->clear();
 
         return $result;
     }

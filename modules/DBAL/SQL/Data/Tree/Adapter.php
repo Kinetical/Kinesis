@@ -31,7 +31,6 @@ class Adapter extends \DBAL\SQL\Data\Adapter
                                                     ->where( 'lft', $root->lft, '>=' )
                                                     ->where( 'rgt', $root->rgt, '<=') );
 
-                    //echo (string)$this->SelectCommand;
                     parent::Fill( $dataSource );
                 }
             }

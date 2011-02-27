@@ -39,18 +39,22 @@ class Expression extends Delegate
                 }
             }
         }
+        
+        $this->Parameters['Source']['values'][ $args[0] ] = null;
 
         return null;
     }
 
-    protected function isBypassed( $name, \Kinesis\Task\Statement $statement )
+    protected function isBypassed( $name, $statement = null )
     {
         $method = $this->_method;
-
+        
+        if( $statement instanceof Delegate\Intercept )
+            return false;
+        
         if( $method !== 'set' &&
             $method !== 'unset' &&
             $method !== 'isset' &&
-            $statement instanceof Delegate\Bypass &&
             array_key_exists( $name, $this->Parameters['Source']['values'] ) )
             return true;
 
@@ -70,6 +74,14 @@ class Expression extends Delegate
     function __invoke( $statement = null, array $args = array() )
     {
         $this->_method = str_replace('__','', $this->Method);
+        
+        $acc = count( $args );
+
+        if( $acc > 0 &&
+            $this->isBypassed( $args[0], $statement ))
+        {
+            return $this->Parameters['Source']['values'][ $args[0] ];
+        }
 
         if( is_null( $statement ))
             return $this->recurse( $args );
@@ -84,13 +96,7 @@ class Expression extends Delegate
 
         
 
-        $acc = count( $args );
-
-        if( $acc > 0 &&
-            $this->isBypassed( $args[0], $statement ))
-        {
-            return $this->Parameters['Source']['values'][ $args[0] ];
-        }
+        
 
         if( $this->isImplemented() )
         {
@@ -102,13 +108,13 @@ class Expression extends Delegate
         $this->_statement = $statement;
 
         $result = $this->execute();
-
+        
         if( $acc > 0 &&
             $statement instanceof Delegate\Bypass )
-            if( is_null( $result ) )
-                unset( $this->Parameters['Source']['values'][ $args[0] ] );
-            else
+            if( !is_null( $result ) )
+            {
                 return $this->Parameters['Source']['values'][ $args[0] ] = $result;
+            }
 
         return $result;
     }

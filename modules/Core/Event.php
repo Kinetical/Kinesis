@@ -19,10 +19,8 @@ final class Event extends Delegate implements I\Nameable
         $this->setParameters( $params );
     }
 
-    function initialize()
+    function initialise()
     {
-        parent::initialize();
-
         $this->_parameters = new \Util\Collection();
     }
 

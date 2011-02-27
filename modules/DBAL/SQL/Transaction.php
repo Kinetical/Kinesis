@@ -31,13 +31,16 @@ abstract class Transaction extends \DBAL\Query
     
     function getConnection()
     {
+        if( is_null( $this->Stream ))
+            $this->Stream = $this->getDefaultStream();
+        
         return $this->Stream;
     }
 
     function setConnection( \DBAL\Connection $connection )
     {
         $this->setStream( $connection );
-        $this->database = $connection->getDatabase();
+        $this->database = $connection->Database;
     }
     
     function getDefaultIterator()
@@ -104,7 +107,6 @@ abstract class Transaction extends \DBAL\Query
             $result = parent::__invoke();
             if( $driver->errors() )
             {
-                var_dump( $result );
                 throw new \DBAL\Exception('Transaction query failed to execute:');
             }
         }

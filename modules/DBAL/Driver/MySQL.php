@@ -34,7 +34,7 @@ final class MySQL extends \DBAL\Driver
 
     function select( \DBAL\Connection $conn  )
     {
-        $name = $conn->Database->Name;
+        $name = $conn->Database->getName();
         
         return mysql_select_db( $name, $conn->getLink() ) ;
     }

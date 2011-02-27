@@ -66,8 +66,8 @@ class Filter extends \DBAL\Data\Mapping\Filter
 
     function match( $subject )
     {
-        if( $this->bindings->exist( $subject ))
-            return $this->bindings[ $subject ];
+        //if( $this->bindings->exists( $subject ))
+          //  return $this->bindings[ $subject ];
         
         $bind = parent::match( $subject );
         

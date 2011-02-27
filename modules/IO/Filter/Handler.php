@@ -3,18 +3,19 @@ namespace IO\Filter;
 
 class Handler extends \IO\Filter
 {
+    public $Map;
     protected $map;
 
     function __construct()
     {
-        $this->map = new \IO\Filter\Map();
+        $this->Map = new \IO\Filter\Map();
 
         $args = func_get_args();
         foreach( $args as $arg )
             if( is_array( $arg ))
                 $params = $arg;
             elseif( $arg instanceof \IO\Filter )
-                $this->map->register( $arg );
+                $this->Map->register( $arg );
 
         if( !is_array( $params ))
             $params = array();
@@ -22,28 +23,33 @@ class Handler extends \IO\Filter
         parent::__construct( $params );
     }
 
-    function getMap()
+//    function getMap()
+//    {
+//        return $this->Map;
+//    }
+//
+//    function setMap( $map )
+//    {
+//        if( $map instanceof \IO\Filter\Map )
+//            $map = $map->getFilters();
+//        
+//        if( is_null( $map ))
+//            $this->map->clear();
+//        else
+//            $this->map->setFilters( $map );
+//    }
+    
+    function setFilters( $filters )
     {
-        return $this->map;
-    }
-
-    function setMap( $map )
-    {
-        if( $map instanceof \IO\Filter\Map )
-            $map = $map->getFilters();
-        
-        if( is_null( $map ))
-            $this->map->clear();
-        else
-            $this->map->setFilters( $map );
+        $this->Map->setFilters( $filters );
     }
 
     function hasMap( $state = null )
     {
         if( is_int( $state ))
-            return $this->map->hasFilterState( $state );
+            return $this->Map->hasFilterState( $state );
         
-        return ($this->map->count() > 0 )
+        return ($this->Map->count() > 0 )
                 ? true
                 : false;
     }
@@ -56,7 +62,7 @@ class Handler extends \IO\Filter
         if( !$this->hasMap( $state ) )
             return $input;
 
-        $filters = $this->map->getFilters( $state );
+        $filters = $this->Map->getFilters( $state );
 
         foreach( $filters as $filter )
         {
