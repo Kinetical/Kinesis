@@ -9,6 +9,5 @@ class Builder extends Task
     {
         $this->behaviors[] = new Object\Method\Tree('Children');
         parent::__construct();
-        
     }
 }

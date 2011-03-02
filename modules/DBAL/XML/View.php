@@ -43,11 +43,13 @@ class View extends \DBAL\Data\View
         {
             if( $this->adapter->isRead() )
             {
-                if( $this->Parameters->exists('xpath'))
-                    $this->command->insertParameter('xpath', $this->Parameters['xpath']);
+                if( isset( $this->Parameters['xpath']))
+                {
+                    $this->command->Parameters['xpath'] = $this->Parameters['xpath'];
+                }
                     
                 $source->Map->register( new \DBAL\XML\Filter\SimpleXML() );
-                if( $this->command->hasParameter('xpath') )
+                if( isset( $this->command->Parameters['xpath']) )
                 {
                     $source->Map->register( new \DBAL\XML\Filter\Xpath( $this->command->Parameters ) );
                 }

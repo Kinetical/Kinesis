@@ -12,4 +12,17 @@ abstract class Component extends Object
 
         parent::__construct();
     }
+    
+    function setParameters( array $array )
+    {
+        if( $this->Parameters instanceof \Util\Collection )
+            $this->Parameters->merge( $array );
+        
+        $this->Parameters += $array;
+    }
+    
+    function getParameters()
+    {
+        return $this->Parameters;
+    }
 }

@@ -5,6 +5,8 @@ use \Util\Interfaces as I;
 
 class Database extends \Kinesis\Object implements I\Nameable
 {
+    public $Models;
+    
     private $_configuration;
     private $_connection;
     private $_selected = false;
@@ -22,7 +24,7 @@ class Database extends \Kinesis\Object implements I\Nameable
             $config  = new Configuration();
 
         $this->_configuration = $config;
-        $this->_name = $config->Database['name'];
+        $this->_name = $config['database']['name'];
 
         parent::__construct();
     }
@@ -35,7 +37,7 @@ class Database extends \Kinesis\Object implements I\Nameable
         $this->setUser( new \DBAL\Data\User( $user['name'], $user['password'] ) );
         $this->setContext( new \DBAL\Data\Context() );
         $this->setConnection( new \DBAL\Connection( $this ));
-        $this->_models = new \Core\Configuration( new \DBAL\Data\Entity\Loader() );
+        $this->Models = new \Core\Configuration( new \DBAL\Data\Entity\Loader() );
     }
 
     function getName()
@@ -126,11 +128,11 @@ class Database extends \Kinesis\Object implements I\Nameable
 
     function getModels()
     {
-        return $this->_models;
+        return $this->Models;
     }
 
     function setModels( array $models )
     {
-        $this->_models->merge( $models );
+        $this->Models->merge( $models );
     }
 }

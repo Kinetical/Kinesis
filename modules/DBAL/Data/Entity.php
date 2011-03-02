@@ -6,7 +6,7 @@ use \Util\Interfaces as I;
 class Entity extends Model
 {
     public $Relations;
-    protected $behaviors = array();
+    public $Behaviors = array();
     protected $alias;
 
     private $_key;
@@ -20,7 +20,7 @@ class Entity extends Model
 
     function hasBehavior( $behavior )
     {
-        return array_key_exists( $behavior, $this->behaviors );
+        return array_key_exists( $behavior, $this->Behaviors );
     }
 
     function getKey()
@@ -55,7 +55,7 @@ class Entity extends Model
 
     function getBehaviors()
     {
-        return $this->behaviors;
+        return $this->Behaviors;
     }
 
     function setAlias($alias)
@@ -74,9 +74,9 @@ class Entity extends Model
             $behaviors = explode(' ', str_replace(',',' ',$behaviors) );
         if( is_array( $behaviors ))
             foreach( $behaviors as $behavior )
-                $this->behaviors[ $behavior ] = $behavior;
+                $this->Behaviors[ $behavior ] = $behavior;
         else
-            $this->behaviors = $behaviors;
+            $this->Behaviors = $behaviors;
     }
 
     function relatedTo( $entity )

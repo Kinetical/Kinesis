@@ -25,7 +25,9 @@ abstract class Query extends Task implements \IteratorAggregate
 
     function build()
     {
-        return $this->Builder;
+        if( is_null( $this->builder ))
+            $this->builder = $this->getDefaultBuilder();
+        return $this->builder;
     }
     
     protected function assemble()

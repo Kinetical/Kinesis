@@ -8,6 +8,9 @@ class Loader extends \Core\Loader
 
     function getView()
     {
+        if( is_null( $this->view ))
+            $this->view = $this->getDefaultView();
+        
         return $this->view;
     }
 
@@ -20,6 +23,7 @@ class Loader extends \Core\Loader
     {
         if( is_null( $this->adapter ) )
             $this->adapter = $this->getDefaultAdapter();
+        
         return $this->adapter;
     }
 
@@ -54,7 +58,7 @@ class Loader extends \Core\Loader
     protected function parse( array $params = null )
     {
         if( !array_key_exists('view', $params ))
-            $params['view'] = $this->View;
+            $params['view'] = $this->getView();
         else
             $this->view = $params['view'];
 

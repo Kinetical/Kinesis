@@ -7,7 +7,7 @@ abstract class Model extends \Kinesis\Object implements I\Nameable, I\Attributab
 {
     protected $attributes;
     public $Attributes;
-    protected $name;
+    public $Name;
 
     private $_base;
 
@@ -32,12 +32,12 @@ abstract class Model extends \Kinesis\Object implements I\Nameable, I\Attributab
 
     public function getName()
     {
-        return $this->name;
+        return $this->Name;
     }
 
     public function setName( $name )
     {
-        $this->name = $name;
+        $this->Name = $name;
     }
 
     function getAttributes()

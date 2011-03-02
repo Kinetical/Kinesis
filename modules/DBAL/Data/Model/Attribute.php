@@ -5,7 +5,8 @@ use \Util\Interfaces as I;
 
 abstract class Attribute extends \Kinesis\Object implements I\Nameable
 {
-    private $_name;
+    public $Name;
+    public $DataType;
     private $_dataType;
     private $_flags;
     private $_default;
@@ -86,23 +87,23 @@ abstract class Attribute extends \Kinesis\Object implements I\Nameable
 
     function getName()
     {
-        return $this->_name;
+        return $this->Name;
     }
 
     public function getDataType()
     {
-        if( is_string($this->_dataType) )
+        if( is_string($this->DataType) )
         {//TODO: $type = $this->getModel()->getDataSet()->getTypeLoader()
             //$typeLoader = \Core::getInstance()->getDatabase()->getDataSet()->getTypeLoader();
-            //$this->_dataType = $typeLoader->loadType( $this );
+            //$this->DataType = $typeLoader->loadType( $this );
         }
 
-        return $this->_dataType;
+        return $this->DataType;
     }
 
     function getTypeName()
     {
-        return (string)$this->_dataType;
+        return (string)$this->DataType;
     }
 
     public function setDefault($default)
@@ -123,11 +124,11 @@ abstract class Attribute extends \Kinesis\Object implements I\Nameable
 
     function setName( $name )
     {
-        $this->_name = $name;
+        $this->Name = $name;
     }
 
     public function setDataType($type)
     {
-        $this->_dataType = $type;
+        $this->DataType = $type;
     }
 }

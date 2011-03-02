@@ -12,7 +12,9 @@ abstract class Relationship extends \Kinesis\Object implements I\Nameable
 
     protected $entity;
 
-    private $_name;
+    public $Name;
+    public $EntityName;
+    
     private $_association;
     private $_mappedBy;  // OWNING SIDE
     private $_inversedBy;// INVERSED SIDE
@@ -20,7 +22,7 @@ abstract class Relationship extends \Kinesis\Object implements I\Nameable
     
     function __construct( $name = null, \DBAL\Data\Entity $entity = null )
     {
-        $this->_name = $name;
+        $this->Name = $name;
         if( !is_null( $entity ))
             $this->setEntity($entity);
         
@@ -40,23 +42,23 @@ abstract class Relationship extends \Kinesis\Object implements I\Nameable
 
     function setEntityName( $name )
     {
-        $this->_entityName = $name;
+        $this->EntityName = $name;
     }
 
     function getEntityName()
     {
         // TODO: from $this->entity if entityName is blank
-        return $this->_entityName;
+        return $this->EntityName;
     }
 
     function getName()
     {
-            return $this->_name;
+            return $this->Name;
     }
 
     function setName( $name )
     {
-            $this->_name = $name;
+            $this->Name = $name;
     }
 
     function equals( Entity\Relationship $relation )

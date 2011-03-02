@@ -3,11 +3,15 @@ namespace Kinesis;
 
 class Object
 {
+    public $Oid;
     private $reference;
 
 
     private function integrity()
     {
+        if( is_null( $this->Oid ))
+            $this->Oid = spl_object_hash( $this );
+        
         if( is_null( $this->reference ))
         {
             $this->reference = new Reference\Object( $this );

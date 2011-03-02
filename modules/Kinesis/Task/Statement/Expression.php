@@ -27,7 +27,6 @@ class Expression extends Delegate
 
         if( is_array( $statement ))
         {
-            $statement = array_reverse( $statement );
             foreach( $statement as $stmt )
             {
                 
@@ -79,9 +78,7 @@ class Expression extends Delegate
 
         if( $acc > 0 &&
             $this->isBypassed( $args[0], $statement ))
-        {
             return $this->Parameters['Source']['values'][ $args[0] ];
-        }
 
         if( is_null( $statement ))
             return $this->recurse( $args );
@@ -90,6 +87,8 @@ class Expression extends Delegate
         {
             return call_user_func_array( $statement, $args );
         }
+        
+        
 
         if( !($statement instanceof \Kinesis\Task\Statement))
             return null;
@@ -115,6 +114,8 @@ class Expression extends Delegate
             {
                 return $this->Parameters['Source']['values'][ $args[0] ] = $result;
             }
+            
+            
 
         return $result;
     }
