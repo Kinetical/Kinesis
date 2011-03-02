@@ -40,7 +40,8 @@ class Iterator extends \IO\Filter\Delegate\Iterator
 
     function valid()
     {
-        if( $this->stream->eof() )
+        if( method_exists( $this->stream, 'eof') &&
+            $this->stream->eof() )
             return false;
 
         try {

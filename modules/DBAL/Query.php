@@ -5,7 +5,7 @@ use \Util\Interfaces as I;
 
 abstract class Query extends \Kinesis\Query
 {
-    protected $stream;
+    public $Stream;
     protected $handler;
     
     function getHandler()
@@ -23,13 +23,13 @@ abstract class Query extends \Kinesis\Query
 
     function getStream()
     {
-        return $this->stream;
+        return $this->Stream;
     }
 
     function isRead()
     {
-        if( $this->parameters->exists('StreamMode') &&
-            $this->parameters['StreamMode'] == 'r')
+        if( $this->Parameters->exists('StreamMode') &&
+            $this->Parameters['StreamMode'] == 'r')
             return true;
 
         $stream = $this->getStream();
@@ -41,8 +41,8 @@ abstract class Query extends \Kinesis\Query
 
     function isWrite()
     {
-        if( $this->parameters->exists('StreamMode') &&
-            $this->parameters['StreamMode'] == 'w')
+        if( $this->Parameters->exists('StreamMode') &&
+            $this->Parameters['StreamMode'] == 'w')
             return true;
 
         $stream = $this->getStream();
@@ -66,17 +66,20 @@ abstract class Query extends \Kinesis\Query
 
     function setStream( \IO\Stream $stream )
     {
-        $this->stream = $stream;
+        $this->Stream = $stream;
     }
     
     function resolve()
     {
+        if(!($this->Stream instanceof \IO\Stream))
+            $this->Stream = $this->getDefaultStream();
+        
         if( !is_null( $this->Stream ) )
         {
-            if( !$this->stream->isOpen() )
+            if( !$this->Stream->isOpen() )
             {
                 try
-                    { $this->stream->open(); }
+                    { $this->Stream->open(); }
                 catch( \Exception $e )
                     { return false; }
             }
@@ -93,7 +96,7 @@ abstract class Query extends \Kinesis\Query
         $streamCallback = $this->Parameters['StreamCallback'];
 
         if( class_exists( $streamHandler ))
-            $handler = new $streamHandler( $this->stream );
+            $handler = new $streamHandler( $this->Stream );
 
         $handlers = $this->Parameters['HandlerChain'];
         if( !is_array( $handlers ))
@@ -126,7 +129,7 @@ abstract class Query extends \Kinesis\Query
 
     function setIterator( \IO\Stream\Iterator $iterator )
     {
-        if( is_null( $this->stream ))
+        if( is_null( $this->Stream ))
             $this->setStream( $iterator->getStream() );
 
         $this->iterator = $iterator;

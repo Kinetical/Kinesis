@@ -22,22 +22,6 @@ class Handler extends \IO\Filter
 
         parent::__construct( $params );
     }
-
-//    function getMap()
-//    {
-//        return $this->Map;
-//    }
-//
-//    function setMap( $map )
-//    {
-//        if( $map instanceof \IO\Filter\Map )
-//            $map = $map->getFilters();
-//        
-//        if( is_null( $map ))
-//            $this->map->clear();
-//        else
-//            $this->map->setFilters( $map );
-//    }
     
     function setFilters( $filters )
     {

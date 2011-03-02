@@ -7,7 +7,7 @@ class XPath extends \IO\Filter
     {
         $input = $params['input'];
 
-        $xpath = $this->parameters['xpath'];
+        $xpath = $this->Parameters['xpath'];
 
         if( method_exists( $input, 'xpath'))
         {

@@ -5,7 +5,7 @@ use \Util\Interfaces as I;
 
 class Context extends \Kinesis\Object implements I\Parameterized
 {
-    protected $parameters;
+    public $Parameters;
     protected $options;
     private $_resource;
     
@@ -22,10 +22,10 @@ class Context extends \Kinesis\Object implements I\Parameterized
         //parent::initialize();
 
         $this->options    = new Context\Options\Collection();
-        $this->parameters = new Context\Parameter\Collection();
+        $this->Parameters = new Context\Parameter\Collection();
         
         $this->setResource( stream_context_create( $this->options->toArray(),
-                                                   $this->parameters->toArray() ) );
+                                          $this->Parameters->toArray() ) );
     }
 
     function getResource()
@@ -53,13 +53,13 @@ class Context extends \Kinesis\Object implements I\Parameterized
 
     function getParameters()
     {
-        if( empty($this->_parameters) )
-            $this->_parameters->merge( stream_context_get_params ( $this->_resource ) );
+        if( empty($this->Parameters) )
+            $this->Parameters->merge( stream_context_get_params ( $this->_resource ) );
 
-        return $this->_parameters;
+        return $this->Parameters;
     }
     function setParameters( array $params  )
     {
-        $this->_parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
 }

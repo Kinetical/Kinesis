@@ -26,42 +26,42 @@ class Filter extends \DBAL\Data\Mapping\Filter
 
     function getBindingProperty()
     {
-        return $this->parameters['BindingProperty'];
+        return $this->Parameters['BindingProperty'];
     }
 
     function setBindingProperty( $property )
     {
-        $this->parameters['BindingProperty'] = $property;
+        $this->Parameters['BindingProperty'] = $property;
     }
 
     function getBindingKey()
     {
-        return $this->parameters['BindingKey'];
+        return $this->Parameters['BindingKey'];
     }
 
     function setBindingKey( $key )
     {
-        $this->parameters['BindingKey'] = $key;
+        $this->Parameters['BindingKey'] = $key;
     }
 
     function getMappingProperty()
     {
-        return $this->parameters['MappingProperty'];
+        return $this->Parameters['MappingProperty'];
     }
 
     function setMappingProperty( $property )
     {
-        $this->parameters['MappingProperty'] = $property;
+        $this->Parameters['MappingProperty'] = $property;
     }
 
     function getMappingKey()
     {
-        return $this->parameters['MappingKey'];
+        return $this->Parameters['MappingKey'];
     }
 
     function setMappingKey( $key )
     {
-        $this->parameters['MappingKey'] = $key;
+        $this->Parameters['MappingKey'] = $key;
     }
 
     function match( $subject )
@@ -73,9 +73,9 @@ class Filter extends \DBAL\Data\Mapping\Filter
         
         if( $bind == false )
         {
-            if( $this->parameters->exists('BindingProperty') )
+            if( $this->Parameters->exists('BindingProperty') )
                 $bind = $subject->{$this->getBindingProperty()};
-            elseif( $this->parameters->exists('BindingKey') &&
+            elseif( $this->Parameters->exists('BindingKey') &&
                     ( is_array( $subject ) ||
                       $subject instanceof ArrayAccess ))
                 $bind = $subject[ $this->getBindingKey() ];
@@ -101,7 +101,8 @@ class Filter extends \DBAL\Data\Mapping\Filter
         
         $subject = $params['input'];
 
-        if( $this->bindings->exists( $subject ))
+        if( is_scalar( $subject ) && 
+            $this->bindings->exists( $subject ))
             return $this->bindings[ $subject ];
 
         $bindingClass = $this->getBindingClass( $subject );
@@ -127,9 +128,9 @@ class Filter extends \DBAL\Data\Mapping\Filter
     {
         $bindingClass = $this->match( $subject );
 
-        if( $this->parameters->exists('MappingProperty'))
+        if( $this->Parameters->exists('MappingProperty'))
             $mapping = $subject->{$this->getMappingProperty()};
-        elseif( $this->parameters->exists('MappingKey') &&
+        elseif( $this->Parameters->exists('MappingKey') &&
                 ( is_array( $subject ) ||
                   $subject instanceof ArrayAccess ))
             $mapping = $subject[$this->getMappingKey()];

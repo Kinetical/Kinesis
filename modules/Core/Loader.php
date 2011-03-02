@@ -3,7 +3,7 @@ namespace Core;
 
 abstract class Loader extends \Kinesis\Task
 {
-    protected $parameters;
+    public $Parameters;
     protected $manager;
     protected $cache;
 
@@ -22,13 +22,13 @@ abstract class Loader extends \Kinesis\Task
     {
         //parent::initialise();
 
-        $this->parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection();
     }
 
     protected function getDefaultCache()
     {
-        $cacheClass = $this->parameters['CacheClass'];
-        $cacheParams = $this->parameters['CacheParameters'];
+        $cacheClass = $this->Parameters['CacheClass'];
+        $cacheParams = $this->Parameters['CacheParameters'];
 
         if( !is_array( $cacheParams ))
             $cacheParams = array();
@@ -42,12 +42,12 @@ abstract class Loader extends \Kinesis\Task
 
     function getParameters()
     {
-        return $this->parameters;
+        return $this->Parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
 
     protected function caching()

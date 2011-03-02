@@ -7,7 +7,7 @@ abstract class View extends \Kinesis\Object implements I\Nameable
 {
     private $_prepared = false;
 
-    protected $parameters;
+    public $Parameters;
     protected $command = false;
     protected $adapter;
 
@@ -25,27 +25,27 @@ abstract class View extends \Kinesis\Object implements I\Nameable
     {
         //parent::initialize();
         
-        $this->parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection();
     }
 
     function getName()
     {
-        return $this->parameters['name'];
+        return $this->Parameters['name'];
     }
 
     function setName( $name )
     {
-        $this->parameters['name'] = $name;
+        $this->Parameters['name'] = $name;
     }
 
     function getParameters()
     {
-        return $this->parameters;
+        return $this->Parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
 
     function hasAdapter()

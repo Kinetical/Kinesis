@@ -18,10 +18,10 @@ final class Loader extends \DBAL\Data\Loader
         if( is_array( $params ) &&
             array_key_exists('name', $params ))
         {
-            if( !$this->parameters->exists('ViewArguments') )
-                 $this->parameters['ViewArguments'] = array();
+            if( !$this->Parameters->exists('ViewArguments') )
+                 $this->Parameters['ViewArguments'] = array();
 
-            $viewArgs = $this->parameters['ViewArguments'];
+            $viewArgs = $this->Parameters['ViewArguments'];
             $query = new \DBAL\XML\Query();
             $query->build()
                   ->where('entity')
@@ -29,7 +29,7 @@ final class Loader extends \DBAL\Data\Loader
 
             // RETRIEVE XPATH
             $viewArgs['xpath'] = (string)$query;
-            $this->parameters['ViewArguments'] = $viewArgs;
+            $this->Parameters['ViewArguments'] = $viewArgs;
         }
 
         return parent::parse( $params );

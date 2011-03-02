@@ -15,7 +15,7 @@ class View extends \DBAL\Data\View
         $command = $this->getDefaultQuery();
 
         $command->build()
-                ->from( $this->parameters['path'] );
+                ->from( $this->Parameters['path'] );
 
         return $command;
     }
@@ -29,7 +29,7 @@ class View extends \DBAL\Data\View
     {
         $command = $this->getDefaultQuery();
         return $command->build()
-                       ->update( $this->parameters['path'] );
+                       ->update( $this->Parameters['path'] );
     }
 
     function getDefaultDelete()
@@ -43,8 +43,8 @@ class View extends \DBAL\Data\View
         {
             if( $this->adapter->isRead() )
             {
-                if( $this->parameters->exists('xpath'))
-                    $this->command->insertParameter('xpath', $this->parameters['xpath']);
+                if( $this->Parameters->exists('xpath'))
+                    $this->command->insertParameter('xpath', $this->Parameters['xpath']);
                     
                 $source->Map->register( new \DBAL\XML\Filter\SimpleXML() );
                 if( $this->command->hasParameter('xpath') )

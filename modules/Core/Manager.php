@@ -4,7 +4,7 @@ namespace Core;
 abstract class Manager extends \Kinesis\Object
 {
     protected $loaders;
-    protected $parameters;
+    public $Parameters;
 
     function __construct( array $params = array() )
     {
@@ -17,18 +17,18 @@ abstract class Manager extends \Kinesis\Object
     {
         //parent::initialize();
 
-        $this->parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection();
         $this->loaders = new \Util\Collection\Dictionary( array(), 'Core\Loader' );
     }
 
     function getParameters()
     {
-        return $this->parameters;
+        return $this->Parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
 
     function getLoaders()

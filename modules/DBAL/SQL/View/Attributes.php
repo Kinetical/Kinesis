@@ -9,7 +9,7 @@ class Attributes extends \DBAL\SQL\View
 
         $command->build()
                 ->columns()
-                ->from( $this->parameters['table'] );
+                ->from( $this->Parameters['table'] );
 
         return $command;
     }

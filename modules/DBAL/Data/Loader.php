@@ -30,8 +30,8 @@ class Loader extends \Core\Loader
 
     function getDefaultAdapter()
     {
-        if( $this->parameters->exists('AdapterClass'))
-            $adapterClass = $this->parameters['AdapterClass'];
+        if( $this->Parameters->exists('AdapterClass'))
+            $adapterClass = $this->Parameters['AdapterClass'];
         else
             $adapterClass = 'DBAL\Data\Adapter';
 
@@ -40,15 +40,15 @@ class Loader extends \Core\Loader
 
     function getDefaultView()
     {
-        if( $this->parameters->exists('ViewClass'))
+        if( $this->Parameters->exists('ViewClass'))
         {
-            $viewClass = $this->parameters['ViewClass'];
-            $viewArgs = $this->parameters['ViewArguments'];
+            $viewClass = $this->Parameters['ViewClass'];
+            $viewArgs = $this->Parameters['ViewArguments'];
            
             return new $viewClass( $viewArgs );
         }
 
-        throw new \DBAL\Exception('Unable to load view for ('.get_class( $this ).')');
+        throw new \DBAL\Exception('Unable to load view for ('.get_class().')');
     }
 
     protected function parse( array $params = null )

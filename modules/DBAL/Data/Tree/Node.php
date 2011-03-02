@@ -5,9 +5,12 @@ use \Util\Interfaces as I;
 
 class Node extends \Util\Collection implements I\Attributable, I\Node
 {
+    public $Name;
+    public $Value;
+    public $Attributes;
+    
     private $_parent;
     private $_children;
-    private $_attributes;
 
     function __construct( $name = null, array $attributes = null, Node $parent = null )
     {
@@ -28,27 +31,27 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
         //parent::initialize();
 
         $this->_children = new Node\Collection( $this );
-        $this->_attributes = new \Util\Collection();
+        $this->Attributes = new \Util\Collection();
     }
 
     function getName()
     {
-        return $this->Data['Name'];
+        return $this->Name;
     }
 
     function setName( $name )
     {
-        $this->Data['Name'] = $name;
+        $this->Name = $name;;
     }
 
     function getValue()
     {
-        return $this->Data['Value'];
+        return $this->Value;
     }
 
     function setValue( $value )
     {
-        $this->Data['Value'] = $value;
+        $this->Value = $value;
     }
 
     function __toString()
@@ -63,32 +66,32 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
 
     public function offsetExists($offset)
     {
-        return $this->_attributes->offsetExists( $offset );
+        return $this->Attributes->offsetExists( $offset );
     }
 
     public function offsetGet($offset)
     {
-        return $this->_attributes->offsetGet( $offset );
+        return $this->Attributes->offsetGet( $offset );
     }
 
     public function offsetSet($offset, $value)
     {
-        return $this->_attributes->offsetSet( $offset, $value );
+        return $this->Attributes->offsetSet( $offset, $value );
     }
 
     public function offsetUnset($offset)
     {
-        $this->_attributes->offsetUnset( $offset );
+        $this->Attributes->offsetUnset( $offset );
     }
 
     public function setAttributes( array $attributes )
     {
-        $this->_attributes->merge( $attributes );
+        $this->Attributes->merge( $attributes );
     }
 
     function getAttributes()
     {
-        return $this->_attributes;
+        return $this->Attributes;
     }
 
     function setParent( $parent )
@@ -141,7 +144,7 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
     }
     function hasAttributes()
     {
-        if( $this->_attributes->count() > 0 )
+        if( $this->Attributes->count() > 0 )
                 return true;
 
         return false;

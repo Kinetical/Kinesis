@@ -5,7 +5,7 @@ abstract class Cache extends \Util\Collection
 {
     private $_enabled = true; //TODO: RETRIEVE FROM CONFIG FILE
 
-    protected $parameters;
+    public $Parameters;
 
     function __construct( array $params = array() )
     {
@@ -18,7 +18,7 @@ abstract class Cache extends \Util\Collection
     {
         //parent::initialize();
 
-        $this->parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection();
     }
 
     function enable()
@@ -38,12 +38,12 @@ abstract class Cache extends \Util\Collection
 
     function getParameters()
     {
-        return $this->parameters;
+        return $this->Parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
 
     abstract protected function has( $id );
@@ -57,7 +57,7 @@ abstract class Cache extends \Util\Collection
         if( parent::offsetExists( $offset ))
             return true;
 
-        if( $this->parameters->exists('hash') )
+        if( $this->Parameters->exists('hash') )
             $offset = $this->hash( $offset );
         
         return $this->has( $offset );
@@ -67,7 +67,7 @@ abstract class Cache extends \Util\Collection
     {
         parent::offsetSet( $offset, $value );
 
-        if( $this->parameters->exists('hash') )
+        if( $this->Parameters->exists('hash') )
             $offset = $this->hash( $offset );
 
         if( !is_object( $value ))
@@ -81,7 +81,7 @@ abstract class Cache extends \Util\Collection
         if( array_key_exists( $offset, $this->Data ))
             return $this->Data[$offset];
 
-        if( $this->parameters->exists('hash') )
+        if( $this->Parameters->exists('hash') )
             $offset = $this->hash( $offset );
 
         return $this->load( $offset );
@@ -91,7 +91,7 @@ abstract class Cache extends \Util\Collection
     {
         parent::offsetUnset( $offset );
 
-        if( $this->parameters->exists('hash') )
+        if( $this->Parameters->exists('hash') )
             $offset = $this->hash( $offset );
 
         $this->remove( $offset );
@@ -99,7 +99,7 @@ abstract class Cache extends \Util\Collection
 
     protected function hash( $offset )
     {
-        $hash = $this->parameters['hash'];
+        $hash = $this->Parameters['hash'];
 
         if( is_callable( $hash ))
             return $hash( $offset );

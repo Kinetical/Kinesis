@@ -6,7 +6,7 @@ abstract class Filter extends \Kinesis\Object
     const INPUT = 1;
     const OUTPUT = 2;
     
-    protected $parameters;
+    public $Parameters;
     protected $delegate;
     protected $state = 2;
 
@@ -21,7 +21,7 @@ abstract class Filter extends \Kinesis\Object
     {
         //parent::initialize();
         
-        $this->parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection();
     }
     
     function getName()
@@ -32,12 +32,12 @@ abstract class Filter extends \Kinesis\Object
 
     function getParameters()
     {
-        return $this->parameters;
+        return $this->Parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
     
     function getDelegate()

@@ -5,7 +5,7 @@ abstract class Stream extends \Kinesis\Object
 {
     private $_timeout;
     private $_encoding;
-    protected $parameters;
+    public $Parameters;
 
     function __construct( array $params = array() )
     {
@@ -18,23 +18,23 @@ abstract class Stream extends \Kinesis\Object
     {
         //parent::initialize();
 
-        $this->parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection();
     }
 
     function getParameters()
     {
-        return $this->parameters;
+        return $this->Parameters;
     }
 
     function setParameters( array $params )
     {
-        $this->parameters->merge( $params );
+        $this->Parameters->merge( $params );
     }
 
     function getDefaultEncoding()
     {
-        if( $this->parameters->exists('encoding'))
-            $encoding = $this->parameters['encoding'];
+        if( $this->Parameters->exists('encoding'))
+            $encoding = $this->Parameters['encoding'];
         else
             $encoding = Stream\Encoding::UTF_8;
 
@@ -42,8 +42,8 @@ abstract class Stream extends \Kinesis\Object
     }
     function getDefaultTimeout()
     {
-        if( $this->parameters->exists('timeout'))
-            return $this->parameters['timeout'];
+        if( $this->Parameters->exists('timeout'))
+            return $this->Parameters['timeout'];
 
         return -1;
     }
