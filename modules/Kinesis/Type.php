@@ -4,85 +4,76 @@ namespace Kinesis;
 class Type
 {
     private static $types = array();
-    private static $instances = array();
     private static $parameters = array();
-
-    private $id;
-
-    public $Name;
-    public $Parent;
-
-    function __construct()
-    {
-        if( func_num_args() > 0 )
-        {
-            $args = func_get_args();
-            foreach( $args as $value )
-            {
-               if( is_string( $value ))
-               {
-                   if( array_key_exists( $value, self::$types ) )
-                   {
-                       $this->Parent = self::$types[ $value ];
-                   }
-                   else
-                   {
-                       $this->Name = $value;
-                   }
-               }
-               elseif( is_object( $value ) )
-               {
-                   $this->Parent = $value;
-               }
-            }
-        }
-        
-
-        $this->id = \spl_object_hash( $this );
-
-        self::$instances[ $this->id ] = $this->Name;
-        self::$types[ $this->Name ] = $this;
-    }
 
     function initialise( $ref )
     {
         if( $ref instanceof Object )
             $ref = Reference\Object::cache( $ref );
 
-        $type = $this->resolve( $ref );
+        list( $typeName, $type ) = $this->resolve( $ref );
+              
         $ref->Type = $type;
         
-        if( $ref instanceof Reference )
-        {
-            if( is_null( $ref->Parameter ) )
-                $ref->Parameter = $this->field( $ref );
-
-            $ref->Parameter->assign( $ref );
-        }
+        if( $ref instanceof Reference &&
+            is_null( $ref->Parameter ) )
+            $ref->Parameter = $this->field( $typeName, $type, $ref );
     }
-
+    
     protected function resolve( $ref )
-    {      
+    {
         if( $ref instanceof Reference )
             $ref = $ref->Container;
-
-        if( is_object( $ref ) )
-            return $this->resolveObject($ref);
-
-        return $this->resolveScalar( $ref );
+        
+        $object = false;
+        $scalar = false;
+        if( is_object( $ref ))
+        {
+            $name = get_class( $ref );
+            $object = true;
+            
+        }
+        elseif( is_scalar( $ref ))
+        {
+            $name = gettype( $ref );
+            $scalar = true;
+            
+        }
+        
+        if( array_key_exists( $name, self::$types ))
+            $type = self::$types[$name];
+        
+        if(is_null( $type ))
+        {
+            if( $object )
+            {
+                $type = $this->resolveObject( $name );
+            }
+            elseif( $scalar )
+            {
+                $type = $this->resolveScalar( $ref );
+            }
+            
+            self::$types[$name] = $type;
+        }
+        
+        return array( $name, $type );
     }
 
     private function resolveObject( $ref )
     {
-        $name = get_class( $ref );
-
+        if( is_string( $ref ))
+            $name = $ref;
+        else
+            $name = get_class( $ref );
+        
         if( stripos( $name, 'factory') !== false )
             $type = new Type\Object\Factory();
         elseif( stripos( $name, 'builder') !== false )
             $type = new Type\Object\Builder();
         elseif( stripos( $name, 'controller') !== false )
             $type = new Type\Object\Control();
-        elseif( $ref instanceof Task )
+        elseif( is_subclass_of($name, 'Kinesis\Task' ) )
             $type = new Type\Object\Task();
 
         if( is_null( $type ))
@@ -94,7 +85,11 @@ class Type
     private function resolveScalar( $ref )
     {
         // TODO: SCALAR TYPES
-        $name = gettype( $ref );
+        if( is_string( $ref ))
+            $name = $ref;
+        else
+            $name = gettype( $ref );
+        
         switch( $name )
         {
             default:
@@ -104,14 +99,15 @@ class Type
         return $type;
     }
 
-    function field( $ref )
+    function field( $typeName, $type, $ref )
     {
-        $type = get_class( $ref->Type );
+        if( !array_key_exists( $typeName, self::$parameters ))
+        {
+            self::$parameters[ $typeName ] = new Parameter\Field( $typeName, $type );
+            self::$parameters[ $typeName ]->assign( $ref );
+        }
 
-        if( !array_key_exists( $type, self::$parameters ))
-            self::$parameters[ $type ] = new Parameter\Field( $this->Name, $ref->Type );
-
-        return self::$parameters[ $type ];
+        return self::$parameters[ $typeName ];
     }
 
     static function all( Instantiator $instantiator )

@@ -5,6 +5,7 @@ use Kinesis\Task\Statement as Statement;
 
 class Field extends \Kinesis\Parameter
 {
+    private static $_intersection = array();
     private static $_replacements = array( 'get'      => '__get',
                                            'set'      => '__set',
                                            'call'     => '__call',
@@ -18,8 +19,7 @@ class Field extends \Kinesis\Parameter
 
     function listen( $method, $delegate )
     {
-        if( !array_key_exists( $method, $this->listener ) ||
-            !is_array( $this->listener[ $method ] ))
+        if( !array_key_exists( $method, $this->listener ))
             $this->listener[ $method ] = array();
 
         $this->listener[$method][] = $delegate;
@@ -43,55 +43,41 @@ class Field extends \Kinesis\Parameter
         return new \Kinesis\Reference\Object( $native, $param );
     }
 
-    private function intersect( \Kinesis\Task\Statement $statement, array $intercede  )
+    private function intersect( array $methods )
     {
-        $flipped = array_flip( self::$_replacements );
-
-        if( is_object( $statement->Reference->Container ))
+        if( is_array( $methods ))
         {
-            $class = get_class_methods( get_class( $statement->Reference->Container ));
-            $classcede = array_intersect( array_values( $class ), array_keys( $flipped ) );
-            $ignored = array_intersect( $class, $classcede );
-
-            if( count( array_intersect( $ignored , array_keys( $flipped ) ) ) > 0 )
-            {
-                foreach( $ignored as $meth )
-                {
-                    $key = array_search( $meth, $replace );
-                    if( ($key = array_search( $key, $intercede )) !== false )
-                        unset( $intercede[ $key ]);
-                }
-            }
-
+            $intercede = array_intersect( array_values( $methods ), 
+                                      array_keys( self::$_replacements ) );
+            
+            $class = $methods;
+            $diff = array_diff( $class, self::$_replacements );
+            $classcede = array_intersect( array_values( $diff ), 
+                                      array_keys( array_flip( self::$_replacements ) ) );
         }
 
         return $intercede;
     }
 
-    private function apply( \Kinesis\Task\Statement $statement, $intersect )
+    private function apply( \Kinesis\Task\Statement $statement, array $intersect )
     {
-        if( !empty( $intersect ))
-        {
-            while( !empty( $intersect ) )
-            {
-                $this->listen( array_pop( $intersect ), $statement );
-            }
-        }
-//        else
-//        {
-//            $keys = ;
-//            $this->listener = array_merge( $this->listener,
-//                                            array_fill_keys($intercede,
-//                                                            array( $statement ) ) );
-//        }
+        foreach( $intersect as $intercede )
+            $this->listen( $intercede, $statement );
     }
 
     protected function state( \Kinesis\Task\Statement $statement )
     {
-        $methods = get_class_methods( $statement->Reference->Parameter );
-        $intercede = array_intersect( array_values( $methods ), array_keys( self::$_replacements ) );
-
-        $intersect = $this->intersect( $statement, $intercede );
+        $class = get_class( $statement->Reference->Parameter );
+        
+        if( array_key_exists( $class, self::$_intersection ))
+        {
+            $intersect = self::$_intersection[ $class ];
+        }
+        else
+        {
+            $intersect = $this->intersect( get_class_methods( $class ) );
+            self::$_intersection[ $class ] = $intersect;
+        }
 
         if( !empty( $intersect ))
             $this->apply( $statement, $intersect );

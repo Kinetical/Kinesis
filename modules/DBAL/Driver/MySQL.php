@@ -19,8 +19,10 @@ final class MySQL extends \DBAL\Driver
 
     function connect( \DBAL\Connection $conn )
     {
-        $host = $conn->Configuration->Database['host'];
-        $user = $conn->Configuration->getUser();
+        $conf = $conn->getConfiguration();
+        
+        $host = $conf['database']['host'];
+        $user = $conf->getUser();
 
         return mysql_connect( $host,
                               $user['name'],
