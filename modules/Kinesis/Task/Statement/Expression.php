@@ -8,7 +8,6 @@ class Expression extends Delegate
 
     function __construct( &$ref, $method, &$cache )
     {
-        
         $this->Parameters['Source'] = &$cache;
 
         parent::__construct( $ref, $method );
@@ -51,9 +50,7 @@ class Expression extends Delegate
         if( $statement instanceof Delegate\Intercept )
             return false;
         
-        if( $method !== 'set' &&
-            $method !== 'unset' &&
-            $method !== 'isset' &&
+        if( $method == 'get' &&
             array_key_exists( $name, $this->Parameters['Source']['values'] ) )
             return true;
 
@@ -72,30 +69,20 @@ class Expression extends Delegate
 
     function __invoke( $statement = null, array $args = array() )
     {
-        $this->_method = str_replace('__','', $this->Method);
+        if( strpos( $this->Method, '__' ) == 0 )
+            $this->_method = str_replace('__','', $this->Method);
         
-        $acc = count( $args );
-
-        if( $acc > 0 &&
-            $this->isBypassed( $args[0], $statement ))
+        if( $this->isBypassed( $args[0], $statement ))
             return $this->Parameters['Source']['values'][ $args[0] ];
 
         if( is_null( $statement ))
             return $this->recurse( $args );
 
         if( get_class( $statement ) == 'Closure' )
-        {
             return call_user_func_array( $statement, $args );
-        }
         
-        
-
         if( !($statement instanceof \Kinesis\Task\Statement))
             return null;
-
-        
-
-        
 
         if( $this->isImplemented() )
         {
@@ -115,8 +102,6 @@ class Expression extends Delegate
                 return $this->Parameters['Source']['values'][ $args[0] ] = $result;
             }
             
-            
-
         return $result;
     }
 

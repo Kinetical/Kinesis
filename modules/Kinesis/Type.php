@@ -11,8 +11,9 @@ class Type
         if( $ref instanceof Object )
             $ref = Reference\Object::cache( $ref );
 
-        list( $typeName, $type ) = $this->resolve( $ref );
-              
+        $typeName = $this->resolve( $ref );
+        $type = $this->execute( $typeName );
+        
         $ref->Type = $type;
         
         if( $ref instanceof Reference &&
@@ -25,42 +26,28 @@ class Type
         if( $ref instanceof Reference )
             $ref = $ref->Container;
         
-        $object = false;
-        $scalar = false;
         if( is_object( $ref ))
-        {
-            $name = get_class( $ref );
-            $object = true;
-            
-        }
-        elseif( is_scalar( $ref ))
-        {
-            $name = gettype( $ref );
-            $scalar = true;
-            
-        }
+            return get_class( $ref );
         
+        return gettype( $ref );
+    }
+       
+    protected function execute( $name )
+    {
         if( array_key_exists( $name, self::$types ))
-            $type = self::$types[$name];
+            return self::$types[$name];
         
-        if(is_null( $type ))
-        {
-            if( $object )
-            {
-                $type = $this->resolveObject( $name );
-            }
-            elseif( $scalar )
-            {
-                $type = $this->resolveScalar( $ref );
-            }
+        if( class_exists( $name ))
+            $type = $this->object( $name );
+        else
+            $type = $this->scalar( $name );
             
-            self::$types[$name] = $type;
-        }
+        self::$types[$name] = $type;
         
-        return array( $name, $type );
+        return $type;
     }
 
-    private function resolveObject( $ref )
+    private function object( $ref )
     {
         if( is_string( $ref ))
             $name = $ref;
@@ -75,6 +62,10 @@ class Type
             $type = new Type\Object\Control();
         elseif( is_subclass_of($name, 'Kinesis\Task' ) )
             $type = new Type\Object\Task();
+        elseif( is_subclass_of($name, 'Kinesis\Reference\ArrayList' ) )
+        {
+            $type = new Type\Object\ArrayList();
+        }
 
         if( is_null( $type ))
             $type = new Type\Object();
@@ -82,7 +73,7 @@ class Type
         return $type;
     }
 
-    private function resolveScalar( $ref )
+    private function scalar( $ref )
     {
         // TODO: SCALAR TYPES
         if( is_string( $ref ))
@@ -114,5 +105,4 @@ class Type
     {
         return self::$types;
     }
-
 }

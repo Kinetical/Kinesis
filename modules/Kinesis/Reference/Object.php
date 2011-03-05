@@ -12,6 +12,7 @@ class Object extends \Kinesis\Reference
     {
         if( is_null( $obj ))
             $obj = array();
+        
         parent::__construct( $obj, $parameter );
     }
 
@@ -19,7 +20,8 @@ class Object extends \Kinesis\Reference
     {
         if( is_object( $this->Container ))
         {
-            $id = spl_object_hash( $this->Container );
+            $this->Container->Oid = $id = spl_object_hash( $this->Container );
+            
             self::$cache[ $id ] = $this;
             self::$objects[ $id ] = $this->Container;
             $this->id = $id;
@@ -49,8 +51,6 @@ class Object extends \Kinesis\Reference
 
     protected function overload( $method, array $args = null, $statement = null )
     {
-        $this->_initialise();
-
         return parent::overload( $method, $args, $statement );
     }
 

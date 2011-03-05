@@ -27,12 +27,12 @@ class Field extends \Kinesis\Parameter
 
     function intercept( $native, \Kinesis\Parameter $param )
     {
-        $this->state( new Statement\Delegate\Intercept( $this->build( $native, $param ) ) );
+        $this->state( new Statement\Delegate\Intercept( $native, $param ) );
     }
 
     function bypass( $native, \Kinesis\Parameter $param  )
     {
-         $this->state( new Statement\Delegate\Bypass( $this->build( $native, $param ) ) );
+         $this->state( new Statement\Delegate\Bypass( $native, $param ) );
     }
 
     function build( $native, \Kinesis\Parameter $param )
@@ -50,10 +50,10 @@ class Field extends \Kinesis\Parameter
             $intercede = array_intersect( array_values( $methods ), 
                                       array_keys( self::$_replacements ) );
             
-            $class = $methods;
-            $diff = array_diff( $class, self::$_replacements );
-            $classcede = array_intersect( array_values( $diff ), 
-                                      array_keys( array_flip( self::$_replacements ) ) );
+//            $class = $methods;
+//            $diff = array_diff( $class, self::$_replacements );
+//            $classcede = array_intersect( array_values( $diff ), 
+//                                      array_keys( array_flip( self::$_replacements ) ) );
         }
 
         return $intercede;
@@ -67,7 +67,7 @@ class Field extends \Kinesis\Parameter
 
     protected function state( \Kinesis\Task\Statement $statement )
     {
-        $class = get_class( $statement->Reference->Parameter );
+        $class = get_class( $statement->Parameter );
         
         if( array_key_exists( $class, self::$_intersection ))
         {
@@ -92,12 +92,14 @@ class Field extends \Kinesis\Parameter
 
         if( is_array( $behaviors ))
         {
+            $defaultType = 'bypass';
+            
             foreach( $behaviors as $type => $param )
             {
                 if( !is_string( $type ))
-                    $type = 'bypass';
+                    $type = $defaultType;
                 
-                $this->$type( $ref->Container, $param );
+                $this->$type( $ref, $param );
             }
         }
     }

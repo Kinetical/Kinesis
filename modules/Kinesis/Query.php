@@ -61,6 +61,13 @@ abstract class Query extends Task implements \IteratorAggregate
         if( ($this->resolve()) == false )
             return null;
 
-        return $this->execute();
+        $result = $this->execute();
+        $this->clear();
+        return $result;
+    }
+    
+    protected function clear()
+    {
+        $this->iterator = null;
     }
 }

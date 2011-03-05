@@ -8,10 +8,7 @@ class Object
 
 
     private function integrity()
-    {
-        if( is_null( $this->Oid ))
-            $this->Oid = spl_object_hash( $this );
-        
+    {        
         if( is_null( $this->reference ))
         {
             $this->reference = new Reference\Object( $this );
@@ -31,19 +28,16 @@ class Object
 
     function __get( $name )
     {
-        $this->integrity();
         return $this->reference->__get( $name );
     }
 
     function __set( $name, $value )
     {
-        $this->integrity();
         $this->reference->__set( $name, $value );
     }
 
     function __isset( $name )
     {
-        $this->integrity();
         return $this->reference->__isset( $name );
     }
 
@@ -54,13 +48,11 @@ class Object
 
     function __call( $method, array $arguments)
     {
-        $this->integrity();
         return $this->reference->__call( $method, $arguments );
     }
 
     function __invoke()
     {
-        $this->integrity();
         if( func_num_args() > 0 )
             $args = func_get_args();
         else
@@ -71,7 +63,6 @@ class Object
 
     function reference()
     {
-        $this->integrity();
         return $this->reference;
     }
 }
