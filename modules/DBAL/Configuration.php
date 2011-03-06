@@ -3,16 +3,19 @@ namespace DBAL;
 
 class Configuration extends \Core\Configuration
 {
-    function initialise()
+    
+    function __construct( $loader = null )
     {
-        //parent::initialize();
+        if( is_null( $loader ))
+        {
+            $params = array('CacheClass' => 'IO\Object\Cache',
+                            'ViewClass' => 'DBAL\XML\View',
+                            'ViewArguments' => array( 'path' => 'site\database.xml' ) );
 
-        $params = array('CacheClass' => 'IO\Object\Cache',
-                        'ViewClass' => 'DBAL\XML\View',
-                        'ViewArguments' => array( 'path' => 'site\database.xml' ) );
-
-        $loader = new Data\Loader( $params );
-        $this->setLoader( $loader );
+            $loader = new Data\Loader( $params );
+        }
+        
+        parent::__construct( $loader );
     }
 
     protected function loader( $offset )

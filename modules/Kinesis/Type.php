@@ -5,6 +5,7 @@ class Type
 {
     private static $types = array();
     private static $parameters = array();
+    private static $objects = array();
 
     function initialise( $ref )
     {
@@ -27,7 +28,11 @@ class Type
             $ref = $ref->Container;
         
         if( is_object( $ref ))
-            return get_class( $ref );
+        {
+            $name = get_class( $ref );
+            self::$objects[$name] = $name;
+            return self::$objects[$name];
+        }
         
         return gettype( $ref );
     }
@@ -37,7 +42,7 @@ class Type
         if( array_key_exists( $name, self::$types ))
             return self::$types[$name];
         
-        if( class_exists( $name ))
+        if( array_key_exists($name, self::$objects ))
             $type = $this->object( $name );
         else
             $type = $this->scalar( $name );
@@ -62,10 +67,8 @@ class Type
             $type = new Type\Object\Control();
         elseif( is_subclass_of($name, 'Kinesis\Task' ) )
             $type = new Type\Object\Task();
-        elseif( is_subclass_of($name, 'Kinesis\Reference\ArrayList' ) )
-        {
+        elseif( is_subclass_of($name, 'Kinesis\ArrayList' ) )
             $type = new Type\Object\ArrayList();
-        }
 
         if( is_null( $type ))
             $type = new Type\Object();

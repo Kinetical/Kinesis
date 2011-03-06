@@ -71,29 +71,39 @@ class Filter extends \DBAL\Data\Mapping\Filter
         
         $bind = parent::match( $subject );
         
-        if( $bind == false )
+        if( $bind === false )
         {
             if( $this->Parameters->exists('BindingProperty') )
+            {
                 $bind = $subject->{$this->getBindingProperty()};
+            }
             elseif( $this->Parameters->exists('BindingKey') &&
                     ( is_array( $subject ) ||
                       $subject instanceof ArrayAccess ))
+            {
                 $bind = $subject[ $this->getBindingKey() ];
+            }
             else
+            {
                 $bind = get_class( $subject );
-
-            return $this->bindings[ $subject ] = $bind;
+            }
+            
+            if( !is_null( $bind ))
+                return $this->bindings[ $subject ] = $bind;
         }
         elseif( is_string( $subject ) && 
                 array_key_exists( $subject, $this->matches ))
                 return $this->matches[ $subject ];
+        
 
         return false;
     }
     
     protected function getBindingClass( $subject )
     {
-        return $this->mapping[ $this->match( $subject ) ];
+        $match = $this->match( $subject );
+        if( is_string( $match ))
+            return $this->mapping[ $match ];
     }
 
     protected function execute( array $params = null )

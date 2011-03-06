@@ -74,8 +74,8 @@ class Loader extends \Core\Loader
         $name = $params['name'];
 
         if( $this->caching()
-            && $this->cache->exists( $viewName ))
-             return $this->cache[ $viewName ];
+            && $this->cache->exists( $params['name'] ))
+             return $this->cache[ $params['name'] ];
 
         $dataSource  = new \DBAL\Data\Source();
         $dataAdapter = $this->getAdapter();

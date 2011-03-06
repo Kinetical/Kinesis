@@ -1,8 +1,8 @@
 <?php
 namespace Kinesis\Reference;
 
-class ArrayList extends Object implements ArrayAccess
-{
+class ArrayList extends Object implements \ArrayAccess
+{   
     function offsetGet( $name )
     {
         return $this->overload( __FUNCTION__, func_get_args() );

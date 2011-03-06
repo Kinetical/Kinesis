@@ -54,8 +54,10 @@ abstract class Cache extends \Util\Collection
 
     function offsetExists( $offset )
     {
-        if( parent::offsetExists( $offset ))
+        if( parent::offsetExists( $offset ) === true)
+        {
             return true;
+        }
 
         if( $this->Parameters->exists('hash') )
             $offset = $this->hash( $offset );

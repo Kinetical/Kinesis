@@ -20,6 +20,9 @@ abstract class Reference
 
     protected function overload( $method, array $args = null, $statement = null )
     {
+        if( is_object( $args[0]))
+            return null;
+        
         $tname = $method.'_'.$args[0];
 
         self::$all[ $tname ] += 1;

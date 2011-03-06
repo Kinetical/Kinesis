@@ -3,7 +3,7 @@ namespace DBAL\Data\Tree;
 
 use \Util\Interfaces as I;
 
-class Node extends \Util\Collection implements I\Attributable, I\Node
+class Node extends \Util\Collection implements I\Attributable, I\Node, I\Nameable
 {
     public $Name;
     public $Value;
@@ -28,8 +28,6 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
 
     function initialise()
     {
-        //parent::initialize();
-
         $this->_children = new Node\Collection( $this );
         $this->Attributes = new \Util\Collection();
     }
@@ -71,7 +69,7 @@ class Node extends \Util\Collection implements I\Attributable, I\Node
 
     public function offsetGet($offset)
     {
-        return $this->Attributes->offsetGet( $offset );
+        return  $this->Attributes->offsetGet( $offset );
     }
 
     public function offsetSet($offset, $value)

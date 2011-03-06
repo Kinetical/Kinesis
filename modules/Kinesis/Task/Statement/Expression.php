@@ -60,6 +60,7 @@ class Expression extends Delegate
     protected function isImplemented( )
     {
         if(  is_object( $this->Reference->Container ) &&
+             !($this->Reference->Container instanceof \Kinesis\Container) &&
              method_exists( $this->Reference->Container, $this->Method ) &&
            !($this->Reference->Container instanceof \Kinesis\Object ) )
             return true;
@@ -69,8 +70,11 @@ class Expression extends Delegate
 
     function __invoke( $statement = null, array $args = array() )
     {
-        if( strpos( $this->Method, '__' ) == 0 )
+        if( strpos( $this->Method, '__' ) === 0 )
             $this->_method = str_replace('__','', $this->Method);
+        
+        if( strpos( $this->Method, 'offset') === 0 )
+            $this->_method = strtolower( str_replace('offset','',$this->Method) );
         
         if( $this->isBypassed( $args[0], $statement ))
             return $this->Parameters['Source']['values'][ $args[0] ];

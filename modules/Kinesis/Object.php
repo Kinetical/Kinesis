@@ -1,31 +1,10 @@
 <?php
 namespace Kinesis;
 
-class Object
+class Object extends Container
 {
     public $Oid;
-    private $reference;
-
-
-    private function integrity()
-    {        
-        if( is_null( $this->reference ))
-        {
-            $this->reference = new Reference\Object( $this );
-            Instantiator::initialise( $this->reference );
-        }
-    }
-
-    function __construct()
-    {
-        $this->integrity();
-    }
     
-    function __destruct()
-    {
-        unset( $this->reference );
-    }
-
     function __get( $name )
     {
         return $this->reference->__get( $name );
@@ -63,6 +42,9 @@ class Object
 
     function reference()
     {
+        if( is_null( $this->reference ) )
+            $this->reference = new Reference\Object( $this );
+        
         return $this->reference;
     }
 }

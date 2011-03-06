@@ -58,7 +58,6 @@ abstract class Loader extends \Kinesis\Task
 
     function getCache()
     {
-
         return $this->cache;
     }
 

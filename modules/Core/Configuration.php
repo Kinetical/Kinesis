@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-class Configuration extends \Util\Collection
+class Configuration extends \Util\ArrayList
 {
     protected $loader;
 
@@ -10,7 +10,7 @@ class Configuration extends \Util\Collection
         if( !is_null( $loader ))
             $this->setLoader( $loader );
         
-        parent::__construct();
+        //parent::__construct();
     }
     function getLoader()
     {

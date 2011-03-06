@@ -3,7 +3,7 @@ namespace Util;
 
 use Util\Interfaces as I;
 
-class Collection extends ArrayList
+class Collection extends \Kinesis\ArrayList
 {
     function add( $value, $key = null )
     {
@@ -51,5 +51,10 @@ class Collection extends ArrayList
     function keys()
     {
         return array_keys( $this->Data );
+    }
+    
+    function toArray()
+    {
+        return $this->Data;
     }
 }

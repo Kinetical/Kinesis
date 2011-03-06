@@ -21,7 +21,7 @@ class ArrayList extends \Kinesis\Parameter\Object\Property
         if( property_exists( $ref, $prmName ) &&
             is_array( $ref->$prmName ) &&
             array_key_exists( $name, $ref->$prmName ))
-            return $ref->$prmName[$name];
+            return $ref->{$prmName}[$name];
 
         return parent::get( $name, $ref );
     }
@@ -29,6 +29,9 @@ class ArrayList extends \Kinesis\Parameter\Object\Property
     function set( $name, $value, &$ref  )
     {
         $prmName = $this->Name;
+        
+        if( $name instanceof \Util\Interfaces\Nameable )
+            $name = $name->getName();
 
         if( !property_exists( $ref, $prmName ) ||
             !is_array( $ref->{$prmName} ) )
@@ -45,6 +48,9 @@ class ArrayList extends \Kinesis\Parameter\Object\Property
 
     function has( $name, &$ref )
     {
+        if( is_null( $name ))
+            return false;
+        
         $prmName = $this->Name;
         if( property_exists( $ref, $prmName ) &&
             is_array( $ref->$prmName ) )

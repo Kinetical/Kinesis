@@ -100,7 +100,7 @@ abstract class View extends \Kinesis\Object implements I\Nameable
 
         if( !is_null( $dataSource ) &&
             $this->adapter->isRead() )
-            if( $dataSource instanceof \Util\ArrayList )
+            if( $dataSource instanceof \Util\Collection )
                 $dataSource->Data = $result;
             else
                 $dataSource = $result;
