@@ -27,6 +27,10 @@ class Object extends Container
 
     function __call( $method, array $arguments)
     {
+        if( $method == 'offsetSet')
+        {
+            echo 'nigger';
+        }
         return $this->reference->__call( $method, $arguments );
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis;
 
-class ArrayList extends Container implements \ArrayAccess, \Countable
+class ArrayList extends Container implements \ArrayAccess, \Countable, \IteratorAggregate
 {
     public $Data;
     
@@ -42,5 +42,10 @@ class ArrayList extends Container implements \ArrayAccess, \Countable
     function count()
     {
         return count( $this->Data );
+    }
+    
+    function getIterator()
+    {
+        return new \ArrayIterator( $this->Data );
     }
 }

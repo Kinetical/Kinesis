@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-abstract class Cache extends \Util\Collection
+abstract class Cache extends \Util\Collection implements \ArrayAccess
 {
     private $_enabled = true; //TODO: RETRIEVE FROM CONFIG FILE
 

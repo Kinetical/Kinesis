@@ -3,7 +3,7 @@ namespace Util;
 
 use Util\Interfaces as I;
 
-class Collection extends \Kinesis\ArrayList
+class Collection extends \Util\ArrayList
 {
     function add( $value, $key = null )
     {

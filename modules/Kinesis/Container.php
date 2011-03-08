@@ -1,11 +1,17 @@
 <?php
 namespace Kinesis;
 
-abstract class Container
+class Container
 {
     protected $reference;
 
-    abstract protected function reference();
+    function reference()
+    {
+        if( is_null( $this->reference ) )
+            $this->reference = new Reference\Base( $this );
+        
+        return $this->reference;
+    }
     
     private function integrity()
     {        

@@ -3,14 +3,14 @@ namespace Util;
 
 use Util\Interfaces as I;
 
-class ArrayList implements I\Collection, \Countable
+class ArrayList extends \Kinesis\Container implements I\Collection, \Countable
 {
     private $_iterator = 'ArrayIterator';
     public $Data = array();
     
     function __construct( array $data = array() )
     {
-        //parent::__construct();
+        parent::__construct();
 
         $this->Data += $data;
     }
