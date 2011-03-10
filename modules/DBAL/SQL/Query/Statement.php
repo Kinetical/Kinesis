@@ -3,6 +3,16 @@ namespace DBAL\SQL\Query;
 
 abstract class Statement extends \Kinesis\Task\Statement
 {
+    function getQuery()
+    {
+        return $this->getComponent();
+    }
+    
+    function setQuery( \Kinesis\Query $query )
+    {
+        $this->setComponent( $query );
+    }
+    
     function getDatabase()
     {
         return $this->getQuery()->getDatabase();

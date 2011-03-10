@@ -1,28 +1,28 @@
 <?php
 namespace Kinesis;
 
-class Type
-{
+final class Type
+{   
     private static $types = array();
     private static $parameters = array();
     private static $objects = array();
 
-    function initialise( $ref )
+    static function initialise( $ref )
     {
         if( $ref instanceof Object )
             $ref = Reference\Object::cache( $ref );
 
-        $typeName = $this->resolve( $ref );
-        $type = $this->execute( $typeName );
+        $typeName = self::resolve( $ref );
+        $type = self::execute( $typeName );
         
         $ref->Type = $type;
         
         if( $ref instanceof Reference &&
             is_null( $ref->Parameter ) )
-            $ref->Parameter = $this->field( $typeName, $type, $ref );
+            $ref->Parameter = self::field( $typeName, $type );
     }
     
-    protected function resolve( $ref )
+    protected static function resolve( $ref )
     {
         if( $ref instanceof Reference )
             $ref = $ref->Container;
@@ -37,22 +37,22 @@ class Type
         return gettype( $ref );
     }
        
-    protected function execute( $name )
+    protected static function execute( $name )
     {
         if( array_key_exists( $name, self::$types ))
             return self::$types[$name];
         
         if( array_key_exists($name, self::$objects ))
-            $type = $this->object( $name );
+            $type = self::object( $name );
         else
-            $type = $this->scalar( $name );
+            $type = self::scalar( $name );
             
         self::$types[$name] = $type;
         
         return $type;
     }
 
-    private function object( $ref )
+    private static function object( $ref )
     {
         if( is_string( $ref ))
             $name = $ref;
@@ -76,7 +76,7 @@ class Type
         return $type;
     }
 
-    private function scalar( $ref )
+    private static function scalar( $ref )
     {
         // TODO: SCALAR TYPES
         if( is_string( $ref ))
@@ -93,12 +93,12 @@ class Type
         return $type;
     }
 
-    function field( $typeName, $type, $ref )
+    static function field( $typeName, $type )
     {
         if( !array_key_exists( $typeName, self::$parameters ))
         {
-            self::$parameters[ $typeName ] = new Parameter\Field( $typeName, $type );
-            self::$parameters[ $typeName ]->assign( $ref );
+            self::$parameters[ $typeName ] = new Parameter\Property( $typeName, $type );
+            self::$parameters[ $typeName ]->assign();
         }
 
         return self::$parameters[ $typeName ];

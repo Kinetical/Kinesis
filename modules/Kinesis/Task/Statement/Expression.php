@@ -1,6 +1,7 @@
 <?php
 namespace Kinesis\Task\Statement;
 
+
 class Expression extends Delegate
 {
     private $_method;
@@ -15,7 +16,7 @@ class Expression extends Delegate
 
     protected function getStatements()
     {
-        if( $this->Reference->Parameter instanceof \Kinesis\Parameter\Field )
+        if( $this->Reference->Parameter instanceof \Kinesis\Parameter )
             return $this->Reference->Parameter->listeners( $this->_method );
 
         return null;
@@ -83,7 +84,9 @@ class Expression extends Delegate
             return $this->recurse( $args );
 
         if( get_class( $statement ) == 'Closure' )
-            return call_user_func_array( $statement, $args );
+        {
+            return $statement( $this->Reference, $this->_method, $args );
+        }
         
         if( !($statement instanceof \Kinesis\Task\Statement))
             return null;

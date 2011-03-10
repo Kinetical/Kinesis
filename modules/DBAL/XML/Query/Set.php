@@ -18,6 +18,6 @@ class Set extends \Kinesis\Task\Statement
         elseif( $input instanceof \DBAL\Data\Tree\Node )
             $params['StreamCallback'] = 'writeNodes';
         
-        $this->getQuery()->Parameters += $params;
+        $this->getComponent()->Parameters += $params;
     }
 }

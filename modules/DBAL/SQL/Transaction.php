@@ -8,7 +8,7 @@ abstract class Transaction extends \DBAL\Query
     function getDatabase()
     {
         if( is_null( $this->database ))
-            $this->database = $this->getConnection()->getDatabase();
+            $this->database = $this->getConnection()->Database;
         
         return $this->database;
     }

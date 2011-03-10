@@ -14,7 +14,7 @@ abstract class Query extends Task implements \IteratorAggregate
     function getDefaultBuilder()
     {
         $params = $this->Parameters;
-        $params['Query'] = $this;
+        $params['Component'] = $this;
         return new \Kinesis\Task\Builder( $params );
     }
 

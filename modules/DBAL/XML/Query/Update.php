@@ -19,6 +19,6 @@ class Update extends \Kinesis\Task\Statement
                          'StreamHandler'    => 'IO\File\Writer',
                          'HandlerChain'     => 'DBAL\XML\Text\Writer' );
         
-        $this->getQuery()->Parameters += $params;
+        $this->getComponent()->Parameters += $params;
     }
 }

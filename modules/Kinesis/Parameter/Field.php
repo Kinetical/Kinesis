@@ -25,22 +25,14 @@ class Field extends \Kinesis\Parameter
         $this->listener[$method][] = $delegate;
     }
 
-    function intercept( $native, \Kinesis\Parameter $param )
+    private function intercept( $native, \Kinesis\Parameter $param )
     {
         $this->state( new Statement\Delegate\Intercept( $native, $param ) );
     }
 
-    function bypass( $native, \Kinesis\Parameter $param  )
+    private function bypass( $native, \Kinesis\Parameter $param  )
     {
          $this->state( new Statement\Delegate\Bypass( $native, $param ) );
-    }
-
-    function build( $native, \Kinesis\Parameter $param )
-    {
-        if( $native instanceof \Kinesis\Reference )
-            $native = $native->Container;
-        
-        return new \Kinesis\Reference\Object( $native, $param );
     }
 
     private function intersect( array $methods )
@@ -85,6 +77,8 @@ class Field extends \Kinesis\Parameter
 
     function assign( $ref )
     {
+        static $c;
+        $c++;
         $behaviors = $this->Type->roles();
 
         if( is_callable( $behaviors ))
@@ -96,12 +90,13 @@ class Field extends \Kinesis\Parameter
             
             foreach( $behaviors as $type => $param )
             {
-                if( !is_string( $type ))
+                if( is_int( $type ))
                     $type = $defaultType;
                 
                 $this->$type( $ref, $param );
             }
         }
+        var_dump( $c );
     }
 
     function listeners( $method = null )

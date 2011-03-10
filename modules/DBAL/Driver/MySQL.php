@@ -24,6 +24,7 @@ final class MySQL extends \DBAL\Driver
         $host = $conf['database']['host'];
         $user = $conf->getUser();
 
+        //TODO: THROW EXCEPTION ON FAILURE
         return mysql_connect( $host,
                               $user['name'],
                               $user['password'] );

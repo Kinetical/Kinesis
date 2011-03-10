@@ -19,6 +19,6 @@ class From extends \Kinesis\Task\Statement
                          'StreamCallback'   => 'readToEOF',
                          'StreamResource'   => new \IO\File( $this->File ));
         
-        $this->getQuery()->Parameters += $params;
+        $this->getComponent()->Parameters += $params;
     }
 }

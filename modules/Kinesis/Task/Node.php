@@ -23,4 +23,9 @@ abstract class Node extends \Kinesis\Task
         
         return null;
     }
+    
+    function isRoot()
+    {
+        return !is_null( $this->Parent );
+    }
 }

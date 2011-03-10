@@ -19,7 +19,7 @@ class Where extends \Kinesis\Task\Statement
         
         $this->XPath .= '['.$children.']';
         
-        $this->getQuery()->Parameters['xpath'] = $this->XPath;
+        $this->getComponent()->Parameters['xpath'] = $this->XPath;
         
         return $this->XPath;
     }

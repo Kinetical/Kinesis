@@ -9,10 +9,6 @@ namespace Kinesis;
  */
 class Instantiator extends Constructor
 {
-    
-    
-    private static $types;
-    
     private $_namespace;
 
     function __call( $class, array $args = null )
@@ -40,12 +36,7 @@ class Instantiator extends Constructor
 
     static function initialise( $instance, $class )
     {
-        if( array_key_exists( $class, self::$types ))
-            $type = self::$types[ $class ];
-        else
-            $type = new Type( $class );
-
-        $type->initialise( $instance );
+        Type::initialise( $instance );
         if( method_exists( $instance, 'initialise' ))
             $instance->initialise();
     }
@@ -53,7 +44,6 @@ class Instantiator extends Constructor
     private function clear()
     {
         $this->_namespace = null;
-        self::$types = Type::all( $this );
     }
 
     function __invoke( $namespace )
