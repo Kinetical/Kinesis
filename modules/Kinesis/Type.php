@@ -97,7 +97,7 @@ final class Type
     {
         if( !array_key_exists( $typeName, self::$parameters ))
         {
-            self::$parameters[ $typeName ] = new Parameter\Property( $typeName, $type );
+            self::$parameters[ $typeName ] = new Parameter\Field( $typeName, $type );
             self::$parameters[ $typeName ]->assign();
         }
 

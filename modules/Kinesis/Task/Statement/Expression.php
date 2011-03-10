@@ -2,22 +2,25 @@
 namespace Kinesis\Task\Statement;
 
 
-class Expression extends Delegate
+class Expression
 {
+    public $Reference;
+    public $Method;
+    
     private $_method;
-    private $_statement;
 
     function __construct( &$ref, $method, &$cache )
     {
         $this->Parameters['Source'] = &$cache;
-
-        parent::__construct( $ref, $method );
+        
+        $this->Reference = &$ref;
+        $this->Method = $method;
     }
 
     protected function getStatements()
     {
         if( $this->Reference->Parameter instanceof \Kinesis\Parameter )
-            return $this->Reference->Parameter->listeners( $this->_method );
+            return $this->Reference->Parameter->Listeners[ $this->_method ];
 
         return null;
     }
@@ -44,13 +47,10 @@ class Expression extends Delegate
         return null;
     }
 
-    protected function isBypassed( $name, $statement = null )
+    protected function bypassed( $name, $statement = null )
     {
         $method = $this->_method;
-        
-        if( $statement instanceof Delegate\Intercept )
-            return false;
-        
+               
         if( $method == 'get' &&
             array_key_exists( $name, $this->Parameters['Source']['values'] ) )
             return true;
@@ -58,7 +58,7 @@ class Expression extends Delegate
         return false;
     }
 
-    protected function isImplemented( )
+    protected function implemented( )
     {
         if(  is_object( $this->Reference->Container ) &&
              !($this->Reference->Container instanceof \Kinesis\Container) &&
@@ -77,59 +77,27 @@ class Expression extends Delegate
         if( strpos( $this->Method, 'offset') === 0 )
             $this->_method = strtolower( str_replace('offset','',$this->Method) );
         
-        if( $this->isBypassed( $args[0], $statement ))
-            return $this->Parameters['Source']['values'][ $args[0] ];
-
         if( is_null( $statement ))
             return $this->recurse( $args );
+        
+        if( $this->bypassed( $args[0], $statement ))
+            return $this->Parameters['Source']['values'][ $args[0] ];
+        
+        if( $this->implemented() )
+            return call_user_func_array( $this->Reference->Container, $this->Method, $args );
 
         if( get_class( $statement ) == 'Closure' )
-        {
-            return $statement( $this->Reference, $this->_method, $args );
-        }
+            $result = $statement( $this->Reference, $this->_method, $args );
+        else
+            //TODO: THROW EXCEPTION: STATEMENT NOT VALID
         
-        if( !($statement instanceof \Kinesis\Task\Statement))
-            return null;
-
-        if( $this->isImplemented() )
-        {
-            $delegate = new Delegate( $this->Reference->Container, $this->Method, $args );
-            return $delegate();
-        }
-
-        $this->Arguments = $args;
-        $this->_statement = $statement;
-
-        $result = $this->execute();
-        
-        if( $acc > 0 &&
-            $statement instanceof Delegate\Bypass )
+        if( !empty( $args ) && 
+            $this->Reference->Parameter->intercepted( $this->_method ) )
             if( !is_null( $result ) )
             {
                 return $this->Parameters['Source']['values'][ $args[0] ] = $result;
             }
-            
+
         return $result;
-    }
-
-    protected function execute()
-    {
-        $args = $this->Arguments;
-        $args[] = $this->Reference->Container;
-
-        $statement  = $this->_statement;
-
-        if( $statement instanceof Delegate )
-        {
-            $statement->Method = $this->_method;
-            $statement->Arguments =  $args;
-            $statement->Parameters['Source'] = $this->Reference;
-
-            return $statement();
-        }
-        elseif( is_callable( $statement ) )
-            return $statement( $args );
-
-        return null;
     }
 }

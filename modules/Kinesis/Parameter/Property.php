@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis\Parameter;
 
-class Property extends \Kinesis\Parameter
+abstract class Property extends \Kinesis\Parameter
 {
     private static $_intersection = array();
     private static $_replacements = array( 'get'      => '__get',
@@ -11,9 +11,11 @@ class Property extends \Kinesis\Parameter
                                            'toString' => '__toString',
                                            'copy'     => '__clone',
                                            'invoke'   => '__invoke' );
-    public $Expression;
+    
 
-    private $listener = array();
+    public $Listeners = array();
+    
+    abstract function getDefaultRoute();
     
     function delegate( $ref, array $arguments = array() )
     {
@@ -52,62 +54,6 @@ class Property extends \Kinesis\Parameter
                                            $args );
         };
     }
-
-    function listen( $method, $delegate )
-    {
-        if( !array_key_exists( $method, $this->listener ))
-            $this->listener[ $method ] = array();
-
-        $this->listener[$method][] = $delegate;
-    }
-
-    private function intercept( \Kinesis\Parameter $param )
-    {
-        $self = $this;
-        $this->state( 
-            function( $native, $method, array $arguments = array() ) 
-                 use( $self, $param )
-                    {
-                        $delegate = $self->delegate( $native );
-                        $result = $delegate( $method, $arguments );
-                        if( is_null( $result ))
-                        {
-                            $delegate = $self->bypass( $native, $param );
-                            $result = $delegate( $method, $arguments );
-                        }
-                        return $result;
-                    }, 
-                    $param );
-    }
-    
-    
-
-    private function bypass( \Kinesis\Parameter $param  )
-    {
-        $self = $this;
-        $listeners = &$this->listener;
-        
-        $this->state( 
-            function( $native, $method, array $arguments = array() ) 
-                 use( $self, $param, &$listeners )
-                    {
-                        if( !array_key_exists( $method, $listeners ))
-                            return null;
-                        
-                        if( $native instanceof \Kinesis\Reference )
-                            $container = $native->Container;
-                        else
-                            $container = $native;
-            
-                        $delegate = $self->delegate( $param, array( $container ) );
-                        
-                        $param->Reference = $native;
-                                
-                        return $delegate( $method, $arguments );
-                    }, 
-                    $param );
-    }
-
     private function intersect( array $methods )
     {
         if( is_array( $methods ))
@@ -127,8 +73,16 @@ class Property extends \Kinesis\Parameter
     private function apply( $statement, array $intersect )
     {
         //TODO: CHECK IS_CALLABLE, EXCEPTION OTHERWISE
-        foreach( $intersect as $intercede )
-            $this->listen( $intercede, $statement );
+        $self = $this;
+        array_walk( $intersect, 
+                 function( $method, $key, $delegate ) use( $self )
+                 {
+                    if( !array_key_exists( $method, $self->Listeners ))
+                        $self->Listeners[ $method ] = array();
+
+                    $self->Listeners[$method][] = $delegate;
+                 },
+                 $statement );
     }
 
     protected function state( $statement, \Kinesis\Parameter $parameter = null )
@@ -151,12 +105,17 @@ class Property extends \Kinesis\Parameter
 
         if( !empty( $intersect ))
             $this->apply( $statement, $intersect );
+        
+        return $intersect;
     }
 
     function assign()
     {
-        static $c;
-        $c++;
+        static $defaultRoute;
+        
+        if( is_null( $defaultRoute ))
+            $defaultRoute = $this->getDefaultRoute();
+        
         $behaviors = $this->Type->roles();
 
         if( is_callable( $behaviors ))
@@ -164,28 +123,13 @@ class Property extends \Kinesis\Parameter
 
         if( is_array( $behaviors ))
         {
-            $defaultType = 'bypass';
-            
             foreach( $behaviors as $type => $param )
             {
                 if( is_int( $type ))
-                    $type = $defaultType;
+                    $type = $defaultRoute;
                 
                 $this->$type( $param );
             }
         }
-    }
-
-    function listeners( $method = null )
-    {
-        if( is_null( $method ))
-            return $this->listeners;
-
-         return $this->listener[ $method ];
-    }
-
-    function __destruct()
-    {
-        unset( $this->Expression );
     }
 }
