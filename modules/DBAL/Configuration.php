@@ -10,7 +10,7 @@ class Configuration extends \Core\Configuration
         {
             $params = array('CacheClass' => 'IO\Object\Cache',
                             'ViewClass' => 'DBAL\XML\View',
-                            'ViewArguments' => array( 'path' => 'site\database.xml' ) );
+                            'ViewArguments' => array( 'path' => 'site/database.xml' ) );
 
             $loader = new Data\Loader( $params );
         }

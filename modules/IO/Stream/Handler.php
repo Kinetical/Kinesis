@@ -1,7 +1,7 @@
 <?php
 namespace IO\Stream;
 
-abstract class Handler extends \Kinesis\Object
+abstract class Handler
 {
     protected $stream;
     protected $buffer;
@@ -16,7 +16,7 @@ abstract class Handler extends \Kinesis\Object
                 elseif( $arg instanceof \IO\Stream\Handler )
                     $this->setHandler( $arg );
         
-        parent::__construct();
+        //parent::__construct();
     }
 
     protected function isOpen()

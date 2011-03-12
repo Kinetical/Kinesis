@@ -19,9 +19,6 @@ class Cache extends \IO\File\Cache
 
     protected function save( $name, $value )
     {
-        if( !( $value instanceof \Core\Object ))
-            return;
-
         $stream = $this->getStream( $name , 'w+' );
         $writer = new \IO\Serial\Writer( new \IO\File\Writer( $stream ) );
         $filter = new \IO\Object\Filter\Serialize();

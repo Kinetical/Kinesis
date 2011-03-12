@@ -3,7 +3,7 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-abstract class Model extends \Kinesis\Object implements I\Nameable, I\Attributable
+abstract class Model implements I\Nameable, I\Attributable
 {
     protected $attributes;
     public $Attributes;
@@ -18,16 +18,7 @@ abstract class Model extends \Kinesis\Object implements I\Nameable, I\Attributab
     {
         $this->setName( $name );
 
-        parent::__construct();
-
-        $this->setAttributes( $attributes );
-    }
-
-    function initialise()
-    {
-        //parent::initialise();
-        if( is_null( $this->Attributes ))
-            $this->Attributes = new Model\Attribute\Collection( $this );
+        $this->Attributes = new Model\Attribute\Collection( $this, $attributes );
     }
 
     public function getName()

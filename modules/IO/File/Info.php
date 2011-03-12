@@ -3,7 +3,7 @@ namespace IO\File;
 
 use \Util\Interfaces as I;
 
-abstract class Info extends \Kinesis\Object implements I\Node, I\Nameable
+abstract class Info implements I\Node, I\Nameable
 {
     private $_path;
     private $_parent;
@@ -15,7 +15,7 @@ abstract class Info extends \Kinesis\Object implements I\Node, I\Nameable
         if( $parent !== null )
             $this->setParent( $parent );
         
-        parent::__construct();
+        //parent::__construct();
     }
 
     function initialise()

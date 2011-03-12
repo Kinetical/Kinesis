@@ -34,7 +34,7 @@ abstract class Loader extends \Kinesis\Task
             $cacheParams = array();
 
         if( is_string( $cacheClass )
-            && class_exists( $cacheClass ))
+            && \Kinesis\Type::exists( $cacheClass ))
             return new $cacheClass( $cacheParams );
         
         return null;

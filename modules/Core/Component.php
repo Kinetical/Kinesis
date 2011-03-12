@@ -3,7 +3,7 @@ namespace Core;
 
 use \Util\Interfaces as I;
 
-abstract class Component extends \Kinesis\Object implements I\Nameable
+abstract class Component implements I\Nameable
 {
     private $_name;
 

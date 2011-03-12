@@ -3,7 +3,7 @@ namespace DBAL\Data;
 
 use \Util\Interfaces as I;
 
-abstract class View extends \Kinesis\Object implements I\Nameable
+abstract class View implements I\Nameable
 {
     private $_prepared = false;
 
@@ -16,16 +16,7 @@ abstract class View extends \Kinesis\Object implements I\Nameable
         if( $adapter instanceof Adapter )
             $this->adapter = $adapter;
 
-        parent::__construct();
-
-        $this->setParameters( $params );
-    }
-
-    function initialise()
-    {
-        //parent::initialize();
-        
-        $this->Parameters = new \Util\Collection();
+        $this->Parameters = new \Util\Collection( $params );
     }
 
     function getName()

@@ -13,10 +13,6 @@ class Property extends \Kinesis\Parameter
 
     function set( $name, $value, &$ref )
     {
-        if( !property_exists( $ref, $name ))
-        {
-            var_dump( func_get_args() );
-        }
         if( !is_null( $value ))
             $ref->$name = $value;
     }

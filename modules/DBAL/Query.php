@@ -58,7 +58,7 @@ abstract class Query extends \Kinesis\Query
         $streamMode = $this->Parameters['StreamMode'];
         $streamResource = $this->Parameters['StreamResource'];
 
-        if( class_exists( $streamClass ))
+        if( \Kinesis\Type::exists( $streamClass ))
             return new $streamClass( $streamResource, $streamMode );
 
         //TODO: THROW EXCEPTION
@@ -95,7 +95,7 @@ abstract class Query extends \Kinesis\Query
         $streamHandler = $this->Parameters['StreamHandler'];
         $streamCallback = $this->Parameters['StreamCallback'];
 
-        if( class_exists( $streamHandler ))
+        if( \Kinesis\Type::exists( $streamHandler ))
             $handler = new $streamHandler( $this->Stream );
 
         $handlers = $this->Parameters['HandlerChain'];
@@ -104,7 +104,7 @@ abstract class Query extends \Kinesis\Query
 
         if( count( $handlers ) > 0 )
             foreach( $handlers as $wrapClass )
-                if( class_exists( $wrapClass ))
+                if( \Kinesis\Type::exists( $wrapClass ))
                     $handler = new $wrapClass( $handler );
 
         return new \Core\Delegate( $handler, $streamCallback );

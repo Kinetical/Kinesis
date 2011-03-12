@@ -6,12 +6,12 @@ use \Util\Interfaces as I;
 class Filter extends \DBAL\Data\Mapping\Filter
 {
     protected $bindings;
-
-    function initialise()
+    
+    function __construct( array $params = array(), array $mapping = array() )
     {
-        parent::initialise();
-
         $this->bindings = new \DBAL\Data\Binding( array(), $this );
+        
+        parent::__construct( $params, $mapping );
     }
 
     function getBindings()

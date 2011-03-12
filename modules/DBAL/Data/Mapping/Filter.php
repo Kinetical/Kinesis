@@ -11,14 +11,7 @@ class Filter extends \IO\Filter
     {
         parent::__construct( $params );
 
-        $this->setMapping( $mapping );
-    }
-
-    function initialise()
-    {
-        parent::initialise();
-
-        $this->mapping = new \DBAL\Data\Mapping( array(), $this );
+        $this->mapping = new \DBAL\Data\Mapping( $mapping, $this );
     }
 
     function setMapping( array $mapping )

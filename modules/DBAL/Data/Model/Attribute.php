@@ -3,7 +3,7 @@ namespace DBAL\Data\Model;
 
 use \Util\Interfaces as I;
 
-abstract class Attribute extends \Kinesis\Object implements I\Nameable
+abstract class Attribute implements I\Nameable
 {
     public $Name;
     public $DataType;
@@ -23,8 +23,6 @@ abstract class Attribute extends \Kinesis\Object implements I\Nameable
 
         $flags = $args;
         $this->setFlags( $flags );
-
-        parent::__construct();
     }
 
     function equals( EntityAttribute $attr )

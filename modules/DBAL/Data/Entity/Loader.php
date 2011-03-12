@@ -8,7 +8,7 @@ final class Loader extends \DBAL\Data\Loader
         parent::initialise();
 
         $params = array('ViewClass' => 'DBAL\XML\View\Entity',
-                        'ViewArguments' => array( 'path' => 'site\entity.xml') );
+                        'ViewArguments' => array( 'path' => 'site/entity.xml') );
 
         $this->setParameters($params);
     }

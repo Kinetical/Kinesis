@@ -10,12 +10,11 @@ class Entity extends Model
     protected $alias;
 
     private $_key;
-
-    function initialise()
+    
+    function __construct( $name = null, array $attributes = array() )
     {
         $this->Relations = new Entity\Relationship\Collection( $this );
-        $this->Attributes = new Entity\Attribute\Collection( $this );
-        parent::initialise();
+        parent::__construct( $name, $attributes );
     }
 
     function hasBehavior( $behavior )
@@ -38,6 +37,11 @@ class Entity extends Model
     function setKey( Entity\Attribute $attr )
     {
         $this->_key = $attr;
+    }
+    
+    function hasAlias()
+    {
+        return !is_null( $this->alias );
     }
 
     public function getAlias()

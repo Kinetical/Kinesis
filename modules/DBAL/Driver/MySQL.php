@@ -26,8 +26,8 @@ final class MySQL extends \DBAL\Driver
 
         //TODO: THROW EXCEPTION ON FAILURE
         return mysql_connect( $host,
-                              $user['name'],
-                              $user['password'] );
+                          $user['name'],
+                          $user['password'] );
     }
 
     function disconnect( \DBAL\Connection $conn )

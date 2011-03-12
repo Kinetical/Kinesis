@@ -3,9 +3,9 @@ namespace Kinesis;
 
 final class Type
 {   
+    private static $classes = array();
     private static $types = array();
     private static $parameters = array();
-    private static $objects = array();
 
     static function initialise( $ref )
     {
@@ -30,11 +30,24 @@ final class Type
         if( is_object( $ref ))
         {
             $name = get_class( $ref );
-            self::$objects[$name] = $name;
-            return self::$objects[$name];
+            self::$classes[$name] = true;
+            return $name;
         }
         
         return gettype( $ref );
+    }
+    
+    static function exists( $className )
+    {
+        if( array_key_exists( $className, self::$classes ) )
+            return true;
+        
+        $exists = class_exists( $className );
+        
+        if( $exists )
+            self::$classes[ $className ] = true;
+        
+        return $exists;
     }
        
     protected static function execute( $name )
@@ -42,7 +55,7 @@ final class Type
         if( array_key_exists( $name, self::$types ))
             return self::$types[$name];
         
-        if( array_key_exists($name, self::$objects ))
+        if( array_key_exists($name, self::$classes ))
             $type = self::object( $name );
         else
             $type = self::scalar( $name );

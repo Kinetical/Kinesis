@@ -48,7 +48,6 @@ class Loader extends \Core\Loader
         {
             $viewClass = $this->Parameters['ViewClass'];
             $viewArgs = $this->Parameters['ViewArguments'];
-           
             return new $viewClass( $viewArgs );
         }
 

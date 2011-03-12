@@ -51,7 +51,7 @@ class View extends \DBAL\Data\View
                 $source->Map->register( new \DBAL\XML\Filter\SimpleXML() );
                 if( isset( $this->command->Parameters['xpath']) )
                 {
-                    $source->Map->register( new \DBAL\XML\Filter\Xpath( $this->command->Parameters ) );
+                    $source->Map->register( new \DBAL\XML\Filter\XPath( $this->command->Parameters ) );
                 }
                 $source->Map->recurse( new Filter\Node() );
             }

@@ -1,7 +1,7 @@
 <?php
 namespace IO;
 
-abstract class Filter extends \Kinesis\Object
+abstract class Filter
 {
     const INPUT = 1;
     const OUTPUT = 2;
@@ -12,18 +12,9 @@ abstract class Filter extends \Kinesis\Object
 
     function __construct( array $params = array() )
     {
-        parent::__construct();
-        
-        $this->setParameters( $params );
+        $this->Parameters = new \Util\Collection($params);
     }
 
-    function initialise()
-    {
-        //parent::initialize();
-        
-        $this->Parameters = new \Util\Collection();
-    }
-    
     function getName()
     {
         //TODO: ReflectionClass::getShortName

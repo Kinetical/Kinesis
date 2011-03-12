@@ -1,7 +1,7 @@
 <?php
 namespace Core;
 
-final class Delegate extends \Kinesis\Object
+final class Delegate
 {
     private $method;
     private $target;
@@ -9,7 +9,7 @@ final class Delegate extends \Kinesis\Object
     function __construct( $target = null, $method = null )
     {
         $this->setCallback( $target, $method );
-        parent::__construct();
+        //parent::__construct();
     }
 
     function getTarget()
