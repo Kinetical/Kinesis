@@ -14,15 +14,15 @@ final class Serialize extends \IO\Filter
         return $object;
     }
 
-    private function pack( \Core\Object $object )
+    private function pack( $object )
     {
         $this->_sid++;
         $sid = $this->_sid;
         $this->_packed[$sid] = $object;
         $this->_sids[$object->Oid] = $sid;
 
-        
-        $methods = $object->Type->getMethods( \ReflectionMethod::IS_PUBLIC );
+        $class = new \ReflectionClass( $object );
+        $methods = $class->getMethods( \ReflectionMethod::IS_PUBLIC );
         foreach( $methods as $method )
         {
             if( $method->name == 'getData' )
@@ -34,10 +34,10 @@ final class Serialize extends \IO\Filter
             if( method_exists( $object, $propertySetter)  )
             {
                 $value = $object->{$method->name}();
-
+                
                 if( $value instanceof \Serializable )
                 {
-                    if( $value instanceof \Core\Object )
+                    if( $value instanceof \Kinesis\Object )
                         if( array_key_exists( $value->Oid,  $this->_sids ))
                             $object->Data[$propertySetter] = new \Core\Object\Reference( $this->_sids[$value] );
                         else

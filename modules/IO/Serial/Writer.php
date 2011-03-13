@@ -3,7 +3,7 @@ namespace IO\Serial;
 
 class Writer extends \IO\Stream\Writer
 {
-    function writeObject( \Core\Object $object )
+    function writeObject( $object )
     {
         $this->write( serialize( $object ));
     }

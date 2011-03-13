@@ -31,8 +31,8 @@ class Cache extends \Core\Cache
 
     protected function has( $name )
     {
-        if( $this->dirty( $name ))
-            return false;
+        if( !($this->dirty( $name )))
+            return true;
 
         $path = $this->getPath( $name );
 

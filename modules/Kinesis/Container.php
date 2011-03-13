@@ -31,4 +31,13 @@ class Container
     {
         unset( $this->reference );
     }
+    
+    function __sleep()
+    {
+        $vars = get_object_vars( $this );
+        
+        unset( $vars['reference']);
+        
+        return array_keys($vars);
+    }
 }

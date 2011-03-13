@@ -10,7 +10,7 @@ class Factory extends \Kinesis\Parameter
     protected function reflect( $class = null )
     {
         if( !is_null( $class ) &&
-            class_exists( $class ))
+            \Kinesis\Type::exists( $class ))
             $this->_class = new \ReflectionClass( $class );
         
         if( $this->_class instanceof \ReflectionClass )

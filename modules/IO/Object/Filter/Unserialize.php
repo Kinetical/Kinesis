@@ -32,7 +32,7 @@ final class Unserialize extends \IO\Filter
             }
             elseif( substr( $setter, 0, 3 ) == 'set' )
             {
-                    if( $value instanceof \Core\Object )
+                    if( $value instanceof \Kinesis\Object )
                     $value = $this->unpack( $value );
 
                     if( method_exists( $object, $setter ))

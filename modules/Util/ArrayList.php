@@ -65,4 +65,9 @@ class ArrayList extends \Kinesis\Container implements I\Collection, \Countable
     {
         return $this->Data;
     }
+    
+    function __sleep()
+    {
+        return array('Data')+parent::__sleep();
+    }
 }
