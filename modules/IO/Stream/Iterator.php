@@ -15,20 +15,7 @@ class Iterator extends \IO\Filter\Delegate\Iterator
 
         parent::__construct( $delegate );
     }
-    
-    function isFiltered( $state = Filter::OUTPUT )
-    {
-        if( $this->hasMap() &&
-            $state == \IO\Filter::INPUT )
-            if( $this->isShared() &&
-                $this->position < 1 )
-                return true;
-            else
-                return true;
-
-        return parent::isFiltered( $state );
-    }
-    
+        
     function rewind()
     {
         parent::rewind();

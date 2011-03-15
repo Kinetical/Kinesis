@@ -2,10 +2,7 @@
 namespace IO;
 
 abstract class Filter
-{
-    const INPUT = 1;
-    const OUTPUT = 2;
-    
+{   
     public $Parameters;
     protected $delegate;
     protected $state = 2;

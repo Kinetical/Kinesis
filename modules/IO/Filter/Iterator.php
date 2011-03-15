@@ -25,27 +25,15 @@ class Iterator extends \Util\Iterator
 
     function input()
     {
-        
-        $input = $this->input[ $this->position() ];
-
-        if( $this->isFiltered( \IO\Filter::INPUT ))
-        {
-            $params = array('input' => $input,
-                            'state' => \IO\Filter::INPUT );
-
-            return $this->execute( $params );
-        }
-
-        return $input;
+        return $this->input[ $this->position() ];
     }
 
     function output( $input = null )
     {
-        if( !$this->isFiltered( \IO\Filter::OUTPUT ))
+        if( !$this->isFiltered())
              return $input;
         
-        $params = array('input' => $input,
-                        'state' => \IO\Filter::OUTPUT );
+        $params = array('input' => $input );
 
         return $this->execute( $params );
     }
@@ -64,7 +52,7 @@ class Iterator extends \Util\Iterator
         return !is_null($this->execute( $params ));
     }
 
-    protected function isFiltered( $state = \IO\Filter::OUTPUT )
+    protected function isFiltered()
     {
         if( $this->hasMap() )
             return true;

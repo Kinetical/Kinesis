@@ -7,6 +7,15 @@ abstract class Query extends \Kinesis\Query
 {
     public $Stream;
     protected $handler;
+    public $Map;
+    
+    protected function assemble()
+    {
+        if( is_null( $this->handler ))
+            $this->setHandler( new \IO\Filter\Handler() );
+        
+        return parent::assemble();
+    }
     
     function getHandler()
     {
@@ -19,6 +28,8 @@ abstract class Query extends \Kinesis\Query
             $this->handler->setMap( $handler->getMap() );
         else
             $this->handler = $handler;
+        
+        $this->Map = &$this->handler->Map;
     }
 
     function getStream()

@@ -41,7 +41,7 @@ class Iterator extends \IO\Filter\Iterator
         return parent::position();
     }
 
-    protected function isFiltered( $state = \IO\Filter::OUTPUT )
+    protected function isFiltered()
     {
         if( $this->hasMap() )
             if( $this->isShared() &&
