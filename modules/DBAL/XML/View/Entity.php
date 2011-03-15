@@ -7,6 +7,8 @@ class Entity extends \DBAL\XML\View
     {
         if( !array_key_exists('path',$params))
             $params['path'] = 'site/entity.xml';
+        if( !array_key_exists('xpath',$params))
+            $params['xpath'] = '/core/entity';
         parent::__construct( $params, $adapter );
     }
     

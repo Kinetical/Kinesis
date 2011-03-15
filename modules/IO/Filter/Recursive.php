@@ -14,9 +14,13 @@ class Recursive extends Handler
         foreach( $input as $child )
             $children[] = $this->execute( array( 'input' => $child, 'parent' => $output, 'state' => $state ) );
 
-        if( is_null( $output ) &&
-            count( $children ) > 0 )
-            return $children;
+        if( count( $children ) > 0 )
+        {
+            if( is_null( $output ))
+                return $children;
+            elseif(method_exists( $output, 'setChildren'))
+                $output->setChildren( $children );
+        }
 
         return $output;
     }

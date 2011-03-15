@@ -47,8 +47,15 @@ abstract class Transaction extends \DBAL\Query
     {
         $streamCallback = $this->Parameters['StreamCallback'];
         $streamInput = $this->Parameters['StreamInput'];
+        
+        $iterator = new \DBAL\Data\Iterator($this->getDatabase(), 
+                                        $streamInput, 
+                                        $streamCallback );
+        
+        if( $this->handler instanceof \IO\Filter\Handler )
+            $iterator->setHandler( $this->handler );
 
-        return new \DBAL\Data\Iterator( $this->getDatabase(), $streamInput, $streamCallback );
+        return $iterator;
     }
 
     function getDefaultStream()
@@ -112,6 +119,7 @@ abstract class Transaction extends \DBAL\Query
         }
         catch( \Exception $e )
         {
+            var_dump( $e->getMessage() );
             $errors = true;
         }
         

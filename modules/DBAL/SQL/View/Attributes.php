@@ -9,7 +9,7 @@ class Attributes extends \DBAL\SQL\View
 
         $command->build()
                 ->columns()
-                ->from( $this->Parameters['table'] );
+                ->from( $this->Parameters['Table'] );
 
         return $command;
     }
@@ -23,5 +23,7 @@ class Attributes extends \DBAL\SQL\View
                 $source->Map->register( new \DBAL\Data\Filter\Column() );
             }
         }
+        
+        return parent::prepare( $source );
     }
 }

@@ -96,6 +96,14 @@ class AutoLoader
         spl_autoload_extensions(implode(',',$this->_extensions) );
 
         spl_autoload_register();
+        //spl_autoload_register( array( $this, 'myLoad' ) );
+    }
+
+    function myLoad( $class )
+    {
+        $class = str_replace('\\','/',$class);
+        $path = 'modules/'.$class.'.php';
+        include($path );
     }
 
     /*protected function classPath ($filename)

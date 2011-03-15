@@ -12,6 +12,8 @@ class Tables extends Statement
     {
         $platform = $this->getPlatform();
         
+        $this->getComponent()->Parameters += array('StreamCallback' => 'fetchRow');
+        
         return $platform->show().$platform->tables();
     }
 }
