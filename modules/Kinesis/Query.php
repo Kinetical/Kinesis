@@ -25,7 +25,10 @@ abstract class Query extends Task implements \IteratorAggregate
 
     function setBuilder( \Kinesis\Task\Builder $builder )
     {
-        if( !array_key_exists('Namespace', $this->Parameters ))
+        if( array_key_exists( 'Namespace', $builder->Parameters ))
+            $this->Parameters['Namespace'] = $builder->Parameters['Namespace'];
+        
+        if( !array_key_exists('Namespace', $this->Parameters ) )
             $this->Parameters['Namespace'] = get_class( $builder );
         
         $builder->setComponent( $this );

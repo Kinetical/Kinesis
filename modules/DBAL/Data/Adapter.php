@@ -82,7 +82,7 @@ class Adapter extends \Kinesis\Object
 
     function Fill( &$dataSource )
     {
-        $this->execute( $dataSource, self::SELECT );
+        return $this->execute( $dataSource, self::SELECT );
     }
 
     function Insert( &$dataSource )

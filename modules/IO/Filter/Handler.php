@@ -43,10 +43,10 @@ class Handler extends \IO\Filter
         $input = $params['input'];
         $state = $params['state'];
         
-        if( !$this->hasMap( $state ) )
+        if( !$this->hasMap() )
             return $input;
 
-        $filters = $this->Map->getFilters( $state );
+        $filters = $this->Map->getFilters();
 
         foreach( $filters as $filter )
         {
