@@ -68,6 +68,7 @@ abstract class Transaction extends \DBAL\Query
     
     function resolve( $connection = null )
     {
+        //TODO: CHECK IF PLATFORM SUPPORTS TRANSACTIONS, THROW EXCEPTION IF NOT
         if( $connection instanceof \DBAL\Database )
         {
             $this->setDatabase( $connection );

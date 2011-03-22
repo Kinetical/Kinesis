@@ -88,7 +88,7 @@ class Expression
 
         if( get_class( $statement ) == 'Closure' )
             $result = $statement( $this->Reference, $this->_method, $args );
-        else
+        //else
             //TODO: THROW EXCEPTION: STATEMENT NOT VALID
         
         if( !empty( $args ) && 

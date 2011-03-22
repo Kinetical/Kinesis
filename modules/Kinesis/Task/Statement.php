@@ -9,11 +9,7 @@ abstract class Statement extends Node implements I\Nameable
     protected $component;
     
     function getComponent()
-    {
-        if( is_null( $this->component ) &&
-            $this->isRoot() )
-            $this->component = $this->Parent->Parameters['Component'];
-        
+    {       
         return $this->component;
     }
     

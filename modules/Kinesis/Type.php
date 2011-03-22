@@ -78,6 +78,8 @@ final class Type
             $type = new Type\Object\Builder();
         elseif( stripos( $name, 'controller') !== false )
             $type = new Type\Object\Control();
+        elseif( is_subclass_of($name, '\Kinesis\Task\Builder'))
+            $type = new Type\Object\Builder();
         elseif( is_subclass_of($name, 'Kinesis\Task' ) )
             $type = new Type\Object\Task();
         elseif( is_subclass_of($name, 'Kinesis\ArrayList' ) )

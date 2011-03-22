@@ -19,17 +19,18 @@ class Factory extends \Kinesis\Parameter
         return false;
     }
     
-    protected function resolve( $className, &$ref )
+    protected function resolve( $className, &$component )
     {
-        if( array_key_exists( 'Namespace', $ref->Parameters ))
-            $className = $ref->Parameters['Namespace'].'\\'.ucfirst($className);
+        if( array_key_exists( 'Namespace', $component->Parameters ))
+            $className = $component->Parameters['Namespace'].'\\'.ucfirst($className);
         
         return $className;
     }
     
     function call( $name, array $arguments, &$ref )
     {
-        $classPath = $this->resolve( $name, $ref );
+        $component = $ref->getComponent();
+        $classPath = $this->resolve( $name, $component );
         
         if( ( $class = $this->reflect( $classPath )) !== false )
         {
@@ -53,7 +54,7 @@ class Factory extends \Kinesis\Parameter
             $arguments[ $k ] = $ref;
             
             $object = $class->newInstanceArgs( $arguments );
-            
+            $object->setComponent( $component );
             
             if( $object instanceof I\Nameable )
                 $object->setName( $class->getShortName() );

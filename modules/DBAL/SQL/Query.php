@@ -50,7 +50,7 @@ class Query extends Transaction
         $this->_text = $text;
     }
 
-    function assemble()
+    protected function assemble()
     {
         $this->_text = parent::assemble();
         

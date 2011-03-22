@@ -1,28 +1,51 @@
 <?php
-$driver = new \DBAL\Driver\MySQL();
-$database = new \DBAL\Database( $driver );
+use DBAL as DB;
+// MODEL BUILDER TEST
+// Model builder modifies tables and column definitions in the database
+/* EXAMPLE XML ENTITY
 
+<entity name="Clothing" type="Product">
+    <attribute name="Color" type="string">None</attribute>
+</entity>
+ 
+*/
+// ESTABLISH DATABASE
+$driver = new DB\Driver\MySQL();
+$database = new DB\Database( $driver );
 $core->setDatabase( $database );
 
-$source = new \DBAL\Data\Source();
+// DATA COMPONENTS
+$source = new DB\Data\Source();
+$adapter = new DB\Data\Adapter();
 
-$adapter = new \DBAL\Data\Adapter();
+// RETRIEVE XML ENTITY DATA
+$adapter->View = new DB\XML\View\Entity();
+$xmlEntities = $adapter->Fill( $source );
 
+// RETRIEVE SQL ENTITY DATA
+$adapter->View = new DB\SQL\View\Entity();
+$sqlEntities = $adapter->Fill( $source );
 
+// CREATE MODELER
+$query = new DB\SQL\Query();
+$query->setBuilder( new DBAL\SQL\Modeler( array() ) );
 
-$adapter->View = new \DBAL\XML\View\Entity();
-$adapter->Fill( $source );
+// SPECIFY THE ENTITIES TO COMPARE
+$query->build()
+      ->update( $sqlEntities )
+      ->set( $xmlEntities );
 
-$adapter->View = new \DBAL\SQL\View\Entity();
-$adapter->Fill( $source );
+// CREATES/ALTERS/DROP SQL TABLES OR COLUMNS
+// COMPARE XML TO CURRENT SCHEMA AND GENERATE DIFFERENCE
+// GENERATE TRANSACTION TO UPDATE SCHEMA BASED ON DIFFERENCES
+$query();
 
-$adapter->Update( $source );
 //foreach( $source as $entity )
 //{
 //    unset( $ent );
 //    $ent = $database->Models[ucfirst($entity->Name)];
 //
-//    if( $ent instanceof \DBAL\Data\Entity )
+//    if( $ent instanceof DB\Data\Entity )
 //    {
 //        var_dump( $ent->Name );
 //        var_dump( $ent->equals( $entity ));

@@ -13,20 +13,29 @@ abstract class Query extends Task implements \IteratorAggregate
 
     function getDefaultBuilder()
     {
-        $params = $this->Parameters;
-        $params['Component'] = $this;
-        return new \Kinesis\Task\Builder( $params );
+        if( array_key_exists('BuilderClass', $this->Parameters ))
+            $builderClass = $this->Parameters['BuilderClass'];
+        else
+            $builderClass = 'Kinesis\Task\Builder';
+        
+        $builder = new $builderClass( array() );
+        
+        return $builder;
     }
 
     function setBuilder( \Kinesis\Task\Builder $builder )
     {
+        if( !array_key_exists('Namespace', $this->Parameters ))
+            $this->Parameters['Namespace'] = get_class( $builder );
+        
+        $builder->setComponent( $this );
         $this->builder = $builder;
     }
 
     function build()
     {
         if( is_null( $this->builder ))
-            $this->builder = $this->getDefaultBuilder();
+            $this->setBuilder( $this->getDefaultBuilder() );
         return $this->builder;
     }
     
