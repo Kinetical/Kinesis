@@ -57,11 +57,6 @@ class Entity extends Model
         return $this->relations;
     }
 
-    function getBehaviors()
-    {
-        return $this->Behaviors;
-    }
-
     function setAlias($alias)
     {
         $this->alias = $alias;
@@ -70,17 +65,6 @@ class Entity extends Model
     function setRelations( array $relations )
     {
         $this->Relations->merge( $relations );
-    }
-
-    function setBehaviors( $behaviors )
-    {
-        if( is_string( $behaviors ))
-            $behaviors = explode(' ', str_replace(',',' ',$behaviors) );
-        if( is_array( $behaviors ))
-            foreach( $behaviors as $behavior )
-                $this->Behaviors[ $behavior ] = $behavior;
-        else
-            $this->Behaviors = $behaviors;
     }
 
     function relatedTo( $entity )

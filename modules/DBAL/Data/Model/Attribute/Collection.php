@@ -27,6 +27,9 @@ class Collection extends \Util\Collection\Dictionary
 
     function offsetSet( $offset, $attr )
     {
+        if( is_int( $offset ))
+            $offset = &$attr->getName();
+        
         $attr->setModel( $this->model );
         if( !is_null($attr->getLoadName()) )
             $this->model->setLoaderAttribute( $attr );

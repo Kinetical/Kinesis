@@ -91,9 +91,15 @@ class Filter extends \DBAL\Data\Mapping\Filter
             if( !is_null( $bind ))
                 return $this->bindings[ $subject ] = $bind;
         }
-        elseif( is_string( $subject ) && 
-                array_key_exists( $subject, $this->matches ))
+        elseif( is_string( $bind ))
+        {
+            return $bind;
+        }
+        elseif( is_string( $subject ) )
+        {
+            if( array_key_exists( $subject, $this->matches ))
                 return $this->matches[ $subject ];
+        }
         
 
         return false;
@@ -102,8 +108,10 @@ class Filter extends \DBAL\Data\Mapping\Filter
     protected function getBindingClass( $subject )
     {
         $match = $this->match( $subject );
-        if( is_string( $match ))
+        if( array_key_exists( $match, $this->mapping->Data ))
             return $this->mapping[ $match ];
+        
+        return $match;
     }
 
     protected function execute( array $params = null )
@@ -149,6 +157,7 @@ class Filter extends \DBAL\Data\Mapping\Filter
 
         foreach( $mapping as $key => $value )
         {
+            $boundField = null;
             $bindingField = $bindingClass.'.'.$key;
 
             if( $this->mapping->exists( $bindingField ))
@@ -163,5 +172,7 @@ class Filter extends \DBAL\Data\Mapping\Filter
                         $mappedObject->$boundField = $value;
             }
         }
+        
+        return $mappedObject;
     }
 }

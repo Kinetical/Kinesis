@@ -3,10 +3,23 @@ namespace Kinesis\Type;
 
 class Integer extends Value
 {
-    public $Name = 'int';
-
-    function getValue( Reference $value )
+    function toBase()
     {
-        return (int)$value->Container->{$value->Parameter->Type->Name};
+        return 'integer';
+    }
+    
+    function toPrimitive( $value )
+    {
+        return intval( $value );
+    }
+    
+    function getDefaultLength()
+    {
+        return 10;
+    }
+    
+    function getDefaultValue()
+    {
+        return 0;
     }
 }

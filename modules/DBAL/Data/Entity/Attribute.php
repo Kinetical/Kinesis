@@ -124,7 +124,7 @@ class Attribute extends \DBAL\Data\Model\Attribute
 
     function equals( Attribute $attr )
     {
-        if( (int)$this->Length !== (int)$attr->Length )
+        if( (int)$this->getLength() !== (int)$attr->getLength() )
                 return false;
 
         return parent::equals( $attr );

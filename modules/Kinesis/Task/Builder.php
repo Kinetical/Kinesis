@@ -1,7 +1,7 @@
 <?php
 namespace Kinesis\Task;
 
-class Builder extends Factory
+class Builder extends Node
 {
     protected $component;
     

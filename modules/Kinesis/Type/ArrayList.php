@@ -1,14 +1,25 @@
 <?php
 namespace Kinesis\Type;
 
-class ArrayList extends ValueType
-{
-    public $Name = 'Array';
-
-    //TODO: ACCEPT \KNSS\Object ARGUMENT, RETRIEVE Reference FROM Expression
-    function getValue( Reference $value )
+class ArrayList extends Value
+{   
+    function toBase()
     {
-
-        return (array)$value->Container[ $value->Parameter->Type->Name ];
+        return 'array';
+    }
+    
+    function toPrimitive( $value )
+    {
+        return (array)$value;
+    }
+    
+    function getDefaultLength()
+    {
+        return null;
+    }
+    
+    function getDefaultValue()
+    {
+        return array();
     }
 }

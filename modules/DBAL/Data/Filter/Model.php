@@ -10,8 +10,11 @@ abstract class Model extends \DBAL\Data\Binding\Filter
         if( $mappedObject instanceof \DBAL\Data\Model )
             $this->model = $mappedObject;
         elseif( $mappedObject instanceof \DBAL\Data\Model\Attribute )
+        {
+            $mappedObject->setName( $subject->Attributes['name']);
             $this->model->Attributes->add( $mappedObject );
+        }
 
-        parent::map( $mappedObject, $subject );
+        return parent::map( $mappedObject, $subject );
     }
 }

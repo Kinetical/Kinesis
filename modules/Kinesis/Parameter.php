@@ -11,4 +11,13 @@ abstract class Parameter
         $this->Name = $name;
         $this->Type = $type;
     }
+    
+    function equals( Parameter $parameter )
+    {
+        if( $this->Name == $parameter->Name &&
+            (string)$this->Type == (string)$parameter->Type )
+            return true;
+        
+        return false;
+    }
 }

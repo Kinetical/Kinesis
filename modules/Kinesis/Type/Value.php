@@ -3,7 +3,20 @@ namespace Kinesis\Type;
 
 abstract class Value
 {
-    public $Name;
+    protected $_name;
 
-    abstract function getValue( Reference $value );
+    function __construct()
+    {
+        $this->_name = $this->toBase();
+    }
+
+    function __toString()
+    {
+        return $this->_name;
+    }
+
+    abstract function toBase();
+    abstract function toPrimitive( $value );
+    abstract function getDefaultLength();
+    abstract function getDefaultValue();
 }

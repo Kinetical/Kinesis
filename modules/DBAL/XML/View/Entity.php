@@ -18,7 +18,7 @@ class Entity extends \DBAL\XML\View
 
         if( $source instanceof \DBAL\Data\Source )
             if( $this->adapter->isRead() )
-                $source->Map->recurse( new \DBAL\Data\Filter\Entity() );
+                $source->Map->recurse( new \DBAL\XML\Filter\Entity() );
         
         return $this->command;
     }

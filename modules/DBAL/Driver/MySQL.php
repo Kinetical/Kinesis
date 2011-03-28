@@ -44,13 +44,12 @@ final class MySQL extends \DBAL\Driver
 
     function query( $sql, \DBAL\Connection $conn )
     {
-        $this->errors = false;
         return ($result = mysql_query( $sql, $conn->getLink() ))
                 ? $result
                 : $this->error( $conn );
     }
     
-    function error( \DBAL\Connection $conn )
+    protected function error( \DBAL\Connection $conn )
     {
         $link = $conn->getLink();
         $this->errors = true;

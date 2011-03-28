@@ -6,6 +6,7 @@ final class Type
     private static $classes = array();
     private static $types = array();
     private static $parameters = array();
+    private static $reflection = array();
 
     static function initialise( $ref )
     {
@@ -20,6 +21,14 @@ final class Type
         if( $ref instanceof Reference &&
             is_null( $ref->Parameter ) )
             $ref->Parameter = self::field( $typeName, $type );
+    }
+    
+    public static function reflect( $className )
+    {
+        if( !array_key_exists( $className, self::$reflection ))
+            self::$reflection[$className] = new \ReflectionClass( $className );
+        
+        return self::$reflection[$className];
     }
     
     protected static function resolve( $ref )

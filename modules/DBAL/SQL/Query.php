@@ -20,8 +20,22 @@ class Query extends Transaction
 
     function execute()
     {
-        $resource = $this->database->query( $this->getText() );
-
+        $query = $this->getText();
+        if( is_array( $query ))
+        {
+            $resource = array();
+            foreach( $query as $qry )
+            {
+                echo 'fuck';
+                var_dump( (string) $qry );
+                $resource[] = $this->database->query( (string)$qry );
+            }
+        }
+        else
+        {
+            $resource = $this->database->query( (string)$query );
+        }
+        
         $results = array();
         
         if( is_resource( $resource ))
@@ -61,6 +75,9 @@ class Query extends Transaction
     {
         if( is_null( $this->_text ) )
             $this->assemble();
+        
+        if( is_array( $this->_text ))
+            $this->_text = implode(';', $this->_text );
 
         return $this->_text;
     }

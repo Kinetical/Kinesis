@@ -3,10 +3,8 @@ namespace DBAL\Data\Model;
 
 use \Util\Interfaces as I;
 
-abstract class Attribute implements I\Nameable
+abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
 {
-    public $Name;
-    public $DataType;
     private $_dataType;
     private $_flags;
     private $_default;
@@ -14,8 +12,7 @@ abstract class Attribute implements I\Nameable
 
     function __construct( $name = null, $type = null )
     {
-        $this->setInnerName( $name );
-        $this->setDataType( $type );
+        parent::__construct( $name, $type );
 
         $args = func_get_args();
         array_shift( $args );
@@ -25,13 +22,12 @@ abstract class Attribute implements I\Nameable
         $this->setFlags( $flags );
     }
 
-    function equals( EntityAttribute $attr )
+    function equals( Attribute $attribute )
     {
-        if( $this->Name == $attr->Name
-                && (string)$this->TypeName == (string)$attr->TypeName
-                && $this->Default == $attr->Default
-                && $this->hasFlags( $attr->Flags ) )
-                    return true;
+        if( parent::equals( $attribute ) &&
+            $this->getDefault() == $attribute->getDefault() &&
+            $this->hasFlags( $attribute->getFlags() ) )
+            return true;
 
         return false;
     }
@@ -88,20 +84,20 @@ abstract class Attribute implements I\Nameable
         return $this->Name;
     }
 
-    public function getDataType()
+    public function getType()
     {
-        if( is_string($this->DataType) )
+        if( is_string($this->Type) )
         {//TODO: $type = $this->getModel()->getDataSet()->getTypeLoader()
             //$typeLoader = \Core::getInstance()->getDatabase()->getDataSet()->getTypeLoader();
-            //$this->DataType = $typeLoader->loadType( $this );
+            //$this->Type = $typeLoader->loadType( $this );
         }
 
-        return $this->DataType;
+        return $this->Type;
     }
 
     function getTypeName()
     {
-        return (string)$this->DataType;
+        return (string)$this->Type;
     }
 
     public function setDefault($default)
@@ -112,7 +108,7 @@ abstract class Attribute implements I\Nameable
     function setFlags(array $flags)
     {
         foreach( $flags as $flag )
-             $this->AddFlag( $flag );
+             $this->addFlag( $flag );
     }
 
     public function setInnerName($innerName)
@@ -125,8 +121,8 @@ abstract class Attribute implements I\Nameable
         $this->Name = $name;
     }
 
-    public function setDataType($type)
+    public function setType($type)
     {
-        $this->DataType = $type;
+        $this->Type = $type;
     }
 }

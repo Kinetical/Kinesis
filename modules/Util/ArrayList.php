@@ -5,7 +5,7 @@ use Util\Interfaces as I;
 
 class ArrayList extends \Kinesis\Container implements I\Collection, \Countable
 {
-    private $_iterator = 'ArrayIterator';
+    private $_iterator;
     public $Data = array();
     
     function __construct( array $data = array() )

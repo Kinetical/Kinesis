@@ -30,7 +30,7 @@ class Collection extends \DBAL\Data\Model\Attribute\Collection
     {
         if( $attr->HasFlag( \DBAL\Data\Entity\Attribute::PrimaryKey ))
             $this->model->setKey( $attr );
-
+        
         parent::offsetSet( $offset, $attr );
     }
 }

@@ -17,7 +17,7 @@ class Alter extends Container
     {
         $platform = $this->getPlatform();
         
-        return $platform->alter( $this->Parameters['Table'] ).
-               parent::execute();
+        return $platform->alter( $this->Parameters['Table'] );
+               //parent::execute();
     }
 }

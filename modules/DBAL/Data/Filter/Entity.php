@@ -31,7 +31,7 @@ class Entity extends Model
     {
         if( $mappedObject instanceof \DBAL\Data\Entity\Relationship )
             $this->model->Relations->add( $mappedObject );
-
-        parent::map( $mappedObject, $subject );
+        
+        return parent::map( $mappedObject, $subject );
     }
 }
