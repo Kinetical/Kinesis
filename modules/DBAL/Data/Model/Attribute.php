@@ -5,10 +5,9 @@ use \Util\Interfaces as I;
 
 abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
 {
-    private $_dataType;
-    private $_flags;
-    private $_default;
-    private $_model;
+    private $flags;
+    private $default;
+    private $model;
 
     function __construct( $name = null, $type = null )
     {
@@ -34,28 +33,28 @@ abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
 
     function getModel()
     {
-        return $this->_model;
+        return $this->model;
     }
 
     function setModel( \DBAL\Data\Model $model )
     {
-        $this->_model = $model;
+        $this->model = $model;
     }
 
     function addFlag( $flag )
     {
         if( !is_null($flag ) )
-            $this->_flags[ $flag ] = $flag;
+            $this->flags[ $flag ] = $flag;
     }
 
     function hasFlag( $flagName )
     {
-        if( !is_array( $this->_flags ))
+        if( !is_array( $this->flags ))
             return false;
         if( is_array( $flagName ))
             return $this->hasFlags( $flagName );
 
-        return array_key_exists( $flagName, $this->_flags );
+        return array_key_exists( $flagName, $this->flags );
     }
 
     function hasFlags( array $flags )
@@ -69,30 +68,19 @@ abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
 
     public function getDefault()
     {
-        return $this->_default;
+        return $this->default;
     }
 
     public function getFlags()
     {
-        if( !is_array($this->_flags) )
-            $this->_flags = array();
-        return $this->_flags;
+        if( !is_array($this->flags) )
+            $this->flags = array();
+        return $this->flags;
     }
 
     function getName()
     {
         return $this->Name;
-    }
-
-    public function getType()
-    {
-        if( is_string($this->Type) )
-        {//TODO: $type = $this->getModel()->getDataSet()->getTypeLoader()
-            //$typeLoader = \Core::getInstance()->getDatabase()->getDataSet()->getTypeLoader();
-            //$this->Type = $typeLoader->loadType( $this );
-        }
-
-        return $this->Type;
     }
 
     function getTypeName()
@@ -102,7 +90,7 @@ abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
 
     public function setDefault($default)
     {
-        $this->_default = $default;
+        $this->default = $default;
     }
 
     function setFlags(array $flags)
