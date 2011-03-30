@@ -5,7 +5,9 @@ class Drop extends Statement
 {
     function __construct( $item, \Kinesis\Task $parent )
     {
-        parent::__construct( array('Item' => $item), $parent );
+        $container = $parent->Parameters['Container'];
+        $container->addChild( $this );
+        parent::__construct( array('Item' => $item), $container );
     }
     
     function initialise()
@@ -18,9 +20,6 @@ class Drop extends Statement
         elseif( $item instanceof \DBAL\Data\Entity\Attribute )
         {
             $this->Parameters['Column'] = $item->getName();
-            $this->Parent->Children['Alter']->addChild( $this );
-            unset( $this->Parent->Children['Drop']);
-            $this->Parent = $this->Parent->Children['Alter'];
         }
     }
     

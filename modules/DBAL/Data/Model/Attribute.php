@@ -21,7 +21,7 @@ abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
         $this->setFlags( $flags );
     }
 
-    function equals( Attribute $attribute )
+    function equals( $attribute )
     {
         if( parent::equals( $attribute ) &&
             $this->getDefault() == $attribute->getDefault() &&
@@ -99,18 +99,8 @@ abstract class Attribute extends \Kinesis\Parameter implements I\Nameable
              $this->addFlag( $flag );
     }
 
-    public function setInnerName($innerName)
-    {
-        $this->setName( $innerName );
-    }
-
     function setName( $name )
     {
         $this->Name = $name;
-    }
-
-    public function setType($type)
-    {
-        $this->Type = $type;
     }
 }

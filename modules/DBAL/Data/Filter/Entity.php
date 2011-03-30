@@ -23,8 +23,11 @@ class Entity extends Model
                           '*-*.entity' => 'EntityName',
                           '*-*.mappedBy' => 'MappedBy',
                           '*-*.inversedBy' => 'InversedBy');
+        
+        $signatures = array( 'entity' => array('name'),
+                             'attribute' => array('name') );
 
-        parent::__construct( $params, $mapping );
+        parent::__construct( $params, $mapping, $signatures );
     }
 
     protected function map( $mappedObject, $subject )

@@ -3,7 +3,7 @@ namespace DBAL;
 
 use \Util\Interfaces as I;
 
-abstract class Query extends \Kinesis\Query
+abstract class Query extends \Kinesis\Task\Query
 {
     public $Stream;
     protected $handler;

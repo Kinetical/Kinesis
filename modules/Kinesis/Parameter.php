@@ -1,7 +1,9 @@
 <?php
 namespace Kinesis;
 
-abstract class Parameter
+use Util\Interfaces as I;
+
+abstract class Parameter implements I\Comparable
 {
     public $Name;
     public $Type; //OBJECT||VALUETYPE
@@ -9,10 +11,14 @@ abstract class Parameter
     function __construct( $name = null, $type = null )
     {
         $this->Name = $name;
+        
+        if( is_string( $type ))
+            $type = Type::load( $type );
+        
         $this->Type = $type;
     }
     
-    function equals( Parameter $parameter )
+    function equals( $parameter )
     {
         if( $this->Name == $parameter->Name &&
             (string)$this->Type == (string)$parameter->Type )

@@ -7,11 +7,10 @@ class Attribute extends \DBAL\Data\Model\Attribute
     const AutoIncrement = 2;
     const NotNull = 4;
 
-    private $_outerName;
     private $_value;
     private $_relationship;
     private $_load;
-    private $_length;
+    private $length;
 
     function getLoadName()
     {
@@ -113,20 +112,22 @@ class Attribute extends \DBAL\Data\Model\Attribute
 
     public function getLength()
     {
-        //TODO: GET DEFAULT LENGTH
-        return $this->_length;
+        if( is_null( $this->length ) )
+            $this->length = $this->Type->getDefaultLength();
+        
+        return $this->length;
     }
 
     public function setLength($length)
     {
-        $this->_length = $length;
+        $this->length = $length;
     }
 
-    function equals( Attribute $attr )
+    function equals( $attribute )
     {
-        if( (int)$this->getLength() !== (int)$attr->getLength() )
+        if( (int)$this->getLength() !== (int)$attribute->getLength() )
                 return false;
 
-        return parent::equals( $attr );
+        return parent::equals( $attribute );
     }
 }

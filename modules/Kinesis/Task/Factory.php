@@ -7,14 +7,15 @@ namespace Kinesis\Task;
  */
 class Factory extends \Kinesis\Task
 {
-    private $_filter;
+    private $filter;
+    private $signatures = array();
     
     function initialise()
     {
         if( !$this->hasNamespace() )
             $this->Parameters['Namespace'] = 'Object\Type';
         if( array_key_exists( 'Mapping', $this->Parameters ) )
-            $this->_filter = new \DBAL\Data\Mapping\Filter( $this->Parameters, 
+            $this->filter = new \DBAL\Data\Mapping\Filter( $this->Parameters, 
                                                     $this->getMapping() );
     }
     
@@ -35,9 +36,10 @@ class Factory extends \Kinesis\Task
     
     function isMapped()
     {
-        return !is_null( $this->_filter );
+        return !is_null( $this->filter );
     }
-       
+    
+      
     /**
      * resolves a class name from \Kinesis\Parameter
      * pre-pends local namespace parameter
@@ -64,7 +66,7 @@ class Factory extends \Kinesis\Task
      */
     private function map( $name )
     {
-        $filter = $this->_filter;
+        $filter = $this->filter;
         return $filter( array('input' => strtolower( $name ) ));
     }
     
@@ -74,8 +76,10 @@ class Factory extends \Kinesis\Task
      *        and an array of arguments to pass into constructor
      * @return mixed new instance of class 
      */
-    protected function execute( array $arguments )
+    protected function execute()
     {
+        $arguments = func_get_arg(0);
+        
         $param = $arguments[0];
         if( is_string( $param ) )
             if( $this->isMapped() )

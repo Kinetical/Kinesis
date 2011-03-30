@@ -23,6 +23,11 @@ final class Type
             $ref->Parameter = self::field( $typeName, $type );
     }
     
+    static function load( $typeName )
+    {
+        return self::execute( $typeName );
+    }
+    
     public static function reflect( $className )
     {
         if( !array_key_exists( $className, self::$reflection ))
@@ -108,10 +113,17 @@ final class Type
         else
             $name = gettype( $ref );
         
-        switch( $name )
+        switch( strtolower( $name ) )
         {
+            case 'integer':
+            case 'int':
+                $type = new Type\Integer();
+                break;
+            case 'timestamp':
+                $type = new Type\TimeStamp();
+                break;
             default:
-                $type = new Type\ObjectType();
+                throw new \Exception('Type '.$name.' not found.');
         }
 
         return $type;

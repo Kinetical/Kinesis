@@ -1,7 +1,7 @@
 <?php
-namespace Kinesis;
+namespace Kinesis\Task;
 
-abstract class Query extends Task implements \IteratorAggregate
+abstract class Query extends \Kinesis\Task implements \IteratorAggregate
 {
     protected $builder;
     protected $iterator;
@@ -44,7 +44,7 @@ abstract class Query extends Task implements \IteratorAggregate
     
     protected function assemble()
     {
-        if( ($builder = $this->builder) instanceof Task )
+        if( ($builder = $this->builder) instanceof \Kinesis\Task )
              return $builder();
         
         return null;

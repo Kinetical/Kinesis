@@ -4,12 +4,12 @@ namespace Kinesis;
 abstract class Task extends Component
 {
     /**
-     * Implemented differently for various tasks
+     * Implemented for various possibly disparate tasks
      */
     abstract protected function execute();
 
     /**
-     * Catch or ensure invoke arguments
+     * Catch or ensure arguments exist
      * @return mixed Task execution result
      */
     function __invoke()
