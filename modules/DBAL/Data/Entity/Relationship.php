@@ -18,7 +18,6 @@ abstract class Relationship extends \Kinesis\Object implements I\Nameable
     private $_association;
     private $_mappedBy;  // OWNING SIDE
     private $_inversedBy;// INVERSED SIDE
-    private $_entityName;
     
     function __construct( $name = null, \DBAL\Data\Entity $entity = null )
     {
@@ -31,6 +30,9 @@ abstract class Relationship extends \Kinesis\Object implements I\Nameable
 
     function getEntity()
     {
+        $core = \Core::getInstance();
+        if( is_null( $this->entity ))
+            $this->entity = $core->Database->Models[ $this->EntityName ];
         //TODO: entity by entityname if blank
         return $this->entity;
     }
@@ -123,14 +125,17 @@ abstract class Relationship extends \Kinesis\Object implements I\Nameable
                     return true;
 
             if( $this instanceof Relationship\ManyToOne )
-                    if(	$this->_association->hasRelation( $this->getName() )
+            {
+                $assoc = $this->_association;
+                    if(	$this->_association->Relations->exists( $this->getName() )
                             && $this->_inversedBy !== null )
                             return true;
                     else
                             return false;
+            }
 
 
-            if( $this->_mappedBy == null )
+            if( $this->_mappedBy === null )
                     return true;
 
             return false;

@@ -44,7 +44,9 @@ class Dictionary extends \Util\Collection
     {
         if( $this->isStronglyTyped()
             && !($value instanceof $this->_type ))
-            throw new Exception('DataArray does not accept items of type: '. get_class( $value ));
+        {
+            throw new \Core\Exception('DataArray does not accept items of type: '. get_class( $value ));
+        }
 
         parent::offsetSet( $key, $value );
     }

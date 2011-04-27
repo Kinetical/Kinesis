@@ -22,4 +22,17 @@ class Entity extends \DBAL\XML\View
         
         return $this->command;
     }
+    
+    protected function execute( &$source = null )
+    {
+        $result = parent::execute( $source );
+        
+        if( $source instanceof \DBAL\Data\Source )
+        {
+            $core = \Core::getInstance();
+            $core->getDatabase()->Models->Data = \Util\Arrays\names( $source->Data );
+        }
+        
+        return $result;
+    }
 }

@@ -33,7 +33,10 @@ class Entity extends Model
     protected function map( $mappedObject, $subject )
     {
         if( $mappedObject instanceof \DBAL\Data\Entity\Relationship )
+        {
+            $mappedObject->setName( $subject->Attributes['name']);
             $this->model->Relations->add( $mappedObject );
+        }
         
         return parent::map( $mappedObject, $subject );
     }

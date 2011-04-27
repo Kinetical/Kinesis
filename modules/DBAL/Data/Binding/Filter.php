@@ -6,14 +6,18 @@ use \Util\Interfaces as I;
 class Filter extends \DBAL\Data\Mapping\Filter
 {
     protected $bindings;
+    protected $signatures;
+    private $factory;
     
-    function __construct( array $params = array(), array $mapping = array() )
+    
+    function __construct( array $params = array(), array $mapping = array(), array $signatures = array() )
     {
         $this->bindings = new \DBAL\Data\Binding( array(), $this );
-        
+        $this->factory = new \Kinesis\Task\Factory();
+        $this->signatures = $signatures;
         parent::__construct( $params, $mapping );
     }
-
+    
     function getBindings()
     {
         return $this->bindings;
@@ -113,6 +117,16 @@ class Filter extends \DBAL\Data\Mapping\Filter
         
         return $match;
     }
+    
+    protected function getBindingSignature( $subject )
+    {
+        $match = $this->match( $subject );
+        
+        if( array_key_exists( $match, $this->signatures ))
+            return $this->signatures[$match];
+        
+        return null;
+    }
 
     protected function execute( array $params = null )
     {
@@ -131,9 +145,17 @@ class Filter extends \DBAL\Data\Mapping\Filter
         if( get_class( $subject ) == $bindingClass )
             return $subject;
 
+        $signature = $this->getBindingSignature( $subject );
+        
+        $args = array();
+        if( is_array( $signature ) )
+            foreach( $signature as $name )
+                $args[] = $subject[ $name ];
+        
+        $factory = $this->factory;
+        $mappedObject = $factory( $bindingClass, $args );
 
-
-        $mappedObject = new $bindingClass;
+        //$mappedObject = new $bindingClass;
         //$mappedObject->Type->setPersistenceObject( $subject );
         $this->map( $mappedObject, $subject );
 
